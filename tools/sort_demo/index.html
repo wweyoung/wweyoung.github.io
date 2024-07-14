@@ -1,150 +1,165 @@
 <!-- wp:html -->
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>KXBlog 排序算法演示</title>
-		<meta name="description" content="排序算法演示,排序算法,排序演示,KXBlog" />
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>KXBlog 排序算法演示</title>
+    <meta name="description" content="排序算法演示,排序算法,排序演示,KXBlog"/>
 
-		<script src="../../static/script/vue.min.js"></script>
-		<style>
-			body {
-				height: 100%;
-				position: fixed;
-				width: 100%;
-				margin: 0;
-			}
+    <script src="../../static/script/vue.min.js"></script>
+    <style>
+        body {
+            height: 100%;
+            position: fixed;
+            width: 100%;
+            margin: 0;
+        }
 
-			#app {
-				height: 100%;
-				width: 100%;
-			}
-			#left {
-				display: flex;
-				height: 100%;
-				width: 70%;
-				float: left;
-				flex-direction: column;
-			}
-			#control{
-				height: 100%;
-				width: 30%;
-				float: right;
-				overflow-y: scroll;
-			}
-			#control .inner{
-				width: 90%;
-				padding: 5%;
-				border-radius: 16px!important;
-				box-shadow: inset 0 0 20px 0px rgba(0, 0, 0, 0.2);
-			}
-			#sort {
-				transform: rotate(180deg);
-				flex: 1;
-			}
+        #app {
+            height: 100%;
+            width: 100%;
+        }
 
-			#sort>div {
-				background-color: black;
-				float: right;
-				bottom: 0;
-			}
-			#colorLebal>div{
-				padding: 0 10px;
-			}
-			@media (max-width: 640px){
-				#control{
-					width: 100%;
-					height: 40%;
-				}
-				#left{
-					width: 100%;
-					height: 60%;
-				}
-				#colorLebal>div{
-					float: left;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<div id="app">
-			<div id="control" ref="control">
-				<div class="inner">
-				    <h2>KXBlog 排序算法演示工具</h2>
-					<div><b>数据个数</b>：<input type="number" v-model="defaultDataNumber" :step="getInputStep(defaultDataNumber)" min="1" max="1000" /></div>
-					<div><b>数据生成</b>：
-						<select v-model="dataGenerateType">
-							<option value="random">连续随机</option>
-							<option value="reverse">连续倒序</option>
-							<option value="fullRandom">完全随机</option>
-						</select>
-					</div>
-					<div><b>排序速度</b>：<input type="number" v-model="speed" :step="getInputStep(speed)" min="1" max="1000000"/></div>
-					<div>
-						<b>排序算法</b>：
-						<select v-model="selectSortType">
-							<option v-for="(item,key) in allSortType" :value="key" v-text="item.name"></option>
-						</select>
-					</div>
-					<div>
-						<b>开启声音</b>：<input type="checkbox" v-model="sound"/>
-					</div>
-					<template v-if="selectSortType">
-    					<div>
-    						<b>算法描述</b>：<span v-text="allSortType[selectSortType].desc"></span>
-    					</div>
-    					<div>
-    						<b>时间复杂度</b>：<span v-text="allSortType[selectSortType].timeCom"></span>
-    					</div>
-    					<div>
-    						<b>空间复杂度</b>：<span v-text="allSortType[selectSortType].spaceCom"></span>
-    					</div>
-    					<div>
-    						<b>是否稳定</b>：<span v-text="allSortType[selectSortType].stable?'是':'否'"></span>
-    					</div>
-    					<div>
-    					    <b>控制台</b>：
-    					    <button @click="pause()" v-if="state=='排序中'">暂停</button>
-    						<button @click="play()" v-else-if="state=='已暂停'">继续</button>
-    						<button @click="start()" v-else-if="state=='空闲'">开始</button>
-    						<button @click="stop">停止</button>
-    					</div>
-    					<div>
-    						<b>比较次数</b>：<span v-text="compareTimes"></span>
-    					</div>
-    					<div>
-    						<b>排序耗时</b>：<span v-text="spendTime"></span>s
-    					</div>
-					</template>
-					<div>
-						<b>系统状态</b>：<span v-text="state"></span>
-					</div>
-					<p v-show="tip">
-						<b>特别提示</b>：<span v-text="tip"></span>
-					</p>
-					<p>
-						<b>注</b>：由于记录的步骤个数不一样，演示速度不能代表真实执行的速度。
-					</p>
-					<div id="colorLebal">
-						<div><b style="color:blue">━━━━</b> 位置标记</div>
-						<div><b style="color:red">━━━━</b> 数值更新</div>
-						<div><b style="color:green">━━━━</b> 位置正确</div>
-					</div>
-					<a href="" target="_blank">KxBlog</a>
-				</div>
-			</div>
-			<div id="left">
-				<div id="title">{{title || 'KXBlog排序算法演示工具'}}</div>
-				<div id="sort" ref="sort">
-					<div v-for="(item,i) in data" :style="getDataStyle(item, i)" :key="i"></div>
-				</div>
-			</div>
-		</div>
-		
-		<script src="sort.js"></script>
-	</body>
+        #left {
+            display: flex;
+            height: 100%;
+            width: 70%;
+            float: left;
+            flex-direction: column;
+        }
+
+        #control {
+            height: 100%;
+            width: 30%;
+            float: right;
+            overflow-y: scroll;
+        }
+
+        #control .inner {
+            width: 90%;
+            padding: 5%;
+            border-radius: 16px !important;
+            box-shadow: inset 0 0 20px 0px rgba(0, 0, 0, 0.2);
+        }
+
+        #sort {
+            transform: rotate(180deg);
+            flex: 1;
+        }
+
+        #sort > div {
+            background-color: black;
+            float: right;
+            bottom: 0;
+        }
+
+        #colorLebal > div {
+            padding: 0 10px;
+        }
+
+        @media (max-width: 640px) {
+            #control {
+                width: 100%;
+                height: 40%;
+            }
+
+            #left {
+                width: 100%;
+                height: 60%;
+            }
+
+            #colorLebal > div {
+                float: left;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="control" ref="control">
+        <div class="inner">
+            <h2>KXBlog 排序算法演示工具</h2>
+            <div><b>数据个数</b>：<input type="number" v-model="defaultDataNumber" :step="getInputStep(defaultDataNumber)"
+                                    min="1" max="1000"/>
+                <button @click="defaultDataNumber-=getInputStep(defaultDataNumber)">-</button>
+                <button @click="defaultDataNumber+=getInputStep(defaultDataNumber)">+</button>
+            </div>
+            <div><b>数据生成</b>：
+                <select v-model="dataGenerateType">
+                    <option value="random">连续随机</option>
+                    <option value="reverse">连续倒序</option>
+                    <option value="fullRandom">完全随机</option>
+                </select>
+            </div>
+            <div><b>排序速度</b>：<input type="number" v-model="speed" :step="getInputStep(speed)" min="1" max="100000"/>
+                <button @click="speed-=getInputStep(speed)">-</button>
+                <button @click="speed+=getInputStep(speed)">+</button>
+            </div>
+            <div>
+                <b>排序算法</b>：
+                <select v-model="selectSortType">
+                    <option v-for="(item,key) in allSortType" :value="key" v-text="item.name"></option>
+                </select>
+            </div>
+            <div>
+                <b>开启声音</b>：<input type="checkbox" v-model="sound"/>
+            </div>
+            <template v-if="selectSortType">
+                <div>
+                    <b>控制台</b>：
+                    <button @click="pause()" v-if="state=='排序中'">暂停</button>
+                    <button @click="play()" v-else-if="state=='已暂停'">继续</button>
+                    <button @click="start()" v-else-if="state=='空闲'">开始</button>
+                    <button @click="stop">停止</button>
+                </div>
+                <div>
+                    <b>比较次数</b>：<span v-text="compareTimes"></span>
+                </div>
+                <div>
+                    <b>排序耗时</b>：<span v-text="spendTime"></span>s
+                </div>
+                <div>
+                    <b>系统状态</b>：<span v-text="state"></span>
+                </div>
+                <div>
+                    <b>算法描述</b>：<span v-text="allSortType[selectSortType].desc"></span>
+                </div>
+                <div>
+                    <b>时间复杂度</b>：<span v-text="allSortType[selectSortType].timeCom"></span>
+                </div>
+                <div>
+                    <b>空间复杂度</b>：<span v-text="allSortType[selectSortType].spaceCom"></span>
+                </div>
+                <div>
+                    <b>是否稳定</b>：<span v-text="allSortType[selectSortType].stable?'是':'否'"></span>
+                </div>
+            </template>
+            <p v-show="tip">
+                <b>特别提示</b>：<span v-text="tip"></span>
+            </p>
+            <p>
+                <b>注</b>：由于记录的步骤个数不一样，演示速度不能代表真实执行的速度。
+            </p>
+            <div id="colorLebal">
+                <div><b style="color:blue">━━━━</b> 位置标记</div>
+                <div><b style="color:red">━━━━</b> 数值更新</div>
+                <div><b style="color:green">━━━━</b> 位置正确</div>
+            </div>
+            <a href="" target="_blank">KxBlog</a>
+        </div>
+    </div>
+    <div id="left">
+        <div id="title">{{title || 'KXBlog排序算法演示工具'}}</div>
+        <div id="sort" ref="sort">
+            <!--					<div v-for="(item,i) in data" :style="getDataStyle(item, i)" :key="i"></div>-->
+        </div>
+    </div>
+</div>
+
+<script src="sort.js"></script>
+</body>
 </html>
 
 <!-- /wp:html -->

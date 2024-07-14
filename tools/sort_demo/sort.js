@@ -118,9 +118,11 @@ let vm = new Vue({
             }
         },
         compareTimes: 0,
-        currentTarget: [],
-        currentUpdated: {},
-        finished: [],
+        currentMark: {
+            currentTarget: [],
+            currentUpdated: {},
+            finished: []
+        },
         startTime: null,
         endTime: null,
         state: "空闲",
@@ -163,11 +165,12 @@ let vm = new Vue({
         },
         // 添加演示步骤 target: 比较集合，update：更新集合
         async push(target = [], update = {}, finished = []) {
-            this.currentUpdated = update;
-            this.currentTarget = target;
+            // console.log(freshIndexes);
+            this.currentMark.currentUpdated = update;
+            this.currentMark.currentTarget = target;
+            finished.forEach(index => this.setFinished(index));
             this.endTime = Date.now();
-            finished?.forEach(index => this.finished[index] = true);
-            let updateValues = Object.values(this.currentUpdated);
+            let updateValues = Object.values(this.currentMark.currentUpdated);
             if (updateValues.length > 0) {
                 let updateValuesSum = updateValues[0];
                 for (let i = 1; i < updateValues.length; i++) {
@@ -179,14 +182,19 @@ let vm = new Vue({
             }
             await this.nextStep();
         },
+        setFinished(index) {
+            this.$set(this.currentMark.finished, index, true);
+            this.refreshDataStyle(index);
+        },
         async showFinished(start = 0, end = this.data.length - 1) {
-            this.currentUpdated = {};
+            await this.push(); // 清除标记
             for (let i = start; i <= end; i++) {
-                this.currentTarget = [i];
-                this.$set(this.finished, i, true);
+                this.currentMark.currentTarget = [i];
+                this.setFinished(i);
                 this.playBeep(i);
                 await this.nextStep(Math.min(5, this.delayTime));
             }
+            await this.push();
         },
         // 比较并记录比较次数
         compare(result) {
@@ -243,37 +251,51 @@ let vm = new Vue({
                 this.promise.reject();
             }
             this.stopBeep();
-            this.currentTarget = [];
-            this.currentUpdated = {};
+            this.currentMark.currentTarget = [];
+            this.currentMark.currentUpdated = {};
             this.state = "空闲";
             this.title = undefined;
         },
+        redrawSortDiv() {
+            let childNodes = this.$refs.sort.childNodes;
+            for (let i = childNodes.length; i < this.data.length; i++) {
+                this.$refs.sort.appendChild(document.createElement("div"))
+            }
+            for (let i = childNodes.length - 1; i >= this.data.length; i--) {
+                childNodes[i].remove();
+            }
+            for (let i = 0; i < childNodes.length; i++) {
+                let childNode = childNodes[i];
+                this.refreshDataStyle(i, childNode)
+            }
+        },
         clearDataStyle() {
-            this.currentTarget = []
-            this.currentUpdated = {}
-            this.finished = []
+            this.currentMark.currentTarget = []
+            this.currentMark.currentUpdated = {}
+            this.currentMark.finished = []
             let nodes = this.$refs.sort.childNodes;
             for (let i = 0; i < nodes.length; i++) {
                 nodes[i].style.backgroundColor = null;
             }
         },
-        getDataStyle(item, i) {
-            let style = {
-                height: item / this.data.length * 100 + '%',
-                width: this.dataWidth
-            };
-            if (this.currentUpdated[i]) {
+        refreshDataStyle(i, node) {
+            if (!node) node = this.$refs.sort.childNodes[i];
+            let style = node.style;
+            style.height = this.data[i] / this.data.length * 100 + '%';
+            style.width = this.dataWidth;
+            style.backgroundColor = '';
+            if (this.currentMark.currentUpdated[i]) {
                 style.backgroundColor = 'red';
-            } else if (this.currentTarget.includes(i)) {
+            } else if (this.currentMark.currentTarget.includes(i)) {
                 style.backgroundColor = 'blue';
-            } else if (this.finished[i]) {
+            } else if (this.currentMark.finished[i]) {
                 style.backgroundColor = 'green';
             }
             return style;
         },
         getInputStep(val) {
             let step = 1;
-            while (val > 20) {
+            while (val >= 30) {
                 val /= 10;
                 step *= 10
             }
@@ -340,7 +362,7 @@ let vm = new Vue({
                     }
                     await this.push([j, j + 1], update);
                 }
-                this.finished[data.length - i - 1] = true;
+                this.setFinished(data.length - i - 1, true);
             }
             return data;
         },
@@ -353,12 +375,11 @@ let vm = new Vue({
                     }
                     await this.push([i, j], update);
                 }
-                this.finished[i] = true;
+                this.setFinished(i, true);
             }
             return data;
         },
         async insertionSort(data, show = true) {
-            // show && (this.finished[0] = true);
             for (let i = 1; this.compare(i < data.length); i++) {
                 let temp = data[i];
                 let j = i;
@@ -377,7 +398,7 @@ let vm = new Vue({
                 }, [i - 1]);
                 data[j] = temp; // 找到考察的数应处于的位置
             }
-            show && (this.finished[data.length - 1] = true);
+            show && (this.setFinished(data.length - 1, true));
             return data;
         },
         async quickSort(data) {
@@ -499,7 +520,8 @@ let vm = new Vue({
                 while (v.compare(left <= right)) {
                     await v.push(target, {
                         [left]: temp[t]
-                    }, isLastMerge ? [left] : []);
+                    }, [left]);
+                    target = target.slice(1);
                     arr[left++] = temp[t++];
                 }
             }
@@ -643,7 +665,7 @@ let vm = new Vue({
                         await this.push([m, n], update);
                     }
                 }
-                this.finished[n] = true;
+                this.setFinished(n, true);
                 n--;
                 for (let i = n; this.compare(i > m); i--) {
                     if (this.compare(data[i] < data[i - 1])) {
@@ -653,7 +675,7 @@ let vm = new Vue({
                         await this.push([m, n], update);
                     }
                 }
-                this.finished[m] = true;
+                this.setFinished(m, true);
                 m++;
             }
             return data;
@@ -677,14 +699,14 @@ let vm = new Vue({
                     await this.push([i + gap, i], update, gap === 1 ? [i] : []);
                     i++;
                 }
-                if (gap === 1) this.finished[i] = true;
+                if (gap === 1) this.setFinished(i, true);
             }
             return array;
         },
         async gnomeSort(a) { //地精排序
             let length = a.length;
             let i = 0;
-            this.finished[0] = true;
+            this.setFinished(0, true);
             while (this.compare(i < length)) {
                 if (this.compare(i > 0) && this.compare(a[i - 1] > a[i])) {
                     this.title = '<-左交换'
@@ -734,13 +756,13 @@ let vm = new Vue({
                 buckets[Math.floor((arr[i] - minValue) / bucketSize)].push(arr[i]);
             }
 
-            arr.length = 0;
-            this.title = "将桶中的数据重新添加到原数组";
+            this.title = "将桶中的数据保存到原数组";
+            let index = 0;
             for (i = 0; this.compare(i < buckets.length); i++) {
                 await this.insertionSort(buckets[i], false);     // 对每个桶进行排序，这里使用了插入排序
                 for (let j = 0; this.compare(j < buckets[i].length); j++) {
-                    await this.push([], {[arr.length]: buckets[i][j]}, [arr.length]);
-                    arr.push(buckets[i][j]);
+                    await this.push([], {[index]: buckets[i][j]}, [index]);
+                    arr[index++] = buckets[i][j];
                 }
             }
             return arr;
@@ -799,17 +821,14 @@ let vm = new Vue({
         }
     },
     watch: {
+        data(val, oldVal) {
+            this.redrawSortDiv();
+        },
         originData(val) {
             this.lastSortType = null;
             this.clearDataStyle();
             this.data = val.slice();
         },
-        // data:{
-        //     handler(newVal, oldVal){
-        //         console.log(newVal, oldVal, newVal == oldVal)
-        //     },
-        //     deep: true
-        // },
         defaultDataNumber(val) {
             if (val < 1)
                 this.defaultDataNumber = "";
@@ -830,6 +849,13 @@ let vm = new Vue({
             if (!val) {
                 this.stopBeep();
             }
+        },
+        'currentMark.currentTarget'(val, oldVal) {
+            new Set([...val, ...oldVal].map(Number)).forEach(index => this.refreshDataStyle(index));
+        },
+        'currentMark.currentUpdated'(val, oldVal) {
+            new Set([...Object.keys(val), ...Object.keys(oldVal)].map(Number))
+                .forEach(index => this.refreshDataStyle(index));
         }
     },
     mounted() {
