@@ -38,9 +38,8 @@
         }
 
         #control .inner {
-            width: 90%;
-            padding: 5%;
-            border-radius: 16px !important;
+            width: 96%;
+            padding: 2%;
             box-shadow: inset 0 0 20px 0px rgba(0, 0, 0, 0.2);
         }
 
@@ -55,7 +54,11 @@
             bottom: 0;
         }
 
-        #colorLebal > div {
+        #colorLabel {
+            display: inline-block;
+        }
+
+        #colorLabel > div {
             padding: 0 10px;
         }
 
@@ -70,7 +73,8 @@
                 height: 60%;
             }
 
-            #colorLebal > div {
+            #colorLabel > div {
+                padding: 0 6px;
                 float: left;
             }
         }
@@ -142,12 +146,14 @@
             <p>
                 <b>注</b>：由于记录的步骤个数不一样，演示速度不能代表真实执行的速度。
             </p>
-            <div id="colorLebal">
+            <div id="colorLabel">
                 <div><b style="color:blue">━━━━</b> 位置标记</div>
                 <div><b style="color:red">━━━━</b> 数值更新</div>
                 <div><b style="color:green">━━━━</b> 位置正确</div>
             </div>
-            <a href="" target="_blank">KxBlog</a>
+            <div>
+                <a href="/" target="_blank">KxBlog</a>
+            </div>
         </div>
     </div>
     <div id="left">

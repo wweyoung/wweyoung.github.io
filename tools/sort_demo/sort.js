@@ -211,6 +211,7 @@ let vm = new Vue({
                 if (sortFunction) {
                     this.data = this.originData.slice()
                     try {
+                        this.title = this.allSortType[name].name;
                         await sortFunction(this.data);
                         this.state = "排序完成";
                         await this.showFinished();
