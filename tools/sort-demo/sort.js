@@ -6,13 +6,14 @@ let vm = new Vue({
         sortedData: [],
         dataGenerateType: 'random',
         defaultDataNumber: 50,
-        delayTime: 50,
-        sound: true,
+        delayTime: 40,
+        sound: localStorage.getItem('sound') !== 'false',
         selectSortType: null,
         lastSortType: null,
         allSortType: {
             quickSort: {
                 name: "快速排序",
+                nameEn: "Quick Sort",
                 desc: "快速排序(Quick Sort)是对冒泡排序的一种改进，采用分治法，通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据比另一部分的所有数据要小，再按这种方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，使整个数据变成有序序列",
                 timeCom: "O(nlog₂n)",
                 spaceCom: "O(nlog₂n)",
@@ -20,6 +21,7 @@ let vm = new Vue({
             },
             mergeSort: {
                 name: "归并排序",
+                nameEn: "Merge Sort",
                 desc: "归并排序(Merge Sort)是建立在归并操作上的一种有效的排序算法。采用分治法，将n个元素从中间切开，分成两部分，分别进行递归分解，直到所有部分的元素个数都为1，从最底层开始逐步合并两个排好序的数列",
                 timeCom: "O(nlog₂n)",
                 spaceCom: "O(n)",
@@ -27,6 +29,7 @@ let vm = new Vue({
             },
             bubbleSort: {
                 name: "冒泡排序",
+                nameEn: "Bubble Sort",
                 desc: "冒泡排序(Bubble Sort)最基础的交换排序，之所以叫做冒泡排序，因为每一个元素都可以像小气泡一样，根据自身大小一点一点向数组的一侧移动",
                 timeCom: "O(n²)",
                 spaceCom: "O(1)",
@@ -34,6 +37,7 @@ let vm = new Vue({
             },
             selectionSort: {
                 name: "选择排序",
+                nameEn: "Selection Sort",
                 desc: "选择排序(Selection Sort)选择排序是一种简单直观的排序算法，它的工作原理是每一次从待排序的数据元素中选出最小（最大）的一个元素，存放在序列的起始位置",
                 timeCom: "O(n²)",
                 spaceCom: "O(1)",
@@ -41,6 +45,7 @@ let vm = new Vue({
             },
             insertionSort: {
                 name: "直接插入排序",
+                nameEn: "Straight Insertion Sort",
                 desc: "直接插入排序(Straight Insertion Sort)每一步将一个待排序的数据插入到前面已经排好序的有序序列中，直到插完所有元素为止",
                 timeCom: "O(n²)",
                 spaceCom: "O(1)",
@@ -48,6 +53,7 @@ let vm = new Vue({
             },
             shellSort: {
                 name: "希尔排序",
+                nameEn: "Shell Sort",
                 desc: "希尔排序(Shell Sort)是对直接插入排序的一种改进，将待排序的数组元素按下标的一定增量分组，分成多个子序列，然后对各个子序列进行直接插入排序算法排序；然后依次缩减增量再进行排序，直到增量为1时，进行最后一次直接插入排序，排序结束",
                 timeCom: "O(n¹·³)",
                 spaceCom: "O(1)",
@@ -55,6 +61,7 @@ let vm = new Vue({
             },
             heapSort: {
                 name: "堆排序",
+                nameEn: "Heap Sort",
                 desc: "堆排序(Heap Sort)是指利用堆这种数据结构所设计的一种排序算法，堆积是一个近似完全二叉树的结构，并同时满足堆积的性质：即子结点的键值或索引总是小于（或者大于）它的父节点，移除位在第一个数据的根节点，并做最大堆调整的递归运算，如此往复，最终得到一个递增序列",
                 timeCom: "O(nlog₂n)",
                 spaceCom: "O(1)",
@@ -62,6 +69,7 @@ let vm = new Vue({
             },
             countingSort: {
                 name: "计数排序",
+                nameEn: "Counting Sort",
                 desc: "计数排序(Counting Sort)是一个非基于比较的排序算法，是一种牺牲内存空间来换取低时间复杂度的排序算法，优势在于在对一定范围内的整数排序时，快于任何比较排序算法",
                 timeCom: "O(n+k)",
                 spaceCom: "O(n+k)",
@@ -69,6 +77,7 @@ let vm = new Vue({
             },
             radixSort: {
                 name: "基数排序",
+                nameEn: "Radix Sort",
                 desc: "基数排序(Radix Sort)是一种非比较型整数排序算法，原理是将整数按位数切割成不同的数字，然后按每个位数分别比较，这样从最低位排序一直到最高位排序完成以后, 数列就变成一个有序序列",
                 timeCom: "",
                 spaceCom: "",
@@ -76,6 +85,7 @@ let vm = new Vue({
             },
             cocktailSort: {
                 name: "鸡尾酒排序",
+                nameEn: "Cock Tail Sort",
                 desc: "鸡尾酒排序(Cock Tail Sort)是对冒泡排序的一种改进，冒泡排序的的元素比较和交换过程是单向的，而鸡尾酒排序的元素比较和交换过程是双向的",
                 timeCom: "O(n²)",
                 spaceCom: "O(1)",
@@ -83,6 +93,7 @@ let vm = new Vue({
             },
             combSort: {
                 name: "梳排序",
+                nameEn: "Comb Sort",
                 desc: "梳排序(Comb Sort)是对冒泡排序、快速排序的一种改进，类似于希尔排序，将相距某个增量的记录组成一个子序列，通过冒泡排序使得这个子序列基本有序，然后减少增量继续排序",
                 timeCom: "O(nlog₂n)",
                 spaceCom: "O(1)",
@@ -90,6 +101,7 @@ let vm = new Vue({
             },
             gnomeSort: {
                 name: "地精排序",
+                nameEn: "Gnome Sort",
                 desc: "地精排序(Gnome Sort)类似于插入排序，在发现反序对时，把它往回按，直到排好序，再向前继续走，只需要一重循环",
                 timeCom: "O(n²)",
                 spaceCom: "O(1)",
@@ -97,6 +109,7 @@ let vm = new Vue({
             },
             bucketSort: {
                 name: "桶排序",
+                nameEn: "Bucket Sort",
                 desc: "桶排序(Bucket Sort)是计数排序的升级版，采用分治法，思想是我们首先需要知道所有待排序元素的范围，然后需要有在这个范围内的同样数量的桶，接着把元素放到对应的桶中，最后按顺序输出",
                 timeCom: "O(n+k)",
                 spaceCom: "O(n+k)",
@@ -104,6 +117,7 @@ let vm = new Vue({
             },
             stoogeSort: {
                 name: "漂亮排序",
+                nameEn: "Stooge Sort",
                 desc: "漂亮排序(Stooge Sort)排序是一种低效的递归排序算法，甚至慢于冒泡排序，整个排序算法没有任何循环语句。如果最后一个值小于第一个值，则交换它们；如果当前子集元素数量大于等于3：使用Stooge排序前2/3的元素，使用Stooge排序后2/3的元素，再次使用Stooge排序前2/3的元素",
                 timeCom: "O(n²·⁷)",
                 spaceCom: "",
@@ -111,6 +125,7 @@ let vm = new Vue({
             },
             bogoSort: {
                 name: "猴子排序",
+                nameEn: "Monkey Sort",
                 desc: "一只猴子随机敲击键盘,只要时间足够久,一定能敲出莎士比亚的诗",
                 timeCom: "O(?)",
                 spaceCom: "O(1)",
@@ -125,7 +140,10 @@ let vm = new Vue({
         },
         startTime: null,
         endTime: null,
-        state: "空闲",
+        state: 'free',
+        stateMap: {
+            free: 'free', sorting: 'sorting', paused: 'paused', finished: 'finished'
+        },
         tip: null,
         oscillatorNode: undefined,
         gainNode: undefined,
@@ -133,6 +151,90 @@ let vm = new Vue({
         promise: {
             resolve: undefined,
             reject: undefined
+        },
+        quickDelayCount: 0,
+        delayTimeAmend: [1, 0.9, 0.4, 0.25], // delay时间修正倍率
+        uri: location.origin + location.pathname,
+        language: localStorage.getItem('language') || navigator.language.startsWith('zh') ? 'cn' : 'en',
+        i18nAll: {
+            cn: {
+                title: "KX排序算法演示工具",
+                dataNumber: "数据个数",
+                dataGenerateType: "数据生成",
+                continuousRandom: "连续随机",
+                continuousReverse: "连续倒序",
+                completelyRandom: "完全随机",
+                showSpeed: "演示速度",
+                sortAlgorithm: "排序算法",
+                sound: "开启声音",
+                console: "控 制 台 ",
+                pause: "暂停",
+                continue: "继续",
+                start: "开始",
+                stop: "停止",
+                compareTimes: "比较次数",
+                spendTime: "演示耗时",
+                state: "系统状态",
+                states:{
+                    free: '空闲',
+                    sorting: '排序中',
+                    paused: '暂停',
+                    finished: '排序完成'
+                },
+                algorithmDesc: "算法描述",
+                timeComplexity: "时间复杂度",
+                spaceComplexity: "空间复杂度",
+                isStable: "是否稳定",
+                yes: "是",
+                no: "否",
+                tip: "特别提示",
+                note: "注",
+                noteDesc: "由于记录的步骤个数不一样，演示速度不能代表真实执行的速度。",
+                lineMark: "位置标记",
+                lineUpdate: "数值更新",
+                lineFinished: "排序完成",
+                sort: "排序",
+                merge: "归并"
+            },
+            en: {
+                title: "KXBlog sorting algorithm online demonstration",
+                dataNumber: "Data number",
+                dataGenerateType: "Data generation",
+                continuousRandom: "Continuous Random",
+                continuousReverse: "Continuous Reverse",
+                completelyRandom: "Completely Random",
+                showSpeed: "Play speed",
+                sortAlgorithm: "Sorting algorithm",
+                sound: "Sound",
+                console: "Console",
+                pause: "Pause",
+                continue: "Continue",
+                start: "Start",
+                stop: "Stop",
+                compareTimes: "Comparison times",
+                spendTime: "Spend time",
+                state: "System status",
+                states:{
+                    free: 'Free',
+                    sorting: 'Sorting',
+                    paused: 'Paused',
+                    finished: 'Finished'
+                },
+                algorithmDesc: "Algorithm description",
+                timeComplexity: "Time Complexity",
+                spaceComplexity: "Space Complexity",
+                isStable: "Is it stable",
+                yes: "Yes",
+                no: "No",
+                tip: "Tip",
+                note: "Note",
+                noteDesc: "Due to the different numbers of the record steps, the demonstration speed cannot represent the speed of real execution.",
+                lineMark: "Location mark",
+                lineUpdate: "Value update",
+                lineFinished: "Sorting complete",
+                sort: "Sort",
+                merge: "Merge"
+            }
         }
     },
     methods: {
@@ -157,7 +259,7 @@ let vm = new Vue({
                 this.promise.resolve = resolve;
                 this.promise.reject = reject;
                 setTimeout(() => {
-                    if (this.state !== '已暂停') {
+                    if (this.state !== this.stateMap.paused) {
                         resolve();
                     }
                 }, delayTime);
@@ -165,10 +267,16 @@ let vm = new Vue({
         },
         // 添加演示步骤 target: 比较集合，update：更新集合
         async push(target = [], update = {}, finished = []) {
-            // console.log(freshIndexes);
             this.currentMark.currentUpdated = update;
             this.currentMark.currentTarget = target;
             finished.forEach(index => this.setFinished(index));
+            if (this.delayTime < 1) {
+                if (this.quickDelayCount <= 1) {
+                    this.quickDelayCount += this.delayTime;
+                    return;
+                }
+                this.quickDelayCount = 0;
+            }
             this.endTime = Date.now();
             let updateValues = Object.values(this.currentMark.currentUpdated);
             if (updateValues.length > 0) {
@@ -186,13 +294,22 @@ let vm = new Vue({
             this.$set(this.currentMark.finished, index, true);
             this.refreshDataStyle(index);
         },
-        async showFinished(start = 0, end = this.data.length - 1) {
+        async showFinished(start = 0, end = this.data.length - 1, showTime = 200) {
             await this.push(); // 清除标记
+            let dataAmount = end - start + 1;
+            let delayTime = showTime * this.delayTimeAmend[Math.round(Math.log10(dataAmount))] / dataAmount;
             for (let i = start; i <= end; i++) {
-                this.currentMark.currentTarget = [i];
                 this.setFinished(i);
+                if (delayTime < 1) {
+                    if (this.quickDelayCount <= 1) {
+                        this.quickDelayCount += delayTime;
+                        continue;
+                    }
+                    this.quickDelayCount = 0;
+                }
+                this.currentMark.currentTarget = [i];
                 this.playBeep(i);
-                await this.nextStep(Math.min(5, this.delayTime));
+                await this.nextStep(delayTime);
             }
             await this.push();
         },
@@ -205,27 +322,26 @@ let vm = new Vue({
             if (name !== this.lastSortType) {
                 this.lastSortType = name;
                 this.stop();
-                this.state = "排序中";
+                this.state = this.stateMap.sorting;
                 this.startTime = this.endTime = Date.now();
                 let sortFunction = this[name];
                 if (sortFunction) {
                     this.data = this.originData.slice()
                     try {
-                        this.title = this.allSortType[name].name;
                         await sortFunction(this.data);
-                        this.state = "排序完成";
+                        this.state = this.stateMap.finished;
                         await this.showFinished();
                     } catch (e) {
                         if (e !== undefined) {
-                            alert("排序出错了！" + e);
+                            alert("Error!" + e);
                             throw e;
                         }
                     }
                     this.end();
                 } else {
-                    alert("排序方法不存在！");
+                    alert("Error: Not found sort:"+this.lastSortType);
                 }
-                this.state = "空闲";
+                this.state = this.stateMap.free;
             }
         },
         // 手动停止调用
@@ -239,11 +355,11 @@ let vm = new Vue({
             this.data = this.originData;
         },
         pause() {
-            this.state = "已暂停";
+            this.state = this.stateMap.paused;
             this.stopBeep();
         },
         play() {
-            this.state = "排序中";
+            this.state = this.stateMap.sorting;
             this.promise.resolve();
         },
         // 排序完成调用
@@ -254,8 +370,11 @@ let vm = new Vue({
             this.stopBeep();
             this.currentMark.currentTarget = [];
             this.currentMark.currentUpdated = {};
-            this.state = "空闲";
+            this.state = this.stateMap.free;
             this.title = undefined;
+        },
+        saveConfig(key, value){
+            localStorage.setItem(key, value)
         },
         redrawSortDiv() {
             let childNodes = this.$refs.sort.childNodes;
@@ -337,7 +456,9 @@ let vm = new Vue({
         stopBeep() {
             if (this.oscillatorNode) {
                 this.oscillatorNode.disconnect();
-                // this.oscillatorNode = null;
+                if (!this.sound) {
+                    this.oscillatorNode = null;
+                }
             }
         },
         checkIsSorted(data) {
@@ -445,10 +566,10 @@ let vm = new Vue({
                     [i]: pivot
                 }, finished);
                 data[i] = pivot;
-                await dg(data, left, i - 1, title + '左');
-                await dg(data, i + 1, right, title + '右');
+                await dg(data, left, i - 1, title + 'L');
+                await dg(data, i + 1, right, title + 'R');
             };
-            await dg(data, 0, data.length - 1, '排序');
+            await dg(data, 0, data.length - 1,'');
         },
         async shellSort(data) {
             let len = data.length,
@@ -485,9 +606,9 @@ let vm = new Vue({
                 if (v.compare(left < right)) {
                     v.title = title;
                     const mid = parseInt((left + right) / 2);
-                    await sort(data, left, mid, temp, title + '左'); //左边归并排序，使得左子序列有序
-                    await sort(data, mid + 1, right, temp, title + '右'); //右边归并排序，使得右子序列有序
-                    v.title = title + '归并';
+                    await sort(data, left, mid, temp, title + 'L'); //左边归并排序，使得左子序列有序
+                    await sort(data, mid + 1, right, temp, title + 'R'); //右边归并排序，使得右子序列有序
+                    v.title = title + ' ' + v.i18n.merge;
                     await merge(data, left, mid, right, temp); //将两个有序子数组合并操作
                 }
             }
@@ -812,6 +933,8 @@ let vm = new Vue({
             set: function (speed) {
                 if (speed < 1)
                     speed = 1;
+                if (speed > 100000)
+                    speed = 100000;
                 this.delayTime = 2000 / speed;
             }
         },
@@ -819,6 +942,11 @@ let vm = new Vue({
             if (!this.startTime || !this.endTime)
                 return 0;
             return (this.endTime - this.startTime) / 1000;
+        },
+        i18n() {
+            let i18n = this.i18nAll[this.language];
+            document.title = i18n.title;
+            return i18n;
         }
     },
     watch: {
@@ -836,6 +964,7 @@ let vm = new Vue({
             if (val > 1000)
                 this.defaultDataNumber = 1000;
             this.tip = val >= 500 ? "数据量大，可能会造成卡顿。" : null;
+            this.speed = val;
             this.stop();
             this.originData = this.generateData();
         },
