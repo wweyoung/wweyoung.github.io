@@ -9,6 +9,7 @@
     <meta name="description" content="Sorting algorithm,排序算法演示,排序算法,排序演示,KXBlog"/>
 
     <script src="../../static/script/vue.min.js"></script>
+    <script src="i18n.js"></script>
     <style>
         body {
             height: 100%;
@@ -50,6 +51,10 @@
             width: 96%;
             padding: 2%;
             box-shadow: inset 0 0 20px 0px rgba(0, 0, 0, 0.2);
+        }
+
+        #control-buttons button {
+            min-width: 70px;
         }
 
         #sort {
@@ -94,12 +99,13 @@
     </style>
 </head>
 <body>
-<div id="app">
+<div id="app" v-show="i18nAll">
     <div id="control" ref="control">
         <div class="inner">
             <h3>{{i18n.title}}</h3>
             <div><b>Language</b>:
-                <button @click="language='en';saveConfig('language', language)" :disabled="language==='en'">English</button>
+                <button @click="language='en';saveConfig('language', language)" :disabled="language==='en'">English
+                </button>
                 <button @click="language='cn';saveConfig('language', language)" :disabled="language==='cn'">中文</button>
             </div>
             <div><b>{{i18n.dataNumber}}</b>:
@@ -132,18 +138,16 @@
                 <b>{{i18n.sound}}</b>: <input type="checkbox" v-model="sound" @change="saveConfig('sound', sound)"/>
             </div>
             <template v-if="selectSortType">
-                <div>
+                <div id="control-buttons">
                     <b>{{i18n.console}}</b>:
                     <button @click="pause()" v-if="state===stateMap.sorting">{{i18n.pause}}</button>
                     <button @click="play()" v-else-if="state===stateMap.paused">{{i18n.continue}}</button>
-                    <button @click="start()" v-else-if="state===stateMap.free">{{i18n.start}}</button>
-                    <button @click="stop" v-if="state!==stateMap.free">{{i18n.stop}}</button>
+                    <button @click="start()" v-else-if="state===stateMap.idle">{{i18n.start}}</button>
+                    <button @click="next()" v-if="state!==stateMap.sorting">{{i18n.nextStep}}</button>
+                    <button @click="stop" v-if="state!==stateMap.idle" style="color:orangered">{{i18n.stop}}</button>
                 </div>
                 <div>
                     <b>{{i18n.compareTimes}}</b>: <span v-text="compareTimes"></span>
-                </div>
-                <div>
-                    <b>{{i18n.spendTime}}</b>: <span v-text="spendTime"></span>s
                 </div>
                 <div>
                     <b>{{i18n.state}}</b>: <span v-text="i18n.states[state]"></span>
@@ -162,8 +166,8 @@
                         v-text="allSortType[selectSortType].stable? i18n.yes: i18n.no"></span>
                 </div>
             </template>
-            <p v-show="tip">
-                <b>{{i18n.tip}}}</b>: <span v-text="tip"></span>
+            <p v-show="defaultDataNumber > 500">
+                <b>{{i18n.tip}}</b>: <span> {{i18n.tipDesc}} </span>
             </p>
             <p>
                 <b>{{i18n.note}}</b>: {{i18n.noteDesc}}
@@ -177,7 +181,7 @@
     </div>
     <div id="left">
         <div id="title">
-            <span>{{state===stateMap.free ? i18n.title : allSortType[selectSortType][language=='cn'?'name':'nameEn']}}</span>
+            <span>{{state===stateMap.idle ? i18n.title : allSortType[selectSortType][language=='cn'?'name':'nameEn']}}</span>
             <span>{{title}}</span>
             <div id="uri">{{uri}}</div>
         </div>
@@ -186,7 +190,6 @@
         </div>
     </div>
 </div>
-
 <script src="sort.js"></script>
 </body>
 </html>
