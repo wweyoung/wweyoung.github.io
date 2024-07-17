@@ -15,7 +15,6 @@ const i18nAll = {
         nextStep: "下一步",
         start: "开始",
         stop: "停止",
-        compareTimes: "比较次数",
         state: "系统状态",
         states: {
             idle: '空闲',
@@ -36,6 +35,7 @@ const i18nAll = {
         lineMark: "位置标记",
         lineUpdate: "数值更新",
         lineFinished: "排序完成",
+        feedback: "反馈",
         sort: "排序",
         merge: "归并",
         swap: "交换",
@@ -43,8 +43,9 @@ const i18nAll = {
         computeMaxValue: "计算最大值",
         initBuckets: "初始化桶",
         allocateDataToBuckets: "将数据分配到各个桶中",
-        bucketsToOriginArray:"将桶中的数据保存到原数组",
+        bucketsToOriginArray: "将桶中的数据保存到原数组",
         heapAdjust: "堆调整",
+        bucketCounting: "桶计数"
     },
     en: {
         title: "KXBlog sorting algorithm online demonstration",
@@ -62,7 +63,6 @@ const i18nAll = {
         nextStep: "Next",
         start: "Start",
         stop: "Stop",
-        compareTimes: "Comparison times",
         state: "System status",
         states: {
             idle: 'Idle',
@@ -83,6 +83,7 @@ const i18nAll = {
         lineMark: "Location mark",
         lineUpdate: "Value updating",
         lineFinished: "Sorting completed",
+        feedback: "Feedback",
         sort: "Sort",
         merge: "Merge",
         swap: "Swap",
@@ -90,7 +91,8 @@ const i18nAll = {
         computeMaxValue: "Calculate maximum value",
         initBuckets: "Init buckets",
         allocateDataToBuckets: "Allocate the data into each buckets",
-        bucketsToOriginArray:"Save the data in the buckets to the original array",
+        bucketsToOriginArray: "Save the data in the buckets to the original array",
         heapAdjust: "Heap adjustment",
+        bucketCounting: "Bucket Counting"
     }
 }

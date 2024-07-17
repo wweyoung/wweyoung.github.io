@@ -10,7 +10,7 @@ let vm = new Vue({
         sound: localStorage.getItem('sound') !== 'false',
         selectSortType: null,
         lastSortType: null,
-        allSortType: {
+        allSort: {
             quickSort: {
                 name: "快速排序",
                 nameEn: "Quick Sort",
@@ -44,11 +44,16 @@ let vm = new Vue({
                 stable: false
             },
             insertionSort: {
-                name: "直接插入排序",
-                nameEn: "Straight Insertion Sort",
-                desc: "直接插入排序(Straight Insertion Sort)每一步将一个待排序的数据插入到前面已经排好序的有序序列中，直到插完所有元素为止",
+                name: "插入排序",
+                nameEn: "Insertion Sort",
+                desc: "插入排序(Insertion Sort)每一步将一个待排序的数据插入到前面已经排好序的有序序列中，直到插完所有元素为止",
                 timeCom: "O(n²)",
                 spaceCom: "O(1)",
+                stable: true
+            },
+            binaryInsertionSort: {
+                name: "折半插入排序",
+                nameEn: "Binary Insertion Sort",
                 stable: true
             },
             shellSort: {
@@ -81,7 +86,16 @@ let vm = new Vue({
                 desc: "基数排序最低优先(Radix Sort LSD)是一种非比较型整数排序算法，原理是将整数按位数切割成不同的数字，然后按每个位数分别比较，这样从最低位排序一直到最高位排序完成以后, 数列就变成一个有序序列",
                 timeCom: "",
                 spaceCom: "",
-                stable: true
+                stable: true,
+                config: {
+                    radix: {
+                        type: "number",
+                        value: 10,
+                        min: 2,
+                        step: 1,
+                        required: true
+                    }
+                }
             },
             radixSortMSD: {
                 name: "基数排序(MSD)",
@@ -89,7 +103,16 @@ let vm = new Vue({
                 desc: "基数排序最低优先(Radix Sort MSD)是一种非比较型整数排序算法，原理是将整数按位数切割成不同的数字，然后按每个位数分别比较，这样从最高位排序一直到最低位排序完成以后, 数列就变成一个有序序列",
                 timeCom: "",
                 spaceCom: "",
-                stable: true
+                stable: true,
+                config: {
+                    radix: {
+                        type: "number",
+                        value: 10,
+                        min: 2,
+                        step: 1,
+                        required: true
+                    }
+                }
             },
             cocktailSort: {
                 name: "鸡尾酒排序",
@@ -121,7 +144,20 @@ let vm = new Vue({
                 desc: "桶排序(Bucket Sort)是计数排序的升级版，采用分治法，思想是我们首先需要知道所有待排序元素的范围，然后需要有在这个范围内的同样数量的桶，接着把元素放到对应的桶中，最后按顺序输出",
                 timeCom: "O(n+k)",
                 spaceCom: "O(n+k)",
-                stable: true
+                stable: true,
+                config: {
+                    bucketNumber: {
+                        type: "number",
+                        value: 10,
+                        min: 2,
+                        step: 1,
+                        required: true
+                    }
+                }
+            },
+            bitonicSort: {
+                name: "双调排序",
+                nameEn: "Bitonic Sort",
             },
             stoogeSort: {
                 name: "漂亮排序",
@@ -140,12 +176,12 @@ let vm = new Vue({
                 stable: false
             }
         },
-        compareTimes: 0,
         currentMark: {
             currentTarget: [],
             currentUpdated: {},
             finished: []
         },
+        sortConfig: null,
         state: 'idle',
         stateMap: {
             idle: 'idle', sorting: 'sorting', paused: 'paused', finished: 'finished'
@@ -165,6 +201,17 @@ let vm = new Vue({
         i18nAll
     },
     methods: {
+        sortConfigCheck(config) {
+            if (config.value === '' || config.value === undefined) {
+                if (config.required) config.value = config.defaultValue;
+            } else if (config.type === 'number') {
+                if (config.step !== undefined && config.value % config.step) {
+                    config.value = Math.floor(config.value / config.step) * config.step;
+                }
+                if (config.min !== undefined && config.value < config.min) config.value = config.min
+                else if (config.max !== undefined && config.value > config.max) config.value = config.max
+            }
+        },
         // 生成随机数据
         generateData() {
             let arr;
@@ -185,11 +232,13 @@ let vm = new Vue({
             return new Promise((resolve, reject) => {
                 this.promise.resolve = resolve;
                 this.promise.reject = reject;
-                setTimeout(() => {
-                    if (this.state !== this.stateMap.paused) {
-                        resolve();
-                    }
-                }, delayTime);
+                if (this.state !== this.stateMap.paused) {
+                    setTimeout(() => {
+                        if (this.state !== this.stateMap.paused) {
+                            resolve();
+                        }
+                    }, delayTime);
+                }
             });
         },
         // 添加演示步骤 target: 比较集合，update：更新集合
@@ -210,6 +259,7 @@ let vm = new Vue({
                 for (let i = 1; i < updateValues.length; i++) {
                     updateValuesSum += updateValues[i];
                 }
+
                 this.playBeep(updateValuesSum / updateValues.length);
             } else {
                 this.stopBeep();
@@ -239,27 +289,22 @@ let vm = new Vue({
             }
             await this.push();
         },
-        // 比较并记录比较次数
-        compare(result) {
-            this.compareTimes++;
-            return result;
-        },
-        async findMinMaxIndex(data, findMin = true, findMax = true) {
-            let minIndex = 0;
-            let maxIndex = 0;
+        async findMinMaxIndex(data, findMin = true, findMax = true, start = 0, end = data.length) {
+            let minIndex = start;
+            let maxIndex = start;
             let push = data === this.data;
             let target;
-            for (let i = 1; i < data.length; i++) {
+            for (let i = start + 1; i < end; i++) {
                 if (push) target = [i];
                 if (findMin) {
-                    if (this.compare(data[i] < data[minIndex])) {
+                    if ((data[i] < data[minIndex])) {
                         minIndex = i;
                     } else {
                         target.push(minIndex)
                     }
                 }
                 if (findMax) {
-                    if (this.compare(data[i] > data[maxIndex])) {
+                    if ((data[i] > data[maxIndex])) {
                         maxIndex = i;
                     } else {
                         target.push(maxIndex)
@@ -304,8 +349,6 @@ let vm = new Vue({
         stop() {
             this.end();
             this.lastSortType = null;
-            this.compareTimes = 0;
-            this.setValueTimes = 0;
             this.clearDataStyle();
             this.data = this.originData;
         },
@@ -413,6 +456,9 @@ let vm = new Vue({
                 if (!isInit) {
                     this.oscillatorNode.start();
                 }
+                if (this.state === this.stateMap.paused) {
+                    setTimeout(this.stopBeep, 50);
+                }
             }
         },
         stopBeep() {
@@ -424,8 +470,8 @@ let vm = new Vue({
             }
         },
         checkIsSorted(data) {
-            for (let i = 0; this.compare(i < data.length - 1); i++) {
-                if (this.compare(data[i] > data[i + 1])) {
+            for (let i = 0; (i < data.length - 1); i++) {
+                if ((data[i] > data[i + 1])) {
                     return false;
                 }
             }
@@ -438,10 +484,10 @@ let vm = new Vue({
         },
         // 冒泡排序
         async bubbleSort(data) {
-            for (let i = 0; this.compare(i < data.length); i++) {
-                for (let j = 0; this.compare(j < data.length - i - 1); j++) {
+            for (let i = 0; (i < data.length); i++) {
+                for (let j = 0; (j < data.length - i - 1); j++) {
                     let update = {};
-                    if (this.compare(data[j] > data[j + 1])) {
+                    if ((data[j] > data[j + 1])) {
                         this.sortSwap(data, j, j + 1, update);
                     }
                     await this.push([j, j + 1], update);
@@ -451,11 +497,11 @@ let vm = new Vue({
             return data;
         },
         async selectionSort(data) {
-            for (let i = 0; this.compare(i < data.length); i++) {
+            for (let i = 0; (i < data.length); i++) {
                 let minIndex = i;
                 this.title = "Min:" + data[minIndex];
-                for (let j = i + 1; this.compare(j < data.length); j++) {
-                    if (this.compare(data[j] < data[minIndex])) {
+                for (let j = i + 1; (j < data.length); j++) {
+                    if ((data[j] < data[minIndex])) {
                         minIndex = j;
                         this.title = "Min:" + data[minIndex];
                     }
@@ -468,14 +514,12 @@ let vm = new Vue({
             return data;
         },
         async insertionSort(data, show = true) {
-            for (let i = 1; this.compare(i < data.length); i++) {
+            show && this.setFinished(0);
+            for (let i = 1; (i < data.length); i++) {
+                show && this.setFinished(i);
                 let temp = data[i];
                 let j = i;
-                show && await this.push([j]);
-                for (; this.compare(j > 0); j--) {
-                    if (this.compare(temp >= data[j - 1])) {
-                        break; // 当前考察的数大于前一个数，证明有序，退出循环
-                    }
+                for (; (j > 0) && temp < data[j - 1]; j--) {
                     show && await this.push([j - 1], {
                         [j]: data[j - 1]
                     });
@@ -483,15 +527,41 @@ let vm = new Vue({
                 }
                 show && await this.push([], {
                     [j]: temp
-                }, [i - 1]);
+                });
                 data[j] = temp; // 找到考察的数应处于的位置
             }
-            show && (this.setFinished(data.length - 1, true));
+            return data;
+        },
+        //折半插入排序
+        async binaryInsertionSort(data) {
+            this.setFinished(0);
+            for (let i = 1; (i < data.length); i++) {
+                let temp = data[i];
+                this.setFinished(i);
+                let left = 0, right = i;
+                while ((left < right)) {
+                    let mid = Math.floor((left + right) / 2);
+                    if ((temp <= data[mid])) right = mid
+                    else left = mid + 1;
+                    await this.push([left, mid, right])
+                }
+                let j = i;
+                for (; (j > left); j--) {
+                    await this.push([j - 1], {
+                        [j]: data[j - 1]
+                    });
+                    data[j] = data[j - 1]//将前一个数复制到后一个数上
+                }
+                await this.push([], {
+                    [j]: temp
+                });//找到考察的数应处于的位置
+                data[j] = temp;
+            }
             return data;
         },
         async quickSort(data) {
             let dg = async (data, i, j, title) => {
-                if (this.compare(i >= j)) {
+                if ((i >= j)) {
                     return;
                 }
                 this.title = title;
@@ -502,23 +572,23 @@ let vm = new Vue({
                 this.sortSwap(data, left, mid, update);
                 await this.push([left, right, i, j], update, []);
                 let pivot = data[left];
-                while (this.compare(i < j)) {
-                    while (this.compare(data[j] >= pivot) && this.compare(i < j)) { // 从后往前找比基准小的数
+                while ((i < j)) {
+                    while ((data[j] >= pivot) && (i < j)) { // 从后往前找比基准小的数
                         j--;
                     }
                     await this.push([i, j, left, right]);
-                    if (this.compare(i < j)) {
+                    if ((i < j)) {
                         await this.push([i, j, left, right], {
                             [i]: data[j]
                         }, i === j - 1 ? [i] : []);
                         data[i++] = data[j];
                     }
 
-                    while (this.compare(data[i] <= pivot) && this.compare(i < j)) { // 从前往后找比基准大的数
+                    while ((data[i] <= pivot) && (i < j)) { // 从前往后找比基准大的数
                         i++;
                         await this.push([i, left, j, right]);
                     }
-                    if (this.compare(i < j)) {
+                    if ((i < j)) {
                         await this.push([left, right, i, j], {
                             [j]: data[i]
                         }, i === j - 1 ? [j] : []);
@@ -538,19 +608,18 @@ let vm = new Vue({
             await dg(data, 0, data.length - 1, '');
         },
         async shellSort(data) {
-            let len = data.length,
-                temp,
-                gap = 1;
+            let len = data.length, temp, gap = 1;
             // 动态定义间隔序列，也可以手动定义，如 gap = 5；
-            while (this.compare(gap < len / 5)) {
+            while ((gap < len / 5)) {
                 gap = gap * 5 + 1;
             }
-            for (gap; this.compare(gap > 0); gap = Math.floor(gap / 5)) {
-                for (let i = gap; this.compare(i < len); i++) {
+            for (gap; (gap > 0); gap = Math.floor(gap / 5)) {
+                this.title = "Gap:" + gap;
+                for (let i = gap; (i < len); i++) {
                     temp = data[i];
                     await this.push([i]);
                     let j;
-                    for (j = i - gap; this.compare(j >= 0) && this.compare(data[j] > temp); j -= gap) {
+                    for (j = i - gap; (j >= 0) && (data[j] > temp); j -= gap) {
                         await this.push([j, i], {
                             [j + gap]: data[j]
                         }, gap === 1 ? [j + gap] : []);
@@ -566,43 +635,41 @@ let vm = new Vue({
         },
         // 归并排序
         async mergeSort(data) {
-            const v = this;
-
-            async function sort(data, left, right, temp, title) {
-                if (v.compare(left < right)) {
-                    v.title = title;
+            let sort = async (data, left, right, temp, title) => {
+                if ((left < right)) {
+                    this.title = title;
                     const mid = parseInt((left + right) / 2);
                     await sort(data, left, mid, temp, title + 'L'); //左边归并排序，使得左子序列有序
                     await sort(data, mid + 1, right, temp, title + 'R'); //右边归并排序，使得右子序列有序
-                    v.title = title + ' ' + v.i18n.merge;
+                    this.title = title + ' ' + this.i18n.merge;
                     await merge(data, left, mid, right, temp); //将两个有序子数组合并操作
                 }
             }
 
-            async function merge(arr, left, mid, right, temp) {
+            let merge = async (arr, left, mid, right, temp) => {
                 let i = left; //左序列指针
                 let j = mid + 1; //右序列指针
                 let t = 0; //临时数组指针
-                while (v.compare(i <= mid) && v.compare(j <= right)) {
-                    await v.push([i, j]);
-                    if (v.compare(arr[i] <= arr[j])) {
+                while ((i <= mid) && (j <= right)) {
+                    await this.push([i, j]);
+                    if ((arr[i] <= arr[j])) {
                         temp[t++] = arr[i++];
                     } else {
                         temp[t++] = arr[j++];
                     }
                 }
-                while (v.compare(i <= mid)) { //将左边剩余元素填充进temp中
-                    await v.push([i]);
+                while ((i <= mid)) { //将左边剩余元素填充进temp中
+                    await this.push([i]);
                     temp[t++] = arr[i++];
                 }
-                while (v.compare(j <= right)) { //将右序列剩余元素填充进temp中
-                    await v.push([j]);
+                while ((j <= right)) { //将右序列剩余元素填充进temp中
+                    await this.push([j]);
                     temp[t++] = arr[j++];
                 }
                 t = 0;
                 //将temp中的元素全部拷贝到原数组中
-                while (v.compare(left <= right)) {
-                    await v.push([], {
+                while ((left <= right)) {
+                    await this.push([], {
                         [left]: temp[t]
                     }, [left]);
                     arr[left++] = temp[t++];
@@ -618,15 +685,15 @@ let vm = new Vue({
                 let left = 2 * i + 1,
                     right = 2 * i + 2,
                     largest = i;
-                if (this.compare(left < len) && this.compare(data[left] > data[largest])) {
+                if ((left < len) && (data[left] > data[largest])) {
                     largest = left;
                 }
 
-                if (this.compare(right < len) && this.compare(data[right] > data[largest])) {
+                if ((right < len) && (data[right] > data[largest])) {
                     largest = right;
                 }
 
-                if (this.compare(largest != i)) {
+                if ((largest != i)) {
                     let update = {};
                     this.sortSwap(data, i, largest, update);
                     await this.push([], update);
@@ -635,10 +702,10 @@ let vm = new Vue({
                     await this.push([i, largest]);
                 }
             }
-            for (let i = Math.floor(data.length / 2); this.compare(i >= 0); i--) {
+            for (let i = Math.floor(data.length / 2); (i >= 0); i--) {
                 await heapify(i);
             }
-            for (let i = data.length - 1; this.compare(i > 0); i--) {
+            for (let i = data.length - 1; (i > 0); i--) {
                 this.title = this.i18n.sort;
                 let update = {};
                 this.sortSwap(data, 0, i, update);
@@ -650,82 +717,60 @@ let vm = new Vue({
         },
         async countingSort(arr) {//计数排序
             let maxValue = arr[await this.findMinMaxIndex(arr, false)];
-            this.title = this.i18n.initBuckets;
-
-            let bucket = new Array(maxValue + 1),
-                sortedIndex = 0,
-                arrLen = arr.length,
-                bucketLen = maxValue + 1;
-
-            this.title = this.i18n.allocateDataToBuckets; // 将数据分配到各个桶中
-            for (let i = 0; this.compare(i < arrLen); i++) {
-                await this.push([i]);
-                if (this.compare(!bucket[arr[i]])) {
-                    bucket[arr[i]] = 0;
-                }
-                bucket[arr[i]]++;
-            }
-            this.title = this.i18n.bucketsToOriginArray;
-            for (let j = 0; this.compare(j < bucketLen); j++) {
-                while (this.compare(bucket[j] > 0)) {
-                    await this.push([], {
-                        [sortedIndex]: j
-                    }, [sortedIndex])
-                    arr[sortedIndex++] = j;
-                    bucket[j]--;
-                }
-            }
+            await this.radixCountingSort(arr, 1, 0, arr.length, maxValue + 1, true);
             return arr;
         },
-        async radixSortLSD(arr, radix = 10) {//基数排序
+        async radixSortLSD(arr, radix = this.sortConfig.radix.value) {//基数排序
             this.title = this.i18n.computeMaxValue;
             let maxValue = arr[await this.findMinMaxIndex(arr, false)];
-            for (let exp = 1; this.compare(maxValue >= exp); exp *= radix) {
+            for (let exp = 1; (maxValue >= exp); exp *= radix) {
                 await this.radixCountingSort(arr, exp, 0, arr.length, radix, exp * radix > maxValue);
             }
             return arr;
         },
-        async radixSortMSD(arr, radix = 10) {
+        async radixSortMSD(arr, radix = this.sortConfig.radix.value) {
             let dg = async function (start, end, exp) {
                 let count = await this.radixCountingSort(arr, exp, start, end, radix, exp <= 1)
                 for (let i = 0; i < radix; i++) {
                     let dgStart = start + count[i];
-                    let dgEnd = this.compare(i + 1 < radix) ? start + count[i + 1] : end;
-                    if (this.compare(dgStart < dgEnd) && this.compare(exp > 1)) {
-                        await dg(dgStart, dgEnd, exp / 10);
+                    let dgEnd = (i + 1 < radix) ? start + count[i + 1] : end;
+                    if ((dgStart < dgEnd) && (exp > 1)) {
+                        await dg(dgStart, dgEnd, exp / radix);
                     }
                 }
             }.bind(this);
             let maxValue = arr[await this.findMinMaxIndex(arr, false)];
             let exp = 1;
-            while (this.compare(exp * radix <= maxValue)) {
+            while ((exp * radix <= maxValue)) {
                 exp *= radix;
             }
             await dg(0, arr.length, exp);
         },
-        radixGetDigit(number, exp, radix = 10) {
+        radixGetDigit(number, exp, radix) {
             return Math.floor(number / exp) % radix;
         },
-        async radixCountingSort(arr, exp, start, end, radix = 10, finished = false) {
+        async radixCountingSort(arr, exp, start = 0, end = arr.length, radix, finished = false) {
             let count = Array(radix);
             // 填充0
-            for (let i = 0; this.compare(i < radix); i++) {
+            for (let i = 0; (i < radix); i++) {
                 count[i] = 0;
             }
             // 统计每个桶中的计数
-            for (let i = start; this.compare(i < end); i++) {
+            this.title = this.i18n.bucketCounting + ":" + exp;
+            for (let i = start; (i < end); i++) {
                 await this.push([i]);
                 count[this.radixGetDigit(arr[i], exp, radix)]++;
             }
 
             // 计算下标
-            for (let i = 1; this.compare(i < radix); i++) {
+            for (let i = 1; (i < radix); i++) {
                 count[i] += count[i - 1];
             }
 
             let originData = arr.slice(start, end);
+            this.title = this.i18n.bucketsToOriginArray
             // 将排序后的数组复制回原数组
-            for (let i = originData.length - 1; this.compare(i >= 0); i--) {
+            for (let i = originData.length - 1; (i >= 0); i--) {
                 let digit = this.radixGetDigit(originData[i], exp, radix);
                 let index = count[digit] - 1 + start;
                 await this.push([], {[index]: originData[i]}, finished ? [index] : []);
@@ -737,9 +782,9 @@ let vm = new Vue({
         async cocktailSort(data) {//鸡尾酒排序
             let m = 0,
                 n = data.length - 1;
-            while (this.compare(m < n)) {
-                for (let i = m; this.compare(i < n); i++) {
-                    if (this.compare(data[i] > data[i + 1])) {
+            while ((m < n)) {
+                for (let i = m; (i < n); i++) {
+                    if ((data[i] > data[i + 1])) {
                         let update = {};
                         //交换数组中两个数字的位置
                         this.sortSwap(data, i, i + 1, update);
@@ -748,8 +793,8 @@ let vm = new Vue({
                 }
                 this.setFinished(n, true);
                 n--;
-                for (let i = n; this.compare(i > m); i--) {
-                    if (this.compare(data[i] < data[i - 1])) {
+                for (let i = n; (i > m); i--) {
+                    if ((data[i] < data[i - 1])) {
                         let update = {};
                         //交换数组中两个数字的位置
                         this.sortSwap(data, i, i - 1, update);
@@ -764,16 +809,16 @@ let vm = new Vue({
         async combSort(array) {//梳排序
             let gap = array.length;
             let swapped = true;
-            while (this.compare(gap > 1) || this.compare(swapped)) {
-                if (this.compare(gap > 1)) {
+            while ((gap > 1) || (swapped)) {
+                if ((gap > 1)) {
                     gap = parseInt(gap / 1.3);
                 }
                 this.title = "Gap:" + gap;
                 let i = 0;
                 swapped = false;
-                while (this.compare(i + gap < array.length)) {
+                while ((i + gap < array.length)) {
                     let update = {};
-                    if (this.compare(array[i] > array[i + gap])) {
+                    if ((array[i] > array[i + gap])) {
                         this.sortSwap(array, i, i + gap, update);
                         swapped = true;
                     }
@@ -788,8 +833,8 @@ let vm = new Vue({
             let length = a.length;
             let i = 0;
             this.setFinished(0, true);
-            while (this.compare(i < length)) {
-                if (this.compare(i > 0) && this.compare(a[i - 1] > a[i])) {
+            while ((i < length)) {
+                if ((i > 0) && (a[i - 1] > a[i])) {
                     this.title = '<-- ' + this.i18n.swap
                     //交换
                     let update = {};
@@ -803,52 +848,99 @@ let vm = new Vue({
                 }
             }
         },
-        async bucketSort(arr, bucketSize = 5) { // 桶排序
-            if (this.compare(arr.length === 0)) {
-                return arr;
-            }
-            this.title = this.i18n.computeMaxValue; // 计算最大值
-            let i;
-            let minMaxIndex = await this.findMinMaxIndex(arr);
-            let minValue = arr[minMaxIndex[0]];
-            let maxValue = arr[minMaxIndex[1]];
-            this.title = this.i18n.initBuckets;// 初始化桶
-            //桶的初始化
-            let DEFAULT_BUCKET_SIZE = 5;            // 设置桶的默认数量为5
-            bucketSize = this.compare(bucketSize || DEFAULT_BUCKET_SIZE);
-            let bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;
-            let buckets = new Array(bucketCount);
-            for (i = 0; this.compare(i < buckets.length); i++) {
-                buckets[i] = [];
-            }
+        async bucketSort(arr) { // 桶排序
+            let bucketCount = this.sortConfig.bucketNumber.value; // 设置桶的默认数量为5
+            let dg = async (start, end) => {
+                if (start + 1 >= end) {
+                    this.setFinished(start);
+                    return;
+                }
+                this.title = this.i18n.computeMaxValue; // 计算最大值
+                let minMaxIndex = await this.findMinMaxIndex(arr, true, true, start, end);
+                let minValue = arr[minMaxIndex[0]];
+                let maxValue = arr[minMaxIndex[1]];
+                if (minValue === maxValue) {
+                    for (let i = start; i < end; i++) {
+                        this.setFinished(i);
+                    }
+                    return;
+                }
+                this.title = this.i18n.initBuckets;// 初始化桶
+                //桶的初始化
+                let bucketSize = Math.floor((maxValue - minValue) / bucketCount) + 1; // 计算每个桶的大小
+                let buckets = new Array(bucketCount);
+                for (let i = 0; (i < buckets.length); i++) {
+                    buckets[i] = [];
+                }
 
-            this.title = this.i18n.allocateDataToBuckets; // 将数据分配到各个桶中
-            //利用映射函数将数据分配到各个桶中
-            for (i = 0; this.compare(i < arr.length); i++) {
-                await this.push([i]);
-                buckets[Math.floor((arr[i] - minValue) / bucketSize)].push(arr[i]);
-            }
+                this.title = this.i18n.allocateDataToBuckets; // 将数据分配到各个桶中
+                //利用映射函数将数据分配到各个桶中
+                for (let i = start; (i < end); i++) {
+                    await this.push([i]);
+                    buckets[Math.floor((arr[i] - minValue) / bucketSize)].push(arr[i]);
+                }
 
-            this.title = this.i18n.bucketsToOriginArray; // 将桶中的数据保存到原数组
-            let index = 0;
-            for (i = 0; this.compare(i < buckets.length); i++) {
-                await this.insertionSort(buckets[i], false);     // 对每个桶进行排序，这里使用了插入排序
-                for (let j = 0; this.compare(j < buckets[i].length); j++) {
-                    await this.push([], {[index]: buckets[i][j]}, [index]);
-                    arr[index++] = buckets[i][j];
+                this.title = this.i18n.bucketsToOriginArray; // 将桶中的数据保存到原数组
+                let index = start;
+                let bucketIndexes = [index];
+                for (let i = 0; (i < buckets.length); i++) {
+                    for (let j = 0; (j < buckets[i].length); j++) {
+                        await this.push([], {[index]: buckets[i][j]});
+                        arr[index++] = buckets[i][j];
+                    }
+                    if (bucketIndexes[bucketIndexes.length - 1] !== index) {
+                        bucketIndexes.push(index)
+                    }
+                }
+                buckets = null; // 清除引用，方便垃圾回收
+                // 递归对桶数据继续排序
+                for (let i = 0; i < bucketIndexes.length - 1; i++) {
+                    await dg(bucketIndexes[i], bucketIndexes[i + 1])
                 }
             }
+            await dg(0, arr.length);
             return arr;
+        },
+        async bitonicSort(data) {
+            let greatestPowerOfTwoLessThan = (n) => {
+                let k = 1;
+                while (k < n) k <<= 1;
+                return k >> 1;
+            }
+            let merge = async (left, right, dir) => {
+                if (right > 1) {
+                    let m = greatestPowerOfTwoLessThan(right);
+                    for (let i = left; i < left + right - m; i++) {
+                        let update = {}
+                        let j = i + m;
+                        if (dir === (data[i] > data[j])) {
+                            this.sortSwap(data, i, j, update);
+                        }
+                        await this.push([i], update);
+                    }
+                    await merge(left, m, dir);
+                    await merge(left + m, right - m, dir);
+                }
+            }
+            let sort = async (left, right, dir) => {
+                if (right > 1) {
+                    let m = Math.floor(right / 2);
+                    await sort(left, m, !dir);
+                    await sort(left + m, right - m, dir)
+                    await merge(left, right, dir);
+                }
+            }
+            await sort(0, data.length, true);
         },
         async stoogeSort(data) { // 漂亮排序
             let dg = async (data, i, j) => {
                 await this.push([i, j]);
-                if (this.compare(data[i] > data[j])) {
+                if ((data[i] > data[j])) {
                     let update = {}
                     this.sortSwap(data, i, j, update);
                     await this.push([], update);
                 }
-                if (this.compare(j - i + 1 >= 3)) {
+                if ((j - i + 1 >= 3)) {
                     let t = parseInt((j - i + 1) / 3)
                     await this.push([]);
                     await dg(data, i, j - t)
@@ -865,7 +957,7 @@ let vm = new Vue({
                 let j;
                 do {
                     j = Math.floor(Math.random() * data.length);
-                } while (this.compare(i === j)); // 下标一样重新生成
+                } while ((i === j)); // 下标一样重新生成
                 let update = {}
                 this.sortSwap(data, i, j, update);
                 await this.push([], update);
@@ -893,6 +985,9 @@ let vm = new Vue({
             let i18n = this.i18nAll[this.language];
             document.title = i18n.title;
             return i18n;
+        },
+        selectSort() {
+            return this.allSort[this.selectSortType];
         }
     },
     watch: {
@@ -917,7 +1012,8 @@ let vm = new Vue({
             this.stop();
             this.originData = this.generateData();
         },
-        selectSortType() {
+        selectSortType(val) {
+            this.sortConfig = this.allSort[val].config;
             this.stop();
         },
         sound(val) {
@@ -946,7 +1042,15 @@ let vm = new Vue({
     mounted() {
         this.originData = this.generateData();
         this.data = this.originData.slice();
-        this.selectSortType = Object.keys(this.allSortType)[0];
+        this.selectSortType = Object.keys(this.allSort)[0];
+        Object.values(this.allSort).forEach(sort => {
+            if (!sort.config) return;
+            Object.values(sort.config).forEach(config => {
+                config.defaultValue = config.value;
+            })
+        })
+
+
         // setTimeout( async ()=>{
         //     for (let i = 0; i < 50; i++) {
         //         this.playBeep(i);
