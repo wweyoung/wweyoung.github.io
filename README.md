@@ -1,3 +1,6 @@
+> **[Home](https://wweyoung.github.io)** |
+**[GitHub](https://github.com/wweyoung/wweyoung.github.io)**
+
 > 在线工具列表
 
 * [排序算法在线演示](https://wweyoung.github.io/tools/sort-demo)
