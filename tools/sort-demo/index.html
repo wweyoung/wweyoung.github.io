@@ -8,7 +8,7 @@
     <title>KXBlog sorting algorithm online demonstration</title>
     <meta name="description" content="Sorting algorithm,排序算法演示,排序算法,排序演示,KXBlog"/>
 
-    <script src="../../static/script/vue.min.js"></script>
+    <script src="../../static/script/vue@2.7.16/vue.min.js"></script>
     <script src="i18n.js"></script>
     <style>
         body {
@@ -56,14 +56,26 @@
         }
 
         #sort {
-            transform: rotate(180deg);
             flex: 1;
+            height: 0;
+            display: flex;
+            align-items: flex-end;
+            color: white;
+            font-size: 12px;
+            text-shadow: 0 0 2px black;
+            line-height: 0;
         }
 
         #sort > div {
             background-color: black;
-            float: right;
             bottom: 0;
+            width: 0;
+            flex: 1;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            text-indent: 4px;
+            display: flex;
+            align-items: center;
         }
 
         #colorLabel {
@@ -190,7 +202,7 @@
             <b>{{i18n.note}}</b>: {{i18n.noteDesc}}
         </p>
         <div id="colorLabel">
-            <div><b style="color:blue">━━━━</b> {{i18n.lineMark}}</div>
+            <div><b style="color:dodgerblue">━━━━</b> {{i18n.lineMark}}</div>
             <div><b style="color:red">━━━━</b> {{i18n.lineUpdate}}</div>
             <div><b style="color:green">━━━━</b> {{i18n.lineFinished}}</div>
         </div>

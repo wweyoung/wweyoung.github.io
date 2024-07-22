@@ -39,12 +39,15 @@ const i18nAll = {
         merge: "归并",
         swap: "交换",
         move: "移动",
+        insert: "插入",
         computeMaxValue: "计算最大值",
+        findMaxMinValue: "寻找最大最小值",
         initBuckets: "初始化桶",
         allocateDataToBuckets: "将数据分配到各个桶中",
         bucketsToOriginArray: "将桶中的数据保存到原数组",
         heapAdjust: "堆调整",
-        bucketCounting: "桶计数"
+        bucketCounting: "桶计数",
+        binarySearchInsertPosition: "二分查找插入位置"
     },
     en: {
         title: "KXBlog sorting algorithm online demonstration",
@@ -86,11 +89,15 @@ const i18nAll = {
         merge: "Merge",
         swap: "Swap",
         move: "Move",
+        insert: "Insert",
         computeMaxValue: "Calculate maximum value",
+        findMaxMinValue: "Find maximum and minimum value",
         initBuckets: "Init buckets",
         allocateDataToBuckets: "Allocate the data into each buckets",
         bucketsToOriginArray: "Save the data in the buckets to the original array",
         heapAdjust: "Heap adjustment",
-        bucketCounting: "Bucket Counting"
+        bucketCounting: "Bucket Counting",
+        binarySearchInsertPosition: "Binary search insert position"
+
     }
 }
