@@ -54,6 +54,7 @@ body {
     font-size: 12px;
     text-shadow: 0 0 2px black;
     line-height: 0;
+    white-space:nowrap;
 }
 
 #sort > div {
