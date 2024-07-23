@@ -8,6 +8,7 @@ let vm = new Vue({
             defaultDataNumber: 50,
             delayTime: 40,
             sound: localStorage.getItem('sound') !== 'false',
+            horizon: localStorage.getItem('horizon') === 'true',
             selectSortType: null,
             lastSortType: null,
             allSort: {
@@ -227,12 +228,12 @@ let vm = new Vue({
             generateData() {
                 let arr;
                 if (this.dataGenerateType === 'fullRandom') {
-                    arr = Array.from({length: this.defaultDataNumber}, (v, k) => Math.ceil(Math.random() * this.defaultDataNumber));
+                    arr = Array.from({length: this.defaultDataNumber}, (v, k) => this.randomNumber(this.defaultDataNumber, 1));
                 } else {
                     arr = Array.from({length: this.defaultDataNumber}, (v, k) => k + 1);
-                    if (this.dataGenerateType === 'reverse') {
+                    if (this.dataGenerateType === 'descend') {
                         arr.sort((v1, v2) => v2 - v1);
-                    } else {
+                    } else if (this.dataGenerateType === 'random') {
                         arr.sort(() => 0.5 - Math.random());
                     }
                 }
@@ -412,9 +413,8 @@ let vm = new Vue({
                     }
                     this.state = this.stateMap.idle;
                 }
-            }
-            ,
-// 手动停止调用
+            },
+            // 手动停止调用
             stop() {
                 this.end();
                 this.lastSortType = null;
@@ -466,7 +466,18 @@ let vm = new Vue({
                 }
                 for (let i = 0; i < childNodes.length; i++) {
                     let childNode = childNodes[i];
+                    childNode.style.width = childNode.style.height = null;
                     this.refreshDataStyle(i, childNode)
+                }
+                if (childNodes.length > 0) {
+                    let node = childNodes[0];
+                    this.$nextTick(() => {
+                        let fontSize = this.horizon ? node.clientHeight - 1 : node.clientWidth - 2;
+                        if (fontSize < 6) fontSize = null;
+                        else if (fontSize > 18) fontSize = 18;
+                        if (fontSize) fontSize += 'px';
+                        this.$refs.sort.style.fontSize = fontSize;
+                    })
                 }
             },
             clearPersist() {
@@ -493,13 +504,16 @@ let vm = new Vue({
                 }
             },
             refreshDataStyle(i, node) {
-                if (!node) node = this.$refs.sort.childNodes[i];
+                let sortDom = this.$refs.sort;
+                if (!node) node = sortDom.childNodes[i];
                 if (!node) {
                     console.warn("Node not found:", i);
                     return;
                 }
                 let style = node.style;
-                style.height = this.data[i] / this.data.length * 100 + '%';
+                let size = this.data[i] / this.data.length * 100 + '%';
+                if (this.horizon) style.width = size;
+                else style.height = size;
                 // style.width = this.dataWidth;
                 let backgroundColor = '';
                 let {stepMark, update, finished, persistMark, note, persistNote} = this.currentMark;
@@ -520,9 +534,7 @@ let vm = new Vue({
                 if (notes.length) {
                     let title = notes.join(" , ");
                     node.title = title;
-                    let fontSize = Math.min(node.clientWidth - 2, 18);
-                    if (fontSize > 7) {
-                        node.style.fontSize = fontSize + 'px';
+                    if (sortDom.style.fontSize) {
                         node.innerText = title;
                     } else {
                         node.innerText = '';
@@ -933,7 +945,7 @@ let vm = new Vue({
                     let count = await this.radixCountingSort(arr, exp, start, end, radix, exp <= 1)
                     for (let i = 0; i < radix; i++) {
                         let dgStart = start + count[i];
-                        let dgEnd = (i + 1 < radix) ? start + count[i + 1]  - 1: end;
+                        let dgEnd = (i + 1 < radix) ? start + count[i + 1] - 1 : end;
                         if ((dgStart <= dgEnd) && (exp > 1)) {
                             await dg(dgStart, dgEnd, exp / radix);
                         }
@@ -1050,10 +1062,10 @@ let vm = new Vue({
                             this.sortSwap(array, i, i + gap, update);
                             swapped = true;
                         }
-                        await this.push([i + gap, i], update, gap === 1 ? [i] : []);
+                        await this.push([i + gap, i], update, !swapped && gap === 1 ? [i] : []);
                         i++;
                     }
-                    if (gap === 1) this.setFinished(i, true);
+                    if (!swapped && gap === 1) this.setFinished(i, true);
                 }
                 return array;
             }
@@ -1186,15 +1198,14 @@ let vm = new Vue({
                     }
                 }
                 await dg(data, 0, data.length - 1);
-            }
-            ,
-// 猴子排序
+            },
+            // 猴子排序
             async bogoSort(data) {
                 while (!this.checkIsSorted(data)) {
-                    let i = Math.floor(Math.random() * data.length);
+                    let i = this.randomNumber();
                     let j;
                     do {
-                        j = Math.floor(Math.random() * data.length);
+                        j = this.randomNumber();
                     } while ((i === j)); // 下标一样重新生成
                     let update = this.sortSwap(data, i, j);
                     await this.push([], update);
@@ -1267,8 +1278,10 @@ let vm = new Vue({
                 if (!val) {
                     this.stopBeep();
                 }
+            },
+            horizon() {
+                this.redrawSortDiv();
             }
-            ,
         }
         ,
         mounted() {

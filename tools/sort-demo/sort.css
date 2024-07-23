@@ -1,0 +1,116 @@
+body {
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    margin: 0;
+}
+
+#app {
+    height: 100%;
+    width: 100%;
+    display: none;
+    gap: 6px;
+}
+
+#left {
+    display: flex;
+    height: 100%;
+    flex: 1;
+    float: left;
+    flex-direction: column;
+}
+
+#title {
+    line-height: 20px;
+}
+
+#uri {
+    font-size: xx-small;
+    color: blueviolet;
+    background-color: #fffa;
+    border-radius: 3px;
+    float: right;
+    height: 0;
+}
+
+#control {
+    height: calc(100% - 12px);
+    width: calc(100% - 20px);
+    max-width: 300px;
+    overflow-y: auto;
+    padding: 6px 10px;
+    box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.2);
+}
+
+#control-buttons button {
+    min-width: 70px;
+}
+
+#sort {
+    flex: 1;
+    height: 0;
+    display: flex;
+    color: white;
+    font-size: 12px;
+    text-shadow: 0 0 2px black;
+    line-height: 0;
+}
+
+#sort > div {
+    background-color: black;
+    bottom: 0;
+    width: 0;
+    flex: 1;
+    text-indent: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.sort-vertical {
+    align-items: flex-end;
+}
+
+.sort-vertical > div {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+.sort-horizon {
+    flex-direction: column;
+}
+
+#colorLabel {
+    display: inline-block;
+}
+
+#colorLabel > div {
+    padding: 0 10px;
+}
+
+@media (max-width: 640px) {
+    #app {
+        flex-direction: column-reverse;
+    }
+
+    #control {
+        width: 96%;
+        max-width: unset;
+        height: 40%;
+    }
+
+    #uri {
+        position: absolute;
+        left: 10px;
+        top: 6px;
+    }
+
+    #left {
+        width: 100%;
+        height: 60%;
+    }
+
+    #colorLabel > div {
+        padding: 0 6px;
+        float: left;
+    }
+}
