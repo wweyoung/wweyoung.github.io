@@ -160,10 +160,14 @@ let vm = new Vue({
                     name: "双调排序",
                     nameEn: "Bitonic Sort",
                 },
-                // timSort: {
-                //     name: "Tim排序",
-                //     nameEn: "Tim Sort",
-                // },
+                cycleSort: {
+                    name: "圈排序",
+                    nameEn: "Cycle Sort",
+                },
+                slowSort: {
+                    name: "慢排序",
+                    nameEn: "Slow Sort",
+                },
                 stoogeSort: {
                     name: "漂亮排序",
                     nameEn: "Stooge Sort",
@@ -174,9 +178,8 @@ let vm = new Vue({
                 },
                 bogoSort: {
                     name: "猴子排序",
-                    nameEn: "Monkey Sort",
+                    nameEn: "Bogo Sort",
                     desc: "一只猴子随机敲击键盘,只要时间足够久,一定能敲出莎士比亚的诗",
-                    timeCom: "O(?)",
                     spaceCom: "O(1)",
                     stable: false
                 }
@@ -529,8 +532,8 @@ let vm = new Vue({
                 }
                 style.backgroundColor = backgroundColor;
                 let notes = [];
-                if (note && note[i]) notes.push(...note[i]);
                 if (persistNote && persistNote[i]) notes.push(...persistNote[i]);
+                if (note && note[i]) notes.push(...note[i]);
                 if (notes.length) {
                     let title = notes.join(" , ");
                     node.title = title;
@@ -611,10 +614,10 @@ let vm = new Vue({
             }
             ,
             randomColor(index = this.randomColorIndex) {
-                let red = (index * 17) % 180;
-                let green = 160 - (index * 25) % 160;
-                let blue = 255 - (index * 47 % 130);
-                this.randomColorIndex += this.randomNumber(5, 1);
+                let red = (index * 40) % 170;
+                let green = Math.floor(index / 2) * 43 % 140;
+                let blue = 230 - (Math.floor(index / 3) * 47 % 170);
+                this.randomColorIndex++;
                 return `rgb(${red}, ${green}, ${blue})`;
             }
             ,
@@ -892,11 +895,11 @@ let vm = new Vue({
             ,
             async heapSort(data) {//堆排序
                 let len = data.length; // 因为声明的多个函数都需要数据长度，所以把len设置成为全局变量
-                let heapify = async (i) => { // 堆调整
+                let heapify = async (node) => { // 堆调整
                     this.title = this.i18n.heapAdjust;
-                    let left = 2 * i + 1,
-                        right = 2 * i + 2,
-                        largest = i;
+                    let left = 2 * node + 1,
+                        right = 2 * node + 2,
+                        largest = node;
                     if ((left < len) && (data[left] > data[largest])) {
                         largest = left;
                     }
@@ -904,13 +907,23 @@ let vm = new Vue({
                     if ((right < len) && (data[right] > data[largest])) {
                         largest = right;
                     }
-                    if ((largest !== i)) {
-                        let update = this.sortSwap(data, i, largest);
-                        await this.push([i, largest], update);
+                    await this.push({node, left, right, largest});
+                    if ((largest !== node)) {
+                        let update = this.sortSwap(data, node, largest);
+                        await this.push({node, largest}, update);
                         await heapify(largest);
-                    } else {
-                        await this.push([i, largest]);
                     }
+                }
+                for (let i = 0; i < data.length; i++) {
+                    let level = Math.floor(Math.log2(i + 1)) + 1;
+                    this.pushC({
+                        persistMark: {
+                            [i]: this.randomColor(level),
+                        },
+                        persistNote: {
+                            [i + 1]: i
+                        }
+                    })
                 }
                 for (let i = Math.floor(data.length / 2); (i >= 0); i--) {
                     await heapify(i);
@@ -1180,8 +1193,84 @@ let vm = new Vue({
                     }
                 }
                 await sort(0, data.length, true);
-            }
-            ,
+            },
+            async cycleSort(arr) {
+                let n = arr.length;
+                for (let start = 0; start <= n - 2; start++) {
+                    // initialize item as starting point
+                    let item = start;
+                    // Find position where we put the item. We basically count all smaller elements on right side of item.
+                    let pos = start;
+                    for (let i = start + 1; i < n; i++) {
+                        if (arr[i] < arr[start])
+                            pos++;
+                        await this.push({start, i, pos})
+                    }
+
+                    // If item is already in correct position
+                    if (pos === start)
+                        continue;
+
+                    // ignore all duplicate elements
+                    while (arr[start] === arr[pos]) {
+                        pos += 1;
+                        await this.push({start, pos})
+                    }
+
+                    let itemValue = arr[item];
+                    // put the item to it's right position
+                    if (pos !== start) {
+                        let temp = arr[item];
+                        itemValue = arr[pos];
+                        await this.push({start, pos}, {
+                            [pos]: temp
+                        })
+                    }
+
+                    // Rotate rest of the cycle
+                    while (pos !== start) {
+                        pos = start;
+
+                        // Find position where we put the element
+                        for (let i = start + 1; i < n; i++) {
+                            if (arr[i] < itemValue)
+                                pos += 1;
+                            await this.pushC({
+                                stepMark: [start, i, pos],
+                                note: {pos, start}
+                            })
+                        }
+
+                        // ignore all duplicate elements
+                        while (itemValue === arr[pos]) {
+                            pos += 1;
+                            await this.push({start, pos})
+                        }
+                        // put the item to it's right position
+                        if (itemValue !== arr[pos]) {
+                            let temp = itemValue;
+                            itemValue = arr[pos];
+                            await this.push({start, pos}, {
+                                [pos]: temp
+                            })
+                        }
+                    }
+                }
+            },
+            async slowSort(data, left = 0, right = data.length - 1) {
+                if (left >= right) return;
+                let middle = Math.floor((left + right) / 2);
+
+                await this.slowSort(data, left, middle);
+                await this.slowSort(data, middle + 1, right);
+
+                let update;
+                if (data[middle] > data[right]) {
+                    update = this.sortSwap(data, middle, right);
+                }
+                await this.push({left, right, middle}, update);
+                await this.slowSort(data, left, right - 1);
+            },
             async stoogeSort(data) { // 漂亮排序
                 let dg = async (data, i, j) => {
                     await this.push([i, j]);
