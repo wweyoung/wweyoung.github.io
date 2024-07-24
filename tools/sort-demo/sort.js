@@ -276,6 +276,7 @@ let vm = new Vue({
                 }
                 let noteInverse = {};
                 entries.forEach(([key, value]) => {
+                    if (value === undefined || value === null) return;
                     if (value.constructor === Number) value = [value];
                     value.forEach(val => {
                         if (!noteInverse[val]) {
@@ -290,7 +291,7 @@ let vm = new Vue({
             async pushC(config = {}) {
                 let {stepMark, update, finished, persistMark, note, persistNote} = config;
                 if (stepMark) {
-                    stepMark = stepMark.map(Number);
+                    stepMark = stepMark.filter(a => Number.isInteger(a)).map(Number);
                     this.changeIndexes.addAll(stepMark);
                 }
                 if (this.currentMark.stepMark) {
@@ -335,7 +336,7 @@ let vm = new Vue({
                     }
                 }
                 if (persistNote) {
-                    let indexes = Object.keys(persistNote).map(Number);
+                    let indexes = Object.values(persistNote).map(Number);
                     if (indexes.length) {
                         persistNote = this.markNoteRevert(persistNote);
                         Object.assign(this.currentMark.persistNote, persistNote);
@@ -460,7 +461,7 @@ let vm = new Vue({
             }
             ,
             redrawSortDiv() {
-                let childNodes = this.$refs.sort.childNodes;
+                let childNodes = this.$refs.sort?.childNodes;
                 for (let i = childNodes.length; i < this.data.length; i++) {
                     this.$refs.sort.appendChild(document.createElement("div"))
                 }
@@ -900,12 +901,20 @@ let vm = new Vue({
                     let left = 2 * node + 1,
                         right = 2 * node + 2,
                         largest = node;
-                    if ((left < len) && (data[left] > data[largest])) {
-                        largest = left;
+                    if (left < len) {
+                        if (data[left] > data[largest]) {
+                            largest = left;
+                        }
+                    } else {
+                        left = null;
                     }
 
-                    if ((right < len) && (data[right] > data[largest])) {
-                        largest = right;
+                    if (right < len) {
+                        if (data[right] > data[largest]) {
+                            largest = right;
+                        }
+                    } else {
+                        right = null;
                     }
                     await this.push({node, left, right, largest});
                     if ((largest !== node)) {
@@ -916,6 +925,7 @@ let vm = new Vue({
                 }
                 for (let i = 0; i < data.length; i++) {
                     let level = Math.floor(Math.log2(i + 1)) + 1;
+                    console.log(i)
                     this.pushC({
                         persistMark: {
                             [i]: this.randomColor(level),
@@ -1204,7 +1214,7 @@ let vm = new Vue({
                     for (let i = start + 1; i < n; i++) {
                         if (arr[i] < arr[start])
                             pos++;
-                        await this.push({start, i, pos})
+                        await this.push({start, '': i, pos})
                     }
 
                     // If item is already in correct position

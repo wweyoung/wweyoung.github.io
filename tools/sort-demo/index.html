@@ -99,16 +99,16 @@
             <div>
                 <b>{{i18n.state}}</b>: <span v-text="i18n.states[state]"></span>
             </div>
-            <div v-if="language === 'cn'">
+            <div v-if="selectSort.desc && language === 'cn'">
                 <b>{{i18n.algorithmDesc}}</b>: <span v-text="selectSort.desc"></span>
             </div>
-            <div>
+            <div v-if="selectSort.timeCom">
                 <b>{{i18n.timeComplexity}}</b>: <span v-text="selectSort.timeCom"></span>
             </div>
-            <div>
+            <div v-if="selectSort.spaceCom">
                 <b>{{i18n.spaceComplexity}}</b>: <span v-text="selectSort.spaceCom"></span>
             </div>
-            <div>
+            <div v-if="selectSort.stable !== undefined">
                 <b>{{i18n.isStable}}</b>: <span
                     v-text="selectSort.stable? i18n.yes: i18n.no"></span>
             </div>
