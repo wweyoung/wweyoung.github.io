@@ -65,6 +65,8 @@ body {
     text-indent: 4px;
     display: flex;
     align-items: center;
+    --sort-node-transition: unset;
+    transition: var(--sort-node-transition);
 }
 
 .sort-vertical {

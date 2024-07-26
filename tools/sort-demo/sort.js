@@ -12,13 +12,27 @@ let vm = new Vue({
             selectSortType: null,
             lastSortType: null,
             allSort: {
-                quickSort: {
-                    name: "快速排序",
-                    nameEn: "Quick Sort",
+                quickSortLR: {
+                    name: "快速排序(LR ptrs)",
+                    nameEn: "Quick Sort(LR ptrs)",
                     desc: "快速排序(Quick Sort)是对冒泡排序的一种改进，采用分治法，通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据比另一部分的所有数据要小，再按这种方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，使整个数据变成有序序列",
                     timeCom: "O(nlog₂n)",
                     spaceCom: "O(nlog₂n)",
-                    stable: false
+                    stable: false,
+                    config: {
+                        PivotRule: {
+                            type: 'select',
+                            value: 'middle',
+                            options: {
+                                'first': 'First Item',
+                                'last': 'Last Item',
+                                'middle': 'Middle Item',
+                                'median3': 'Median of Three',
+                                'random': 'Random Item'
+                            },
+                            required: true
+                        }
+                    }
                 },
                 mergeSort: {
                     name: "归并排序",
@@ -160,6 +174,10 @@ let vm = new Vue({
                     name: "双调排序",
                     nameEn: "Bitonic Sort",
                 },
+                oddEvenSort: {
+                    name: "奇偶排序",
+                    nameEn: "Odd-Even Sort",
+                },
                 cycleSort: {
                     name: "圈排序",
                     nameEn: "Cycle Sort",
@@ -207,7 +225,7 @@ let vm = new Vue({
                 reject: undefined
             },
             quickDelayCount: 0,
-            delayTimeAmend: [1, 0.9, 0.4, 0.25], // delay时间修正倍率
+            delayTimeAmend: [1, 0.9, 0.3, 0.25], // delay时间修正倍率
             uri: location.origin + location.pathname,
             language: localStorage.getItem('language') || (navigator.language.startsWith('zh') ? 'cn' : 'en'),
             colors: ['aqua', 'blueviolet', 'cadetblue', 'cornflowerblue', 'darkblue', 'darkslateblue', 'deepskyblue', 'dodgerblue',
@@ -578,7 +596,7 @@ let vm = new Vue({
                 gainNode.connect(myAudioContext.destination);
 
                 // Set the gain to the volume
-                gainNode.gain.value = 1;
+                gainNode.gain.value = 0.2;
                 this.oscillatorNode = oscillatorNode;
                 this.gainNode = gainNode;
             }
@@ -615,7 +633,7 @@ let vm = new Vue({
             }
             ,
             randomColor(index = this.randomColorIndex) {
-                let red = (index * 40) % 170;
+                let red = (index * 80) % 170;
                 let green = Math.floor(index / 2) * 43 % 140;
                 let blue = 230 - (Math.floor(index / 3) * 47 % 170);
                 this.randomColorIndex++;
@@ -771,55 +789,71 @@ let vm = new Vue({
                     });
                 }
                 return data;
-            }
-            ,
-            async quickSort(data) {
-                let dg = async (data, i, j, title) => {
-                    if ((i >= j)) {
-                        return;
-                    }
-                    this.title = title;
-                    let left = i;
-                    let right = j;
-                    let middle = Math.floor((left + right) / 2);
-                    let update = this.sortSwap(data, left, middle);
-                    await this.push({left, right, i, j, middle}, update, []);
-                    let pivot = data[left];
-                    while ((i < j)) {
-                        while ((data[j] >= pivot) && (i < j)) { // 从后往前找比基准小的数
-                            j--;
-                        }
-                        await this.push({i, j, left, right});
-                        if ((i < j)) {
-                            await this.push({i, j, left, right}, {
-                                [i]: data[j]
-                            }, i === j - 1 ? [i] : []);
-                            i++;
-                        }
+            },
+            // some quicksort variants use hi inclusive and some exclusive, we require it
+            // to be _exclusive_. hi == array.end()!
+            quickSortSelectPivot(A, lo, hi) {
+                let pivotSelect = this.selectSort.config.PivotRule.value;
+                if (pivotSelect === 'first') return lo;
+                if (pivotSelect === 'last') return hi - 1;
+                if (pivotSelect === 'random') return this.randomNumber(hi - 1, lo);
+                let mid = Math.floor((lo + hi) / 2);
+                if (pivotSelect === 'middle') return mid;
+                if (pivotSelect === 'median3') {
+                    // cases if two are equal
+                    if (A[lo] === A[mid]) return lo;
+                    if (A[lo] === A[hi - 1] || A[mid] === A[hi - 1]) return hi - 1;
 
-                        while ((data[i] <= pivot) && (i < j)) { // 从前往后找比基准大的数
-                            i++;
-                            await this.push({i, left, j, right});
-                        }
-                        if ((i < j)) {
-                            await this.push({left, right, i, j}, {
-                                [j]: data[i]
-                            }, i === j - 1 ? [j] : []);
-                            j--;
-                        }
+                    // cases if three are different
+                    return A[lo] < A[mid]
+                        ? (A[mid] < A[hi - 1] ? mid : (A[lo] < A[hi - 1] ? hi - 1 : lo))
+                        : (A[mid] > A[hi - 1] ? mid : (A[lo] < A[hi - 1] ? lo : hi - 1));
+                }
+                return lo;
+            },
+            async quickSortLR(A, lo = 0, hi = A.length - 1) {
+                // pick pivot and watch
+                let pivot = this.quickSortSelectPivot(A, lo, hi + 1);
+                let i = lo, j = hi;
+                while (i <= j) {
+                    while (A[i] < A[pivot]) {
+                        i++;
+                        await this.push({lo, hi, pivot, i, j})
                     }
-                    let finished = [i];
-                    if (left === i - 1) finished.push(left);
-                    if (i + 1 === right) finished.push(right);
-                    await this.push({left, right, i}, {
-                        [i]: pivot
-                    }, finished);
-                    await dg(data, left, i - 1, title + 'L');
-                    await dg(data, i + 1, right, title + 'R');
-                };
-                await dg(data, 0, data.length - 1, '');
-            }
-            ,
+
+                    while (A[j] > A[pivot]) {
+                        j--;
+                        await this.push({lo, hi, pivot, i, j})
+                    }
+
+                    let update;
+                    let finished = [lo];
+                    if (i <= j) {
+                        update = this.sortSwap(A, i, j);
+                        // follow pivot if it is swapped
+                        if (pivot === i) {
+                            pivot = j;
+                            // finished.push(pivot);
+                        } else if (pivot === j) {
+                            pivot = i;
+                            // finished.push(pivot);
+                        }
+                        // finished.push(pivot)
+                        if (lo >= hi - 2) finished.push(i, j, lo, hi, pivot)
+                        if (i === hi) finished.push(hi);
+                        i++;
+                        j--;
+                        if (i === hi) finished.push(hi);
+                    }
+                    await this.push({lo, hi, pivot, i, j}, update)
+                }
+
+                if (lo < j)
+                    await this.quickSortLR(A, lo, j);
+
+                if (i < hi)
+                    await this.quickSortLR(A, i, hi);
+            },
             async shellSort(data) {
                 let len = data.length, temp, gap = 1;
                 // 动态定义间隔序列，也可以手动定义，如 gap = 5；
@@ -1204,6 +1238,33 @@ let vm = new Vue({
                 }
                 await sort(0, data.length, true);
             },
+            // from http://en.wikipediA.org/wiki/Odd%E2%80%93even_sort
+            async oddEvenSort(data) {
+                let sorted = false;
+                let titleOE = [this.i18n.evenNumber, this.i18n.oddNumber];
+                while (!sorted) {
+                    sorted = true;
+                    for (let oe = 0; oe <= 1; oe++) { // oe [0, 1]
+                        this.title = titleOE[oe];
+                        for (let i = oe; i < data.length - 1; i += 2) {
+                            let update;
+                            if (data[i] > data[i + 1]) {
+                                update = this.sortSwap(data, i, i + 1);
+                                sorted = false;
+                            }
+                            await this.pushC({
+                                stepMark: [i, i + 1], update,
+                                note: {i},
+                                persistMark: {
+                                    [i]: this.randomColor(oe),
+                                },
+                                persistNote: {[i]: i}
+                            })
+                        }
+                        this.clearPersist();
+                    }
+                }
+            },
             async cycleSort(arr) {
                 let n = arr.length;
                 for (let start = 0; start <= n - 2; start++) {
@@ -1339,6 +1400,14 @@ let vm = new Vue({
             ,
             selectSort() {
                 return this.allSort[this.selectSortType];
+            },
+            cssSortNodeTransition() {
+                let duration;
+                if (this.state === this.stateMap.paused) duration = 0.3;
+                else if (this.delayTime < 40) return null;
+                else duration = Math.floor(this.delayTime / 2) / 1000;
+                let property = this.horizon ? 'width' : 'height';
+                return property + ' ' + duration + 's steps(1)';
             }
         }
         ,

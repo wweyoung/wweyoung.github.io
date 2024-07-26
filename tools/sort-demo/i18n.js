@@ -51,7 +51,9 @@ const i18nAll = {
         bucketsToOriginArray: "将桶中的数据保存到原数组",
         heapAdjust: "堆调整",
         bucketCounting: "桶计数",
-        binarySearchInsertPosition: "二分查找插入位置"
+        binarySearchInsertPosition: "二分查找插入位置",
+        oddNumber: "奇数",
+        evenNumber: "偶数"
     },
     en: {
         title: "KX sorting algorithm online demonstration",
@@ -105,7 +107,8 @@ const i18nAll = {
         bucketsToOriginArray: "Save the data in the buckets to the original array",
         heapAdjust: "Heap adjustment",
         bucketCounting: "Bucket Counting",
-        binarySearchInsertPosition: "Binary search insert position"
-
+        binarySearchInsertPosition: "Binary search insert position",
+        oddNumber: "Odd number",
+        evenNumber: "Even number"
     }
 }

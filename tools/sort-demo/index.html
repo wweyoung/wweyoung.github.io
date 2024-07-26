@@ -20,7 +20,8 @@
             <span>{{title}}</span>
             <span id="uri">{{uri}}</span>
         </div>
-        <div id="sort" ref="sort" :class="horizon ? 'sort-horizon' : 'sort-vertical'">
+        <div id="sort" ref="sort" :class="horizon ? 'sort-horizon' : 'sort-vertical'"
+             :style="{'--sort-node-transition': cssSortNodeTransition}">
             <!-- <div v-for="(item,i) in data" :style="getDataStyle(item, i)" :key="i"></div>-->
         </div>
     </div>
@@ -36,8 +37,12 @@
                 <b>{{i18n.dataNumber}}</b>:
                 <input type="number" v-model.number="defaultDataNumber"
                        :step="getInputStep(defaultDataNumber)" min="1" max="1000"/>
-                <button @click="defaultDataNumber-=getInputStep(defaultDataNumber)">-</button>
-                <button @click="defaultDataNumber+=getInputStep(defaultDataNumber)">+</button>
+                <div>
+                    <button @click="defaultDataNumber-=getInputStep(defaultDataNumber)">-</button>
+                    <input type="range" :value.number="defaultDataNumber"
+                           @change="(e)=> defaultDataNumber = parseInt(e.target.value)" min="1" max="1000"/>
+                    <button @click="defaultDataNumber+=getInputStep(defaultDataNumber)">+</button>
+                </div>
             </label>
         </div>
         <div>
@@ -56,8 +61,11 @@
                 <b>{{i18n.showSpeed}}</b>:
                 <input type="number" v-model.number="speed" :step="getInputStep(speed)" min="1"
                        max="100000"/>
-                <button @click="speed-=getInputStep(speed)">-</button>
-                <button @click="speed+=getInputStep(speed)">+</button>
+                <div>
+                    <button @click="speed-=getInputStep(speed)">-</button>
+                    <input type="range" v-model.number="speed" min="1" :max="defaultDataNumber * 50"/>
+                    <button @click="speed+=getInputStep(speed)">+</button>
+                </div>
             </label>
         </div>
         <div>
@@ -84,6 +92,9 @@
                     {{key}}:
                     <input v-if="config.type==='number'" v-model.number="config.value"
                            :min="config.min" :step="config.step" type="number" @change="sortConfigCheck(config)">
+                    <select v-else-if="config.type==='select'" v-model="config.value">
+                        <option v-for="(item,key) in config.options" :value="key" v-text="item"></option>
+                    </select>
                 </label>
             </div>
         </div>
