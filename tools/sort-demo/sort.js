@@ -1,4 +1,19 @@
-let vm = new Vue({
+{
+    let quickSortConfig = {
+        PivotRule: {
+            type: 'select',
+            value: 'middle',
+            options: {
+                'first': 'First Item',
+                'last': 'Last Item',
+                'middle': 'Middle Item',
+                'median3': 'Median of Three',
+                'random': 'Random Item'
+            },
+            required: true
+        }
+    }
+    let vm = new Vue({
         el: "#app",
         data: {
             data: [],
@@ -13,26 +28,22 @@ let vm = new Vue({
             lastSortType: null,
             allSort: {
                 quickSortLR: {
-                    name: "快速排序(LR ptrs)",
+                    name: "快速排序(左右指针)",
                     nameEn: "Quick Sort(LR ptrs)",
+                    desc: "快速排序(Quick Sort)是对冒泡排序的一种改进，采用分治法，通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据比另一部分的所有数据要小，再按这种方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，使整个数据变成有序序列；",
+                    timeCom: "O(nlog₂n)",
+                    spaceCom: "O(nlog₂n)",
+                    stable: false,
+                    config: quickSortConfig
+                },
+                quickSortLL: {
+                    name: "快速排序(左左指针)",
+                    nameEn: "Quick Sort(LL ptrs)",
                     desc: "快速排序(Quick Sort)是对冒泡排序的一种改进，采用分治法，通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据比另一部分的所有数据要小，再按这种方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，使整个数据变成有序序列",
                     timeCom: "O(nlog₂n)",
                     spaceCom: "O(nlog₂n)",
                     stable: false,
-                    config: {
-                        PivotRule: {
-                            type: 'select',
-                            value: 'middle',
-                            options: {
-                                'first': 'First Item',
-                                'last': 'Last Item',
-                                'middle': 'Middle Item',
-                                'median3': 'Median of Three',
-                                'random': 'Random Item'
-                            },
-                            required: true
-                        }
-                    }
+                    config: quickSortConfig
                 },
                 mergeSort: {
                     name: "归并排序",
@@ -163,7 +174,7 @@ let vm = new Vue({
                     config: {
                         bucketNumber: {
                             type: "number",
-                            value: 10,
+                            value: 5,
                             min: 2,
                             step: 1,
                             required: true
@@ -571,17 +582,15 @@ let vm = new Vue({
             refreshChangeDataStyle() {
                 this.changeIndexes.forEach(index => this.refreshDataStyle(index));
                 this.changeIndexes.clear();
-            }
-            ,
+            },
             getInputStep(val) {
                 let step = 1;
-                while (val >= 30) {
+                while (val >= 20) {
                     val /= 10;
                     step *= 10
                 }
                 return step;
-            }
-            ,
+            },
             initBeap() {
                 // The browser will limit the number of concurrent audio contexts
                 // So be sure to re-use them whenever you can
@@ -795,25 +804,35 @@ let vm = new Vue({
             quickSortSelectPivot(A, lo, hi) {
                 let pivotSelect = this.selectSort.config.PivotRule.value;
                 if (pivotSelect === 'first') return lo;
-                if (pivotSelect === 'last') return hi - 1;
-                if (pivotSelect === 'random') return this.randomNumber(hi - 1, lo);
+                if (pivotSelect === 'last') return hi;
+                if (pivotSelect === 'random') return this.randomNumber(hi, lo);
                 let mid = Math.floor((lo + hi) / 2);
                 if (pivotSelect === 'middle') return mid;
                 if (pivotSelect === 'median3') {
                     // cases if two are equal
                     if (A[lo] === A[mid]) return lo;
-                    if (A[lo] === A[hi - 1] || A[mid] === A[hi - 1]) return hi - 1;
+                    if (A[lo] === A[hi] || A[mid] === A[hi]) return hi;
 
                     // cases if three are different
                     return A[lo] < A[mid]
-                        ? (A[mid] < A[hi - 1] ? mid : (A[lo] < A[hi - 1] ? hi - 1 : lo))
-                        : (A[mid] > A[hi - 1] ? mid : (A[lo] < A[hi - 1] ? lo : hi - 1));
+                        ? (A[mid] < A[hi] ? mid : (A[lo] < A[hi] ? hi : lo))
+                        : (A[mid] > A[hi] ? mid : (A[lo] < A[hi] ? lo : hi));
                 }
                 return lo;
             },
+            // ****************************************************************************
+            // *** Quick Sort LR (in-place, pointers at left and right, pivot is middle element)
+            // by Timo Bingmann, based on Hoare's original code
             async quickSortLR(A, lo = 0, hi = A.length - 1) {
+                if (lo >= hi) {
+                    if (lo >= 0 && lo < A.length) {
+                        this.pushC({finished: [lo]})
+                    }
+                    return;
+                }
+
                 // pick pivot and watch
-                let pivot = this.quickSortSelectPivot(A, lo, hi + 1);
+                let pivot = this.quickSortSelectPivot(A, lo, hi);
                 let i = lo, j = hi;
                 while (i <= j) {
                     while (A[i] < A[pivot]) {
@@ -827,32 +846,52 @@ let vm = new Vue({
                     }
 
                     let update;
-                    let finished = [lo];
                     if (i <= j) {
                         update = this.sortSwap(A, i, j);
+                        let finished = [];
                         // follow pivot if it is swapped
-                        if (pivot === i) {
-                            pivot = j;
-                            // finished.push(pivot);
-                        } else if (pivot === j) {
-                            pivot = i;
-                            // finished.push(pivot);
-                        }
-                        // finished.push(pivot)
-                        if (lo >= hi - 2) finished.push(i, j, lo, hi, pivot)
-                        if (i === hi) finished.push(hi);
+                        if (pivot === i) pivot = j;
+                        else if (pivot === j) pivot = i;
+                        if (pivot === i && pivot === j) finished.push(i, j)
+                        await this.push({lo, hi, pivot, i, j}, update, finished)
                         i++;
                         j--;
                         if (i === hi) finished.push(hi);
+                    } else {
+                        await this.push({lo, hi, pivot, i, j})
                     }
-                    await this.push({lo, hi, pivot, i, j}, update)
                 }
-
-                if (lo < j)
-                    await this.quickSortLR(A, lo, j);
-
-                if (i < hi)
-                    await this.quickSortLR(A, i, hi);
+                await this.quickSortLR(A, lo, j);
+                await this.quickSortLR(A, i, hi);
+            },
+            async quickSortLL(A, lo = 0, hi = A.length - 1) {
+                if (lo < hi) {
+                    // pick pivot and move to back
+                    let pivot = this.quickSortSelectPivot(A, lo, hi);
+                    await this.push({lo, hi, pivot});
+                    let update = this.sortSwap(A, pivot, hi);
+                    pivot = hi;
+                    let i = lo;
+                    await this.push({lo, hi, pivot, i}, update);
+                    for (let j = lo; j < hi; ++j) {
+                        let update;
+                        let stepNoteMark = {lo, hi, pivot, i, j};
+                        if (A[j] < A[pivot]) {
+                            update = this.sortSwap(A, i, j);
+                            ++i;
+                        }
+                        await this.push(stepNoteMark, update);
+                    }
+                    update = this.sortSwap(A, i, hi);
+                    let mid = i;
+                    await this.push({lo, hi, pivot, i, mid}, update);
+                    await this.quickSortLL(A, lo, mid);
+                    await this.quickSortLL(A, mid + 1, hi);
+                } else if (lo < A.length) {
+                    this.pushC({
+                        finished: [lo],
+                    })
+                }
             },
             async shellSort(data) {
                 let len = data.length, temp, gap = 1;
@@ -1476,5 +1515,5 @@ let vm = new Vue({
             //     }
             // }, 2000)
         }
-    })
-;
+    });
+}
