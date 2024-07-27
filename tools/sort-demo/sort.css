@@ -42,6 +42,14 @@ body {
     box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.2);
 }
 
+#control > h3 {
+    margin-bottom: 2px;
+}
+
+#control-buttons {
+    margin-top: 6px;
+}
+
 #control-buttons button {
     min-width: 70px;
 }
@@ -115,5 +123,9 @@ body {
     #colorLabel > div {
         padding: 0 6px;
         float: left;
+    }
+
+    .mobile-inline {
+        display: inline-flex;
     }
 }

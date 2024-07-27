@@ -564,18 +564,19 @@
                 let notes = [];
                 if (persistNote && persistNote[i]) notes.push(...persistNote[i]);
                 if (note && note[i]) notes.push(...note[i]);
+                let title = "Value: " + this.data[i] + "\nIndex: " + i;
                 if (notes.length) {
-                    let title = notes.join(" , ");
-                    node.title = title;
+                    let noteText = notes.join(" , ");
                     if (sortDom.style.fontSize) {
-                        node.innerText = title;
+                        node.innerText = noteText;
                     } else {
                         node.innerText = '';
                     }
+                    title += "\n" + noteText;
                 } else {
-                    node.removeAttribute('title');
                     node.innerText = '';
                 }
+                node.title = title;
                 return style;
             }
             ,
@@ -717,9 +718,8 @@
                         })
                     }
                 }
-            }
-            ,
-// 冒泡排序
+            },
+            // 冒泡排序
             async bubbleSort(data) {
                 for (let i = 0; (i < data.length); i++) {
                     for (let j = 0; (j < data.length - i - 1); j++) {
@@ -727,7 +727,7 @@
                         if ((data[j] > data[j + 1])) {
                             this.sortSwap(data, j, j + 1, update);
                         }
-                        await this.push([j, j + 1], update);
+                        await this.push({'': j, max: j + 1}, update);
                     }
                     this.setFinished(data.length - i - 1, true);
                 }
@@ -745,6 +745,7 @@
                         }
                         await this.push({i, j, min});
                     }
+                    this.title = this.i18n.swap;
                     const update = this.sortSwap(data, i, min);
                     await this.push([], update, [i]);
                 }
@@ -800,49 +801,48 @@
                 return data;
             },
             // some quicksort variants use hi inclusive and some exclusive, we require it
-            // to be _exclusive_. hi == array.end()!
-            quickSortSelectPivot(A, lo, hi) {
+            quickSortSelectPivot(A, left, right) {
                 let pivotSelect = this.selectSort.config.PivotRule.value;
-                if (pivotSelect === 'first') return lo;
-                if (pivotSelect === 'last') return hi;
-                if (pivotSelect === 'random') return this.randomNumber(hi, lo);
-                let mid = Math.floor((lo + hi) / 2);
-                if (pivotSelect === 'middle') return mid;
+                if (pivotSelect === 'first') return left;
+                if (pivotSelect === 'last') return right;
+                if (pivotSelect === 'random') return this.randomNumber(right, left);
+                let middle = Math.floor((left + right) / 2);
+                if (pivotSelect === 'middle') return middle;
                 if (pivotSelect === 'median3') {
                     // cases if two are equal
-                    if (A[lo] === A[mid]) return lo;
-                    if (A[lo] === A[hi] || A[mid] === A[hi]) return hi;
+                    if (A[left] === A[middle]) return left;
+                    if (A[left] === A[right] || A[middle] === A[right]) return right;
 
                     // cases if three are different
-                    return A[lo] < A[mid]
-                        ? (A[mid] < A[hi] ? mid : (A[lo] < A[hi] ? hi : lo))
-                        : (A[mid] > A[hi] ? mid : (A[lo] < A[hi] ? lo : hi));
+                    return A[left] < A[middle]
+                        ? (A[middle] < A[right] ? middle : (A[left] < A[right] ? right : left))
+                        : (A[middle] > A[right] ? middle : (A[left] < A[right] ? left : right));
                 }
-                return lo;
+                return left;
             },
             // ****************************************************************************
             // *** Quick Sort LR (in-place, pointers at left and right, pivot is middle element)
             // by Timo Bingmann, based on Hoare's original code
-            async quickSortLR(A, lo = 0, hi = A.length - 1) {
-                if (lo >= hi) {
-                    if (lo >= 0 && lo < A.length) {
-                        this.pushC({finished: [lo]})
+            async quickSortLR(A, left = 0, right = A.length - 1) {
+                if (left >= right) {
+                    if (left >= 0 && left < A.length) {
+                        this.pushC({finished: [left]})
                     }
                     return;
                 }
 
                 // pick pivot and watch
-                let pivot = this.quickSortSelectPivot(A, lo, hi);
-                let i = lo, j = hi;
+                let pivot = this.quickSortSelectPivot(A, left, right);
+                let i = left, j = right;
                 while (i <= j) {
                     while (A[i] < A[pivot]) {
                         i++;
-                        await this.push({lo, hi, pivot, i, j})
+                        await this.push({left, right, pivot, i, j})
                     }
 
                     while (A[j] > A[pivot]) {
                         j--;
-                        await this.push({lo, hi, pivot, i, j})
+                        await this.push({left, right, pivot, i, j})
                     }
 
                     let update;
@@ -853,43 +853,43 @@
                         if (pivot === i) pivot = j;
                         else if (pivot === j) pivot = i;
                         if (pivot === i && pivot === j) finished.push(i, j)
-                        await this.push({lo, hi, pivot, i, j}, update, finished)
+                        await this.push({left, right, pivot, i, j}, update, finished)
                         i++;
                         j--;
-                        if (i === hi) finished.push(hi);
+                        if (i === right) finished.push(right);
                     } else {
-                        await this.push({lo, hi, pivot, i, j})
+                        await this.push({left, right, pivot, i, j})
                     }
                 }
-                await this.quickSortLR(A, lo, j);
-                await this.quickSortLR(A, i, hi);
+                await this.quickSortLR(A, left, j);
+                await this.quickSortLR(A, i, right);
             },
-            async quickSortLL(A, lo = 0, hi = A.length - 1) {
-                if (lo < hi) {
+            async quickSortLL(A, left = 0, right = A.length - 1) {
+                if (left < right) {
                     // pick pivot and move to back
-                    let pivot = this.quickSortSelectPivot(A, lo, hi);
-                    await this.push({lo, hi, pivot});
-                    let update = this.sortSwap(A, pivot, hi);
-                    pivot = hi;
-                    let i = lo;
-                    await this.push({lo, hi, pivot, i}, update);
-                    for (let j = lo; j < hi; ++j) {
+                    let pivot = this.quickSortSelectPivot(A, left, right);
+                    await this.push({left, right, pivot});
+                    let update = this.sortSwap(A, pivot, right);
+                    pivot = right;
+                    let i = left;
+                    await this.push({left, right, pivot, i}, update);
+                    for (let j = left; j < right; ++j) {
                         let update;
-                        let stepNoteMark = {lo, hi, pivot, i, j};
+                        let stepNoteMark = {left, right, pivot, i, j};
                         if (A[j] < A[pivot]) {
                             update = this.sortSwap(A, i, j);
                             ++i;
                         }
                         await this.push(stepNoteMark, update);
                     }
-                    update = this.sortSwap(A, i, hi);
+                    update = this.sortSwap(A, i, right);
                     let mid = i;
-                    await this.push({lo, hi, pivot, i, mid}, update);
-                    await this.quickSortLL(A, lo, mid);
-                    await this.quickSortLL(A, mid + 1, hi);
-                } else if (lo < A.length) {
+                    await this.push({left, right, pivot, i, mid}, update);
+                    await this.quickSortLL(A, left, mid);
+                    await this.quickSortLL(A, mid + 1, right);
+                } else if (left < A.length) {
                     this.pushC({
-                        finished: [lo],
+                        finished: [left],
                     })
                 }
             },
@@ -1459,8 +1459,7 @@
                 this.lastSortType = null;
                 this.clearDataStyle();
                 this.data = val.slice();
-            }
-            ,
+            },
             defaultDataNumber(val) {
                 if (val < 1)
                     this.defaultDataNumber = "";
@@ -1469,8 +1468,7 @@
                 this.speed = val;
                 this.stop();
                 this.originData = this.generateData();
-            }
-            ,
+            },
             dataGenerateType() {
                 this.stop();
                 this.originData = this.generateData();

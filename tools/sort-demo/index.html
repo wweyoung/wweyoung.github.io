@@ -37,7 +37,7 @@
                 <b>{{i18n.dataNumber}}</b>:
                 <input type="number" v-model.number="defaultDataNumber"
                        :step="getInputStep(defaultDataNumber)" min="1" max="1000"/>
-                <div>
+                <div class="mobile-inline">
                     <button @click="defaultDataNumber-=getInputStep(defaultDataNumber)">-</button>
                     <input type="range" :value.number="defaultDataNumber"
                            @change="(e)=> defaultDataNumber = parseInt(e.target.value)" min="1" max="1000"/>
@@ -61,7 +61,7 @@
                 <b>{{i18n.showSpeed}}</b>:
                 <input type="number" v-model.number="speed" :step="getInputStep(speed)" min="1"
                        max="100000"/>
-                <div>
+                <div class="mobile-inline">
                     <button @click="speed-=getInputStep(speed)">-</button>
                     <input type="range" v-model.number="speed" min="1" :max="defaultDataNumber * 50"/>
                     <button @click="speed+=getInputStep(speed)">+</button>
@@ -75,14 +75,6 @@
                     <option v-for="(item,key) in allSort" :value="key"
                             v-text="language=='cn' ? item.name : item.nameEn"></option>
                 </select>
-            </label>
-        </div>
-        <div>
-            <label>
-                <input type="checkbox" v-model="sound" @change="saveConfig('sound', sound)"/>{{i18n.sound}}
-            </label>
-            <label>
-                <input type="checkbox" v-model="horizon" @change="saveConfig('horizon', horizon)"/>{{i18n.horizon}}
             </label>
         </div>
         <div v-if="selectSort?.config">
@@ -109,6 +101,14 @@
             </div>
             <div>
                 <b>{{i18n.state}}</b>: <span v-text="i18n.states[state]"></span>
+            </div>
+            <div>
+                <label>
+                    <input type="checkbox" v-model="sound" @change="saveConfig('sound', sound)"/>{{i18n.sound}}
+                </label>
+                <label>
+                    <input type="checkbox" v-model="horizon" @change="saveConfig('horizon', horizon)"/>{{i18n.horizon}}
+                </label>
             </div>
             <div v-if="selectSort.desc && language === 'cn'">
                 <b>{{i18n.algorithmDesc}}</b>: <span v-text="selectSort.desc"></span>
