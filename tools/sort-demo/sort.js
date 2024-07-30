@@ -189,6 +189,10 @@
                     name: "奇偶排序",
                     nameEn: "Odd-Even Sort",
                 },
+                smoothSort: {
+                    name: "平滑排序",
+                    nameEn: "Smooth Sort",
+                },
                 cycleSort: {
                     name: "圈排序",
                     nameEn: "Cycle Sort",
@@ -698,8 +702,7 @@
                 if (findMin && findMax) return [minIndex, maxIndex];
                 else if (findMin) return minIndex;
                 return maxIndex;
-            }
-            ,
+            },
             async arrayCopy(source, sourcePos, dest, destPos, len) {
                 if (len <= 0) return;
                 let start = 0, end = len, increment = 1;
@@ -852,7 +855,7 @@
                         // follow pivot if it is swapped
                         if (pivot === i) pivot = j;
                         else if (pivot === j) pivot = i;
-                        if (pivot === i && pivot === j) finished.push(i, j)
+                        if (A[pivot] === A[i] && A[pivot] === A[j]) finished.push(i, j)
                         await this.push({left, right, pivot, i, j}, update, finished)
                         i++;
                         j--;
@@ -1303,6 +1306,184 @@
                         this.clearPersist();
                     }
                 }
+            },
+            async smoothSort(A) {
+                const LP = [
+                    1, 1, 3, 5, 9, 15, 25, 41, 67, 109,
+                    177, 287, 465, 753, 1219, 1973, 3193, 5167, 8361, 13529, 21891,
+                    35421, 57313, 92735, 150049, 242785, 392835, 635621, 1028457,
+                    1664079, 2692537, 4356617, 7049155, 11405773, 18454929, 29860703,
+                    48315633, 78176337, 126491971, 204668309, 331160281, 535828591,
+                    866988873 // the next number is > 31 bits.
+                ];
+                const sift = async (A, pshift, head) => {
+                    // we do not use Floyd's improvements to the heapsort sift, because we
+                    // are not doing what heapsort does - always moving nodes from near
+                    // the bottom of the tree to the root.
+
+                    let val = A[head];
+
+                    while (pshift > 1) {
+                        let rt = head - 1;
+                        let lf = head - 1 - LP[pshift - 2];
+
+                        if (val >= A[lf] && val >= A[rt]) {
+                            await this.push({lf, rt, head})
+                            break;
+                        }
+                        if (A[lf] >= A[rt]) {
+                            // A[head] = A[lf];
+                            await this.push({'*lf': lf, rt, head}, {
+                                [head]: A[lf]
+                            })
+                            head = lf;
+                            pshift -= 1;
+                        } else {
+                            // A[head] = A[rt];
+                            await this.push({lf, '*rt': rt, head}, {
+                                [head]: A[rt]
+                            })
+                            head = rt;
+                            pshift -= 2;
+                        }
+
+                    }
+
+                    // A[head] = val;
+                    await this.push({head}, {
+                        [head]: val
+                    })
+                }
+                const __builtin_ctz = (num) => {
+                    if (!num) return 32;
+                    let result = 0;
+                    while (num && (num & 1) === 0) {
+                        result++;
+                        num >>= 1;
+                    }
+                    return result;
+                }
+                const trinkle = async (A, p, pshift, head, isTrusty) => {
+                    let val = A[head];
+                    while (p !== 1) {
+                        let stepson = head - LP[pshift];
+
+                        if (A[stepson] <= val) {
+                            await this.push({stepson})
+                            break;
+                        }
+                        // current node is greater than head. sift.
+                        // no need to check this if we know the current node is trusty,
+                        // because we just checked the head (which is val, in the first
+                        // iteration)
+                        if (!isTrusty && pshift > 1) {
+                            let rt = head - 1;
+                            let lf = head - 1 - LP[pshift - 2];
+                            if (A[rt] >= A[stepson] || A[lf] >= A[stepson]) {
+                                await this.push({rt, lf, stepson, head})
+                                break;
+                            }
+                        }
+                        // A[head] = A[stepson];
+                        await this.push({stepson, head}, {
+                            [head]: A[stepson]
+                        }, [head, stepson])
+
+                        head = stepson;
+                        //int trail = Integer.numberOfTrailingZeros(p & ~1);
+                        let trail = __builtin_ctz(p & ~1);
+                        p >>= trail;
+                        pshift += trail;
+                        isTrusty = false;
+                    }
+
+                    if (!isTrusty) {
+                        // A[head] = val;
+                        await this.push({head}, {
+                            [head]: val
+                        })
+                        await sift(A, pshift, head);
+                    } else {
+                        await this.push({head}, null, [head])
+                    }
+                }
+                const sort = async (A, lo, hi) => {
+                    let head = lo; // the offset of the first element of the prefix into m
+
+                    // These variables need a little explaining. If our string of heaps
+                    // is of length 38, then the heaps will be of size 25+9+3+1, which are
+                    // Leonardo numbers 6, 4, 2, 1.
+                    // Turning this into a binary number, we get b01010110 = 0x56. We represent
+                    // this number as a pair of numbers by right-shifting all the zeros and
+                    // storing the mantissa and exponent as "p" and "pshift".
+                    // This is handy, because the exponent is the index into L[] giving the
+                    // size of the rightmost heap, and because we can instantly find out if
+                    // the rightmost two heaps are consecutive Leonardo numbers by checking
+                    // (p&3)==3
+
+                    let p = 1; // the bitmap of the current standard concatenation >> pshift
+                    let pshift = 1;
+
+                    while (head < hi) {
+                        if ((p & 3) === 3) {
+                            // Add 1 by merging the first two blocks into a larger one.
+                            // The next Leonardo number is one bigger.
+                            await sift(A, pshift, head);
+                            p >>= 2;
+                            pshift += 2;
+                        } else {
+                            // adding a new block of length 1
+                            if (LP[pshift - 1] >= hi - head) {
+                                // this block is its final size.
+                                await trinkle(A, p, pshift, head, false);
+                            } else {
+                                // this block will get merged. Just make it trusty.
+                                await sift(A, pshift, head);
+                            }
+
+                            if (pshift === 1) {
+                                // LP[1] is being used, so we add use LP[0]
+                                p <<= 1;
+                                pshift--;
+                            } else {
+                                // shift out to position 1, add LP[1]
+                                p <<= (pshift - 1);
+                                pshift = 1;
+                            }
+                        }
+                        p |= 1;
+                        head++;
+                    }
+
+                    await trinkle(A, p, pshift, head, false);
+
+                    while (pshift !== 1 || p !== 1) {
+                        if (pshift <= 1) {
+                            // block of length 1. No fiddling needed
+                            //int trail = Integer.numberOfTrailingZeros(p & ~1);
+                            let trail = __builtin_ctz(p & ~1);
+                            p >>= trail;
+                            pshift += trail;
+                        } else {
+                            p <<= 2;
+                            p ^= 7;
+                            pshift -= 2;
+
+                            // This block gets broken into three bits. The rightmost bit is a
+                            // block of length 1. The left hand part is split into two, a block
+                            // of length LP[pshift+1] and one of LP[pshift].  Both these two
+                            // are appropriately heapified, but the root nodes are not
+                            // necessarily in order. We therefore semitrinkle both of them
+
+                            await trinkle(A, p >> 1, pshift + 1, head - LP[pshift] - 1, true);
+                            await trinkle(A, p, pshift, head - 1, true);
+                            this.pushC({finished: [head]})
+                        }
+
+                        head--;
+                    }
+                };
+                await sort(A, 0, A.length - 1);
             },
             async cycleSort(arr) {
                 let n = arr.length;
