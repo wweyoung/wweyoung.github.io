@@ -855,7 +855,7 @@
                         // follow pivot if it is swapped
                         if (pivot === i) pivot = j;
                         else if (pivot === j) pivot = i;
-                        if (A[pivot] === A[i] && A[pivot] === A[j]) finished.push(i, j)
+                        if (A[pivot] === A[i] && A[pivot] === A[j]) finished.push(pivot)
                         await this.push({left, right, pivot, i, j}, update, finished)
                         i++;
                         j--;
@@ -887,8 +887,8 @@
                     }
                     update = this.sortSwap(A, i, right);
                     let mid = i;
-                    await this.push({left, right, pivot, i, mid}, update);
-                    await this.quickSortLL(A, left, mid);
+                    await this.push({left, right, pivot, i, mid}, update, [mid]);
+                    await this.quickSortLL(A, left, mid - 1);
                     await this.quickSortLL(A, mid + 1, right);
                 } else if (left < A.length) {
                     this.pushC({
