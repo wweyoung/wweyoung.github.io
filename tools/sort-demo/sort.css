@@ -86,6 +86,10 @@ body {
     transform: rotate(180deg);
 }
 
+.sort-vertical > div:hover {
+    opacity: 0.6;
+}
+
 .sort-horizon {
     flex-direction: column;
 }

@@ -4,10 +4,13 @@ const i18nAll = {
         dataNumber: "数据个数",
         dataGenerateType: "数据生成",
         dataGenerateTypes: {
-            continuousRandom: "连续随机",
+            continuousRandom: "线性打乱",
             completelyRandom: "完全随机",
             ascend: "正序",
             descend: "倒序",
+            n2Equal: "两值不等",
+            cubic: "三次方打乱",
+            sin: "正弦打乱"
         },
         showSpeed: "演示速度",
         sortAlgorithm: "排序算法",
@@ -60,10 +63,13 @@ const i18nAll = {
         dataNumber: "Data number",
         dataGenerateType: "Data generation",
         dataGenerateTypes: {
-            continuousRandom: "Continuous Random",
-            completelyRandom: "Completely Random",
+            continuousRandom: "Linear Shuffled",
+            completelyRandom: "Random Shuffled",
             ascend: "Ascend",
             descend: "Descend",
+            n2Equal: "N-2 Equal",
+            cubic: "Cubic Shuffled",
+            sin: "Sine Shuffled"
         },
         showSpeed: "Play speed",
         sortAlgorithm: "Sorting algorithm",

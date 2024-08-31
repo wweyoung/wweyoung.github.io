@@ -12,7 +12,8 @@
             },
             required: true
         }
-    }
+    };
+    const myAudioContext = new AudioContext();
     let vm = new Vue({
         el: "#app",
         data: {
@@ -21,11 +22,12 @@
             sortedData: [],
             dataGenerateType: 'random',
             defaultDataNumber: 50,
+            maxDataNumber: 1024,
             delayTime: 40,
+            maxSpeed: 100000,
             sound: localStorage.getItem('sound') !== 'false',
             horizon: localStorage.getItem('horizon') === 'true',
             selectSortType: null,
-            lastSortType: null,
             allSort: {
                 quickSortLR: {
                     name: "快速排序(左右指针)",
@@ -243,9 +245,8 @@
             delayTimeAmend: [1, 0.9, 0.3, 0.25], // delay时间修正倍率
             uri: location.origin + location.pathname,
             language: localStorage.getItem('language') || (navigator.language.startsWith('zh') ? 'cn' : 'en'),
-            colors: ['aqua', 'blueviolet', 'cadetblue', 'cornflowerblue', 'darkblue', 'darkslateblue', 'deepskyblue', 'dodgerblue',
-                'mediumslateblue', 'midnightblue', 'royalblue', ''],
             randomColorIndex: 0,
+            minTimeInterval: 2,
             i18nAll
         },
         methods: {
@@ -263,17 +264,34 @@
             // 生成随机数据
             generateData() {
                 let arr;
-                if (this.dataGenerateType === 'fullRandom') {
+                let isNeedShuffle = false;
+                if (this.defaultDataNumber === 1) {
+                    arr = [1];
+                } else if (this.dataGenerateType === 'fullRandom') {
                     arr = Array.from({length: this.defaultDataNumber}, (v, k) => this.randomNumber(this.defaultDataNumber, 1));
+                } else if (this.dataGenerateType === 'n2Equal') {
+                    arr = Array.from({length: this.defaultDataNumber}, (v, k) => 5);
+                    arr[0] = 1;
+                    arr[1] = 10;
+                    isNeedShuffle = true;
+                } else if (this.dataGenerateType === 'cubic') {
+                    let max = Math.pow(this.defaultDataNumber, 3);
+                    arr = Array.from({length: this.defaultDataNumber}, (v, k) => Math.round((Math.pow(k * 2 + 1 - this.defaultDataNumber, 3) + max) / this.defaultDataNumber / this.defaultDataNumber));
+                    isNeedShuffle = true;
+                } else if (this.dataGenerateType === 'sin') {
+                    arr = Array.from({length: this.defaultDataNumber}, (v, k) =>
+                        1 + Math.round(this.defaultDataNumber * (1 + Math.sin(((k * 2 + 1 - this.defaultDataNumber) / (this.defaultDataNumber - 1)) * Math.PI / 2))));
+                    isNeedShuffle = true;
                 } else {
                     arr = Array.from({length: this.defaultDataNumber}, (v, k) => k + 1);
                     if (this.dataGenerateType === 'descend') {
                         arr.sort((v1, v2) => v2 - v1);
                     } else if (this.dataGenerateType === 'random') {
-                        arr.sort(() => 0.5 - Math.random());
+                        isNeedShuffle = true;
                     }
                 }
                 this.sortedData = arr.slice().sort((v1, v2) => v1 - v2);
+                if (isNeedShuffle) arr.sort(() => 0.5 - Math.random());
                 return arr;
             },
             nextStep(delayTime = this.delayTime) {
@@ -376,12 +394,13 @@
                         this.changeIndexes.addAll(indexes);
                     }
                 }
-                if (this.delayTime < 1) {
-                    if (this.quickDelayCount <= 1) {
-                        this.quickDelayCount += this.delayTime;
+                let delayTime = config.delayTime || this.delayTime;
+                if (delayTime < this.minTimeInterval && this.state !== this.stateMap.paused) {
+                    this.quickDelayCount += delayTime;
+                    if (this.quickDelayCount < this.minTimeInterval) {
                         return;
                     }
-                    this.quickDelayCount = 0;
+                    this.quickDelayCount %= this.minTimeInterval;
                 }
                 let beepTone;
                 if (update && updateEntries.length) {
@@ -391,7 +410,7 @@
                     }
                     beepTone = updateValuesSum / updateEntries.length;
                 } else if (config.markBeep) {
-                    beepTone = stepMark[0];
+                    beepTone = this.data[stepMark[0]];
                 }
                 if (beepTone) {
                     this.playBeep(beepTone);
@@ -399,20 +418,19 @@
                     this.stopBeep();
                 }
                 this.refreshChangeDataStyle();
-                await this.nextStep(config.delayTime || this.delayTime);
+                await this.nextStep(delayTime);
             },
             setFinished(index) {
                 this.currentMark.finished[index] = true;
                 this.changeIndexes.add(index);
             }
             ,
-            async showFinished(start = 0, end = this.data.length - 1, showTime = 200) {
+            async showFinished(start = 0, end = this.data.length - 1, showTime = 250) {
                 await this.push(); // 清除标记
                 let dataAmount = end - start + 1;
-                let delayTime = showTime * this.delayTimeAmend[Math.round(Math.log10(dataAmount))] / dataAmount;
+                let delayTime = showTime / dataAmount;
                 for (let i = start; i <= end; i++) {
                     let mark = [i];
-                    this.playBeep(i);
                     await this.pushC({
                         stepMark: mark,
                         finished: mark,
@@ -422,39 +440,44 @@
                 }
                 await this.push();
                 this.refreshChangeDataStyle();
-            }
-            ,
+            },
+            async calculateMinTimeInterval() {
+                let startTime = Date.now();
+                const loopTimes = 50;
+                for (let i = 0; i < loopTimes; i++) {
+                    await this.nextStep(0);
+                }
+                this.minTimeInterval = (Date.now() - startTime) / loopTimes;
+                return this.minTimeInterval;
+            },
             async start(pause = false) {
                 let name = this.selectSortType;
-                if (name !== this.lastSortType) {
-                    this.lastSortType = name;
-                    this.stop();
+                this.stop();
+                let sortFunction = this[name];
+                if (sortFunction) {
+                    this.data = this.originData.slice();
+                    await this.$nextTick();
                     this.state = pause ? this.stateMap.paused : this.stateMap.sorting;
-                    let sortFunction = this[name];
-                    if (sortFunction) {
-                        this.data = this.originData.slice()
-                        try {
-                            await sortFunction(this.data);
-                            this.state = this.stateMap.finished;
-                            await this.showFinished();
-                        } catch (e) {
-                            if (e !== undefined) {
-                                this.end();
-                                alert("Error!" + e);
-                                throw e;
-                            }
+                    try {
+                        await sortFunction(this.data);
+                        this.state = this.stateMap.finished;
+                        await this.showFinished();
+                    } catch (e) {
+                        if (e !== undefined) {
+                            this.end();
+                            alert("Error!" + e);
+                            throw e;
                         }
-                        this.end();
-                    } else {
-                        alert("Error: Not found sort:" + this.lastSortType);
                     }
-                    this.state = this.stateMap.idle;
+                    this.end();
+                } else {
+                    alert("Error: Not found sort:" + this.selectSortType);
                 }
+                this.state = this.stateMap.idle;
             },
             // 手动停止调用
             stop() {
                 this.end();
-                this.lastSortType = null;
                 this.clearDataStyle();
                 this.data = this.originData;
             }
@@ -548,10 +571,10 @@
                     return;
                 }
                 let style = node.style;
-                let size = this.data[i] / this.data.length * 100 + '%';
+                let size = this.data[i] / this.dataMaxValue * 100 + '%';
                 if (this.horizon) style.width = size;
                 else style.height = size;
-                // style.width = this.dataWidth;
+                // style.width = this.dataPercent;
                 let backgroundColor = '';
                 let {stepMark, update, finished, persistMark, note, persistNote} = this.currentMark;
                 if (stepMark?.includes(i)) {
@@ -599,13 +622,11 @@
             initBeap() {
                 // The browser will limit the number of concurrent audio contexts
                 // So be sure to re-use them whenever you can
-                const myAudioContext = new AudioContext();
                 let oscillatorNode = myAudioContext.createOscillator();
                 let gainNode = myAudioContext.createGain();
 
                 // oscillatorNode.detune.value=10
                 // Set the type of oscillator
-                oscillatorNode.detune.value = 1000;
                 oscillatorNode.type = "square";
                 gainNode.connect(myAudioContext.destination);
 
@@ -617,7 +638,7 @@
             ,
             playBeep(val) {
                 if (this.sound) {
-                    let frequency = 20 + 300 * val / this.defaultDataNumber;
+                    let frequency = 20 + 300 * val / this.dataMaxValue;
                     let isInit;
                     if (!(isInit = this.oscillatorNode)) {
                         this.initBeap();
@@ -773,9 +794,8 @@
                     });
                 }
                 return data;
-            }
-            ,
-//折半插入排序
+            },
+            //折半插入排序
             async binaryInsertionSort(data) {
                 this.setFinished(0);
                 for (let i = 1; (i < data.length); i++) {
@@ -784,15 +804,15 @@
                     this.title = this.i18n.binarySearchInsertPosition;
                     while ((left < right)) {
                         let mid = Math.floor((left + right) / 2);
-                        if ((temp <= data[mid])) right = mid
-                        else left = mid + 1;
                         await this.push({i, left, right})
+                        if ((temp < data[mid])) right = mid
+                        else left = mid + 1;
                     }
                     this.setFinished(i);
                     this.title = this.i18n.move;
                     let j = i;
                     for (; (j > left); j--) {
-                        await this.push({left}, {
+                        await this.push({target: left}, {
                             [j]: data[j - 1] //将前一个数复制到后一个数上
                         });
                     }
@@ -852,14 +872,13 @@
                     if (i <= j) {
                         update = this.sortSwap(A, i, j);
                         let finished = [];
+                        if (i === j && A[pivot] === A[i]) finished.push(i)
                         // follow pivot if it is swapped
                         if (pivot === i) pivot = j;
                         else if (pivot === j) pivot = i;
-                        if (A[pivot] === A[i] && A[pivot] === A[j]) finished.push(pivot)
                         await this.push({left, right, pivot, i, j}, update, finished)
                         i++;
                         j--;
-                        if (i === right) finished.push(right);
                     } else {
                         await this.push({left, right, pivot, i, j})
                     }
@@ -1001,7 +1020,6 @@
                 }
                 for (let i = 0; i < data.length; i++) {
                     let level = Math.floor(Math.log2(i + 1)) + 1;
-                    console.log(i)
                     this.pushC({
                         persistMark: {
                             [i]: this.randomColor(level),
@@ -1105,17 +1123,18 @@
                 }
                 this.clearPersist();
                 return count;
-            }
-            ,
+            },
             async cocktailSort(data) {//鸡尾酒排序
                 let left = 0,
                     right = data.length - 1;
                 while ((left < right)) {
+                    let isSwapped = false;
                     for (let i = left; (i < right); i++) {
                         let update = {};
                         if ((data[i] > data[i + 1])) {
                             //交换数组中两个数字的位置
                             this.sortSwap(data, i, i + 1, update);
+                            isSwapped = true;
                         }
                         await this.pushC({
                             stepMark: [left, right, i, i + 1],
@@ -1131,6 +1150,7 @@
                         if ((data[i] < data[i - 1])) {
                             //交换数组中两个数字的位置
                             this.sortSwap(data, i, i - 1, update);
+                            isSwapped = true;
                         }
                         await this.pushC({
                             stepMark: [left, right, i, i - 1],
@@ -1138,6 +1158,9 @@
                                 left, right
                             }
                         });
+                    }
+                    if (!isSwapped) {
+                        break;
                     }
                     this.setFinished(left, true);
                     left++;
@@ -1594,10 +1617,9 @@
 
         },
         computed: {
-            dataWidth: function () {
+            dataPercent() {
                 return 100 / this.data.length + '%';
-            }
-            ,
+            },
             speed: {
                 get: function () {
                     return Math.round(2000 / this.delayTime);
@@ -1606,8 +1628,8 @@
                 set: function (speed) {
                     if (speed < 1)
                         speed = 1;
-                    if (speed > 100000)
-                        speed = 100000;
+                    if (speed > this.maxSpeed)
+                        speed = this.maxSpeed;
                     this.delayTime = 2000 / speed;
                 }
             }
@@ -1624,20 +1646,21 @@
             cssSortNodeTransition() {
                 let duration;
                 if (this.state === this.stateMap.paused) duration = 0.3;
-                else if (this.delayTime < 40) return null;
+                else if (this.delayTime < 40 || this.state !== this.stateMap.paused) return null;
                 else duration = Math.floor(this.delayTime / 2) / 1000;
                 let property = this.horizon ? 'width' : 'height';
                 return property + ' ' + duration + 's steps(1)';
+            },
+            dataMaxValue() {
+                return this.sortedData.at(-1);
             }
         }
         ,
         watch: {
             data(val, oldVal) {
                 this.redrawSortDiv();
-            }
-            ,
+            },
             originData(val) {
-                this.lastSortType = null;
                 this.clearDataStyle();
                 this.data = val.slice();
             },
@@ -1645,7 +1668,7 @@
                 if (val < 1)
                     this.defaultDataNumber = "";
                 if (val > 1000)
-                    this.defaultDataNumber = 1000;
+                    this.defaultDataNumber = this.maxDataNumber;
                 this.speed = val;
                 this.stop();
                 this.originData = this.generateData();
@@ -1668,9 +1691,8 @@
             horizon() {
                 this.redrawSortDiv();
             }
-        }
-        ,
-        mounted() {
+        },
+        created() {
             this.originData = this.generateData();
             this.data = this.originData.slice();
             this.selectSortType = Object.keys(this.allSort)[0];
@@ -1684,7 +1706,7 @@
                 elements.forEach(element => this.add(element));
                 return this;
             }
-
+            this.$nextTick(this.calculateMinTimeInterval);
             // setTimeout( async ()=>{
             //     for (let i = 0; i < 50; i++) {
             //         this.playBeep(i);

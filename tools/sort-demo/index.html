@@ -32,16 +32,16 @@
             </button>
             <button @click="language='cn';saveConfig('language', language)" :disabled="language==='cn'">中文</button>
         </div>
-        <div>
+        <div @wheel="defaultDataNumber+=($event.wheelDelta > 0 ? 1 : -1) * getInputStep(defaultDataNumber / 5)">
             <label>
                 <b>{{i18n.dataNumber}}</b>:
                 <input type="number" v-model.number="defaultDataNumber"
-                       :step="getInputStep(defaultDataNumber)" min="1" max="1000"/>
+                       :step="getInputStep(defaultDataNumber)" min="1" :max="maxDataNumber"/>
                 <div class="mobile-inline">
-                    <button @click="defaultDataNumber-=getInputStep(defaultDataNumber)">-</button>
+                    <button @click="defaultDataNumber-=getInputStep(defaultDataNumber)" :disabled="defaultDataNumber<=1">-</button>
                     <input type="range" :value.number="defaultDataNumber"
-                           @change="(e)=> defaultDataNumber = parseInt(e.target.value)" min="1" max="1000"/>
-                    <button @click="defaultDataNumber+=getInputStep(defaultDataNumber)">+</button>
+                           @change="defaultDataNumber = parseInt($event.target.value)" min="1" :max="maxDataNumber"/>
+                    <button @click="defaultDataNumber-=-getInputStep(defaultDataNumber)" :disabled="defaultDataNumber>=maxDataNumber">+</button>
                 </div>
             </label>
         </div>
@@ -53,18 +53,21 @@
                     <option value="fullRandom">{{i18n.dataGenerateTypes.completelyRandom}}</option>
                     <option value="ascend">{{i18n.dataGenerateTypes.ascend}}</option>
                     <option value="descend">{{i18n.dataGenerateTypes.descend}}</option>
+                    <option value="n2Equal">{{i18n.dataGenerateTypes.n2Equal}}</option>
+                    <option value="cubic">{{i18n.dataGenerateTypes.cubic}}</option>
+                    <option value="sin">{{i18n.dataGenerateTypes.sin}}</option>
                 </select>
             </label>
         </div>
-        <div>
+        <div @wheel="speed+=($event.wheelDelta > 0 ? 1 : -1) * getInputStep(speed / 2)">
             <label>
                 <b>{{i18n.showSpeed}}</b>:
                 <input type="number" v-model.number="speed" :step="getInputStep(speed)" min="1"
-                       max="100000"/>
+                       :max="maxSpeed"/>
                 <div class="mobile-inline">
-                    <button @click="speed-=getInputStep(speed)">-</button>
-                    <input type="range" v-model.number="speed" min="1" :max="defaultDataNumber * 50"/>
-                    <button @click="speed+=getInputStep(speed)">+</button>
+                    <button @click="speed-=getInputStep(speed)" :disabled="speed<=1">-</button>
+                    <input type="range" v-model.number="speed" min="1" :max="defaultDataNumber * 40"/>
+                    <button @click="speed+=getInputStep(speed)" :disabled="speed>=maxSpeed">+</button>
                 </div>
             </label>
         </div>
