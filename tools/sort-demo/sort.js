@@ -925,7 +925,7 @@
                     this.title = "Gap:" + gap;
                     for (let i = gap; (i < len); i++) {
                         temp = data[i];
-                        await this.push({i});
+                        await this.push({i}, {}, gap === 1 ? [0] : []);
                         let j;
                         for (j = i - gap; (j >= 0) && (data[j] > temp); j -= gap) {
                             await this.push({j, i}, {
@@ -944,11 +944,10 @@
             async mergeSort(data) {
                 let sort = async (data, left, right, temp, title) => {
                     if ((left < right)) {
-                        this.title = title;
                         const mid = parseInt((left + right) / 2);
-                        await sort(data, left, mid, temp, title + 'L'); //左边归并排序，使得左子序列有序
-                        await sort(data, mid + 1, right, temp, title + 'R'); //右边归并排序，使得右子序列有序
-                        this.title = title + ' ' + this.i18n.merge;
+                        await sort(data, left, mid, temp, title * 2); //左边归并排序，使得左子序列有序
+                        await sort(data, mid + 1, right, temp, title * 2); //右边归并排序，使得右子序列有序
+                        this.title = '1/' + title + ' ' + this.i18n.merge;
                         await merge(data, left, mid, right, temp); //将两个有序子数组合并操作
                     }
                 }
@@ -986,7 +985,7 @@
                     }
                 }
 
-                await sort(data, 0, data.length - 1, new Array(data.length), '');
+                await sort(data, 0, data.length - 1, new Array(data.length), 1);
             }
             ,
             async heapSort(data) {//堆排序
@@ -1129,6 +1128,7 @@
                     right = data.length - 1;
                 while ((left < right)) {
                     let isSwapped = false;
+                    this.title = ' -->';
                     for (let i = left; (i < right); i++) {
                         let update = {};
                         if ((data[i] > data[i + 1])) {
@@ -1145,6 +1145,7 @@
                     }
                     this.setFinished(right, true);
                     right--;
+                    this.title = '<--';
                     for (let i = right; (i > left); i--) {
                         let update = {};
                         if ((data[i] < data[i - 1])) {
@@ -1522,9 +1523,10 @@
                     }
 
                     // If item is already in correct position
-                    if (pos === start)
+                    if (pos === start) {
+                        this.setFinished(start);
                         continue;
-
+                    }
                     // ignore all duplicate elements
                     while (arr[start] === arr[pos]) {
                         pos += 1;
@@ -1538,7 +1540,7 @@
                         itemValue = arr[pos];
                         await this.push({start, pos}, {
                             [pos]: temp
-                        })
+                        }, [pos])
                     }
 
                     // Rotate rest of the cycle
@@ -1566,7 +1568,7 @@
                             itemValue = arr[pos];
                             await this.push({start, pos}, {
                                 [pos]: temp
-                            })
+                            }, [pos])
                         }
                     }
                 }
