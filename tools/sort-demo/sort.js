@@ -1646,7 +1646,7 @@
             cssSortNodeTransition() {
                 let duration;
                 if (this.state === this.stateMap.paused) duration = 0.3;
-                else if (this.delayTime < 40 || this.state !== this.stateMap.paused) return null;
+                else if (this.delayTime < 40 && this.state !== this.stateMap.paused) return null;
                 else duration = Math.floor(this.delayTime / 2) / 1000;
                 let property = this.horizon ? 'width' : 'height';
                 return property + ' ' + duration + 's steps(1)';
