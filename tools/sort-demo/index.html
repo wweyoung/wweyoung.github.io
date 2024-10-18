@@ -32,6 +32,7 @@
             </button>
             <button @click="language='cn';saveConfig('language', language)" :disabled="language==='cn'">中文</button>
         </div>
+        <hr/>
         <div @wheel="defaultDataNumber+=($event.wheelDelta > 0 ? 1 : -1) * getInputStep(defaultDataNumber / 5)">
             <label>
                 <b>{{i18n.dataNumber}}</b>:
@@ -49,13 +50,9 @@
             <label>
                 <b>{{i18n.dataGenerateType}}</b>:
                 <select v-model="dataGenerateType">
-                    <option value="random">{{i18n.dataGenerateTypes.continuousRandom}}</option>
-                    <option value="fullRandom">{{i18n.dataGenerateTypes.completelyRandom}}</option>
-                    <option value="ascend">{{i18n.dataGenerateTypes.ascend}}</option>
-                    <option value="descend">{{i18n.dataGenerateTypes.descend}}</option>
-                    <option value="n2Equal">{{i18n.dataGenerateTypes.n2Equal}}</option>
-                    <option value="cubic">{{i18n.dataGenerateTypes.cubic}}</option>
-                    <option value="sin">{{i18n.dataGenerateTypes.sin}}</option>
+                    <option v-for="(name, value) in i18n.dataGenerateTypes" :value="value">
+                        {{name}}
+                    </option>
                 </select>
             </label>
         </div>
@@ -81,7 +78,7 @@
             </label>
         </div>
         <div v-if="selectSort?.config">
-            <b>配置参数</b>:
+            <b>{{i18n.configParams}}</b>:
             <div v-for="(config, key) in selectSort.config">
                 <label>
                     {{key}}:
@@ -96,14 +93,11 @@
         <template v-if="selectSortType">
             <div id="control-buttons">
                 <b>{{i18n.console}}</b>:
-                <button @click="pause()" v-if="state===stateMap.sorting">{{i18n.pause}}</button>
-                <button @click="play()" v-else-if="state===stateMap.paused">{{i18n.continue}}</button>
-                <button @click="start()" v-else-if="state===stateMap.idle">{{i18n.start}}</button>
-                <button @click="next()" v-if="state!==stateMap.sorting">{{i18n.nextStep}}</button>
-                <button @click="stop" v-if="state!==stateMap.idle" style="color:orangered">{{i18n.stop}}</button>
-            </div>
-            <div>
-                <b>{{i18n.state}}</b>: <span v-text="i18n.states[state]"></span>
+                <button @click="pause()" v-if="state===stateMap.sorting" title="Enter">{{i18n.pause}}</button>
+                <button @click="start()" v-else-if="state===stateMap.paused" title="Enter">{{i18n.continue}}</button>
+                <button @click="start()" v-else-if="state===stateMap.idle" title="Enter">{{i18n.start}}</button>
+                <button @click="next()" v-if="state!==stateMap.sorting" title="Space">{{i18n.nextStep}}</button>
+                <button @click="stop" v-if="state!==stateMap.idle" style="color:orangered" title="R">{{i18n.stop}}</button>
             </div>
             <div>
                 <label>
@@ -112,6 +106,10 @@
                 <label>
                     <input type="checkbox" v-model="horizon" @change="saveConfig('horizon', horizon)"/>{{i18n.horizon}}
                 </label>
+            </div>
+            <hr/>
+            <div>
+                <b>{{i18n.state}}</b>: <span v-text="i18n.states[state]"></span>
             </div>
             <div v-if="selectSort.desc && language === 'cn'">
                 <b>{{i18n.algorithmDesc}}</b>: <span v-text="selectSort.desc"></span>
@@ -133,6 +131,7 @@
         <p>
             <b>{{i18n.note}}</b>: {{i18n.noteDesc}}
         </p>
+        <hr/>
         <div id="colorLabel">
             <div><b style="color:dodgerblue">━━━━</b> {{i18n.lineMark}}</div>
             <div><b style="color:red">━━━━</b> {{i18n.lineUpdate}}</div>

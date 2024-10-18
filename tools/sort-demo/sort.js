@@ -250,6 +250,22 @@
             i18nAll
         },
         methods: {
+            onKeypress(event) {
+                if (event.code === 'Enter') {
+                    event.preventDefault();
+                    if (this.state === this.stateMap.sorting) {
+                        this.pause();
+                    } else {
+                        this.start();
+                    }
+                } else if (event.code === 'Space') {
+                    event.preventDefault();
+                    this.next();
+                }
+                else if (event.code === 'KeyR') this.stop();
+                // console.log(event)
+            },
+
             sortConfigCheck(config) {
                 if (config.value === '' || config.value === undefined) {
                     if (config.required) config.value = config.defaultValue;
@@ -267,9 +283,9 @@
                 let isNeedShuffle = false;
                 if (this.defaultDataNumber === 1) {
                     arr = [1];
-                } else if (this.dataGenerateType === 'fullRandom') {
+                } else if (this.dataGenerateType === 'completelyRandom') {
                     arr = Array.from({length: this.defaultDataNumber}, (v, k) => this.randomNumber(this.defaultDataNumber, 1));
-                } else if (this.dataGenerateType === 'n2Equal') {
+                } else if (this.dataGenerateType === 'n2Diff') {
                     arr = Array.from({length: this.defaultDataNumber}, (v, k) => 5);
                     arr[0] = 1;
                     arr[1] = 10;
@@ -281,6 +297,10 @@
                 } else if (this.dataGenerateType === 'sin') {
                     arr = Array.from({length: this.defaultDataNumber}, (v, k) =>
                         1 + Math.round(this.defaultDataNumber * (1 + Math.sin(((k * 2 + 1 - this.defaultDataNumber) / (this.defaultDataNumber - 1)) * Math.PI / 2))));
+                    isNeedShuffle = true;
+                } else if (this.dataGenerateType.startsWith('group')) {
+                    let group = this.dataGenerateType[this.dataGenerateType.length - 1];
+                    arr = Array.from({length: this.defaultDataNumber}, (v, k) => k % group + 1);
                     isNeedShuffle = true;
                 } else {
                     arr = Array.from({length: this.defaultDataNumber}, (v, k) => k + 1);
@@ -451,6 +471,12 @@
                 return this.minTimeInterval;
             },
             async start(pause = false) {
+                if (this.state === this.stateMap.paused) {
+                    // 暂停 --> 继续播放
+                    this.state = this.stateMap.sorting;
+                    this.promise.resolve();
+                    return;
+                }
                 let name = this.selectSortType;
                 this.stop();
                 let sortFunction = this[name];
@@ -480,21 +506,16 @@
                 this.end();
                 this.clearDataStyle();
                 this.data = this.originData;
-            }
-            ,
+            },
             pause() {
                 this.state = this.stateMap.paused;
                 this.stopBeep();
-            }
-            ,
-            play() {
-                this.state = this.stateMap.sorting;
-                this.promise.resolve();
-            }
-            ,
+            },
             next() {
                 if (this.state === this.stateMap.paused) {
                     this.promise.resolve();
+                } else if (this.state === this.stateMap.sorting) {
+                    this.pause();
                 } else {
                     this.start(true);
                 }
@@ -1167,8 +1188,7 @@
                     left++;
                 }
                 return data;
-            }
-            ,
+            },
             async combSort(array) {//梳排序
                 let gap = array.length;
                 let swapped = true;
@@ -1709,6 +1729,7 @@
                 return this;
             }
             this.$nextTick(this.calculateMinTimeInterval);
+            window.addEventListener("keypress", this.onKeypress)
             // setTimeout( async ()=>{
             //     for (let i = 0; i < 50; i++) {
             //         this.playBeep(i);
