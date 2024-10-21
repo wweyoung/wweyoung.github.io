@@ -1,0 +1,31 @@
+body {
+    font-size: 20px;
+}
+#record-button{
+    width: 100%;
+    font-size: 24px;
+    padding: 8px;
+}
+.inactive {
+    color: green;
+}
+.recording {
+    color: orange;
+}
+.record-item {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+.record-item>div{
+    /*flex: 1;*/
+}
+#records .no {
+    background: lightgrey;
+    border-radius: 1em;
+    width: 32px;
+    text-align: center;
+}
+#records button {
+    font-size: 16px;
+}
