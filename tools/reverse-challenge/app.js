@@ -5,6 +5,7 @@ new Vue({
     el: "#app",
     data: {
         state: "inactive",
+        mediaStream: null,
         mediaRecorder: null,
         records: [],
         recordingSec: 0,
@@ -12,12 +13,25 @@ new Vue({
         recordInterval: null
     },
     methods: {
-        record() {
+        async record() {
             if (this.state === "recording") {
                 this.mediaRecorder.stop();
                 console.log("录音结束");
                 clearInterval(this.recordInterval);
+                this.mediaStream.getAudioTracks()[0].stop();
             } else {
+                const constraints = {audio: true};
+                this.mediaStream = await navigator.mediaDevices.getUserMedia(constraints).catch(
+                    (e) => {
+                        alert("授权失败！");
+                    }
+                );
+                console.log("授权成功！");
+                this.mediaRecorder = new MediaRecorder(this.mediaStream);
+                this.mediaRecorder.ondataavailable = e => {
+                    chunks.push(e.data);
+                };
+                this.mediaRecorder.onstop = this.onStop;
                 this.mediaRecorder.start();
                 console.log("录音中...");
                 this.recordStartTime = Date.now();
@@ -64,26 +78,8 @@ new Vue({
         }
     },
     created() {
-        if (navigator.mediaDevices.getUserMedia) {
-            const constraints = {audio: true};
-            navigator.mediaDevices.getUserMedia(constraints).then(
-                stream => {
-                    console.log("授权成功！");
-
-                    this.mediaRecorder = new MediaRecorder(stream);
-
-                    this.mediaRecorder.ondataavailable = e => {
-                        chunks.push(e.data);
-                    };
-
-                    this.mediaRecorder.onstop = this.onStop;
-                },
-                () => {
-                    console.error("授权失败！");
-                }
-            );
-        } else {
-            console.error("浏览器不支持 getUserMedia");
+        if (!navigator.mediaDevices.getUserMedia) {
+            alert("浏览器不支持 getUserMedia");
         }
     }
 })
