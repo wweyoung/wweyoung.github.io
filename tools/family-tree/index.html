@@ -1,0 +1,928 @@
+
+<HTML>
+
+<HEAD>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+
+    <TITLE>Family Echo - 绘制、分享和打印您的在线家谱</TITLE>
+
+    <META NAME="Description" CONTENT="在线绘制您的家谱并与亲戚分享。添加照片和生平细节。打印家谱或下载到自己的电脑。">
+
+
+    <!--
+	This Family Echo file is Copyright (c) Familiality Ltd.
+
+	You are not permitted to distribute, copy, modify, merge, publish,
+	sublicense, rent, sell, lease, loan, decompile, reverse engineer or
+	create derivative works from this file.
+
+	This copyright and license notice must be kept in this file at all times.
+-->
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <SCRIPT language="JavaScript"><!--
+    var staticMode=false;
+    var hideSidebar=false;
+    var noCentering=false;
+    var defaultZoom=1.25;
+    var defaultDetail=null;
+    var defaultBirthName=0;
+    var defaultSurnameFirst=0;
+    var defaultMaleLeft=0;
+    var defaultCousins=2;
+    var defaultChildren=8;
+    var defaultParents=5;
+    var defaultColors={
+        back : '#FFFFFF',
+        male : '#D6DDFF',
+        female : '#FFD6EE',
+        other : '#FFFFFF',
+        living : '#000000',
+        deceased : '#777777'
+    };
+    var defaultWidth=1;
+    var defaultTextSize=1;
+    var defaultLines={
+        current : 'thick',
+        otherpartner : 'medium',
+        biological : 'medium',
+        otherparent : 'gray'
+    };
+    --></SCRIPT>
+
+    <script type="text/javascript">
+
+
+        var locale_value="zh";
+        var locale_rtl=false;
+        var locale_names={"en":"English","ar":"\u0627\u0644\u0639\u0631\u0628\u064a\u0629 (Arabic)","fa":"\u0641\u0627\u0631\u0633\u06cc (Persian)","ur":"\u0627\u0631\u062f\u0648 (Urdu)","he":"\u05e2\u05d1\u05e8\u05d9\u05ea (Hebrew)","de":"Deutsch (German)","es":"Espa\xf1ol (Spanish)","fr":"Fran\xe7ais (French)","ru":"\u0420\u0443\u0441\u0441\u043a\u0438\u0439 (Russian)","it":"Italiano (Italian)","pt":"Portugu\xeas (Portuguese)","tr":"T\xfcrk\xe7e (Turkish)","nl":"Nederlands (Dutch)","pl":"Polski (Polish)","cs":"\u010ce\u0161tina (Czech)","uk":"\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430 (Ukrainian)","el":"\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac (Greek)","sv":"Svenska (Swedish)","ro":"Rom\xe2n\u0103 (Romanian)","hu":"Magyar (Hungarian)","da":"Dansk (Danish)","sk":"Sloven\u010dina (Slovak)","fi":"Suomi (Finnish)","sr":"\u0421\u0440\u043f\u0441\u043a\u0438 (Serbian)","no":"Norsk (Norwegian)","bg":"\u0411\u044a\u043b\u0433\u0430\u0440\u0441\u043a\u0438 (Bulgarian)","lt":"Lietuvi\u0173 (Lithuanian)","sl":"Sloven\u0161\u010dina (Slovene)","ca":"Catal\xe0 (Catalan)","et":"Eesti (Estonian)","lv":"Latvie\u0161u (Latvian)","hr":"Hrvatski (Croatian)","hy":"\u0540\u0561\u0575\u0565\u0580\u0565\u0576 (Armenian)","ka":"\u10e5\u10d0\u10e0\u10d7\u10e3\u10da\u10d8 (Georgian)","sq":"Shqip (Albanian)","is":"\xcdslenska (Icelandic)","bs":"Bosanski (Bosnian)","mk":"\u041c\u0430\u043a\u0435\u0434\u043e\u043d\u0441\u043a\u0438 (Macedonian)","hi":"\u0939\u093f\u0928\u094d\u0926\u0940 (Hindi)","bn":"\u09ac\u09be\u0982\u09b2\u09be (Bengali)","kn":"\u0c95\u0ca8\u0ccd\u0ca8\u0ca1 (Kannada)","te":"\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41 (Telugu)","mr":"\u092e\u0930\u093e\u0920\u0940 (Marathi)","gu":"\u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0 (Gujarati)","ml":"\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02 (Malayalam)","pa":"\u0a2a\u0a70\u0a1c\u0a3e\u0a2c\u0a40 (Punjabi)","ta":"\u0ba4\u0bae\u0bbf\u0bb4\u0bcd (Tamil)","ja":"\u65e5\u672c\u8a9e (Japanese)","zh":"\u4e2d\u6587 (Chinese)","vi":"Ti\u1ebfng Vi\u1ec7t (Vietnamese)","id":"Indonesia (Indonesian)","ko":"\ud55c\uad6d\uc5b4 (Korean)","th":"\u0e44\u0e17\u0e22 (Thai)","ms":"Melayu (Malay)","tl":"Filipino (Tagalog)","kk":"\u049a\u0430\u0437\u0430\u049b \u0442\u0456\u043b\u0456 (Kazakh)","si":"\u0dc3\u0dd2\u0d82\u0dc4\u0dbd (Sinhala)","my":"\u1019\u103c\u1014\u103a\u1019\u102c (Burmese)","jv":"Jawa (Javanese)","ne":"\u0928\u0947\u092a\u093e\u0932\u0940 (Nepali)","sw":"Kiswahili (Swahili)","uz":"O\u2018zbek (Uzbek)"};
+        var locale_phrases={"^":{"str":"\u7b2c^\u5c4a"},"Save":{"str":"\u4fdd\u5b58"},"Options":{"str":"\u9009\u9879"},"Birth date":{"str":"\u51fa\u751f\u65e5\u671f"},"Birth place":{"str":"\u51fa\u751f\u5730"},"Marriage date":{"str":"\u7ed3\u5a5a\u65e5\u671f"},"Divorce date":{"str":"\u79bb\u5a5a\u65e5\u671f"},"Death date":{"str":"\u53bb\u4e16\u65e5\u671f"},"Death place":{"str":"\u53bb\u4e16\u5730\u70b9"},"Burial date":{"str":"\u5b89\u846c\u65e5\u671f"},"Burial place":{"str":"\u5b89\u846c\u5730\u70b9"},"Email":{"str":"\u7535\u5b50\u90ae\u4ef6"},"Address":{"str":"\u5730\u5740"},"Profession":{"str":"\u804c\u4e1a"},"Company":{"str":"\u516c\u53f8"},"Interests":{"str":"\u5174\u8da3"},"Activities":{"str":"\u6d3b\u52a8"},"Before":{"str":"\u524d"},"After":{"str":"\u540e"},"Female":{"str":"\u5973\u6027"},"Male":{"str":"\u7537\u6027"},"Surname now":{"str":"\u73b0\u59d3"},"Surname at birth":{"str":"\u51fa\u751f\u65f6\u59d3\u6c0f"},"Gender":{"str":"\u6027\u522b"},"Other":{"str":"\u5176\u4ed6"},"Website":{"str":"\u7f51\u7ad9"},"Blog":{"str":"\u535a\u5ba2"},"Photo site":{"str":"\u7167\u7247\u7f51\u7ad9"},"Home tel":{"str":"\u5bb6\u5ead\u7535\u8bdd"},"Work tel":{"str":"\u5de5\u4f5c\u7535\u8bdd"},"Mobile":{"str":"\u624b\u673a"},"Cause of death":{"str":"\u6b7b\u4ea1\u539f\u56e0"},"Bio notes":{"str":"\u751f\u5e73\u7b14\u8bb0"},"OK":{"str":"\u786e\u5b9a"},"Cancel":{"str":"\u53d6\u6d88"},"Edit":{"str":"\u7f16\u8f91"},"approx $":{"str":"\u5927\u7ea6 $"},"before $":{"str":"\u5728 $ \u4e4b\u524d"},"after $":{"str":"\u5728 $ \u4e4b\u540e"},"$ BCE":{"str":"\u516c\u5143\u524d $"},"Full name":{"str":"\u5168\u540d"},"Mother":{"str":"\u6bcd\u4eb2"},"Father":{"str":"\u7236\u4eb2"},"mother":{"str":"\u6bcd\u4eb2"},"father":{"str":"\u7236\u4eb2"},"Partner":{"str":"\u4f34\u4fa3"},"Ex-partner":{"str":"\u524d\u4f34\u4fa3"},"Late wife":{"str":"\u5df2\u6545\u59bb\u5b50"},"Late husband":{"str":"\u5df2\u6545\u4e08\u592b"},"Late spouse":{"str":"\u5df2\u6545\u914d\u5076"},"Widow":{"str":"\u5be1\u5987"},"Widower":{"str":"\u9ccf\u592b"},"Widowed spouse":{"str":"\u4e27\u5076\u914d\u5076"},"Wife":{"str":"\u59bb\u5b50"},"Husband":{"str":"\u4e08\u592b"},"Spouse":{"str":"\u914d\u5076"},"Ex-wife":{"str":"\u524d\u59bb"},"Ex-husband":{"str":"\u524d\u592b"},"Ex-spouse":{"str":"\u524d\u914d\u5076"},"Late partner":{"str":"\u5df2\u6545\u4f34\u4fa3"},"Late fiancee":{"str":"\u5df2\u6545\u672a\u5a5a\u59bb"},"Late fiance":{"str":"\u5df2\u6545\u672a\u5a5a\u592b"},"Fiancee":{"str":"\u672a\u5a5a\u59bb"},"Fiance":{"str":"\u672a\u5a5a\u592b"},"Ex-fiancee":{"str":"\u524d\u672a\u5a5a\u59bb"},"Ex-fiance":{"str":"\u524d\u672a\u5a5a\u592b"},"Biological mother":{"str":"\u751f\u6bcd"},"Biological father":{"str":"\u751f\u7236"},"Biological parent":{"str":"\u4eb2\u751f\u7236\u6bcd"},"Adopted mother":{"str":"\u517b\u6bcd"},"Adopted father":{"str":"\u517b\u7236"},"Adopted parent":{"str":"\u517b\u7236\u6bcd"},"Foster mother":{"str":"\u5bc4\u517b\u6bcd\u4eb2"},"Foster father":{"str":"\u5bc4\u517b\u7236\u4eb2"},"Foster parent":{"str":"\u5bc4\u517b\u7236\u6bcd"},"Stepmother":{"str":"\u7ee7\u6bcd"},"Stepfather":{"str":"\u7ee7\u7236"},"Stepparent":{"str":"\u7ee7\u7236\u6bcd"},"Godmother":{"str":"\u6559\u6bcd"},"Godfather":{"str":"\u6559\u7236"},"Godparent":{"str":"\u6559\u7236\u6bcd"},"Second mother":{"str":"\u7b2c\u4e8c\u6bcd\u4eb2"},"Second father":{"str":"\u7b2c\u4e8c\u7236\u4eb2"},"Second parent":{"str":"\u7b2c\u4e8c\u7236\u6bcd"},"Third mother":{"str":"\u7b2c\u4e09\u6bcd\u4eb2"},"Third father":{"str":"\u7b2c\u4e09\u7236\u4eb2"},"Third parent":{"str":"\u7b2c\u4e09\u7236\u6bcd"},"Parent":{"str":"\u7236\u6bcd"},"Done":{"str":"\u5b8c\u6210"},"More actions...":{"str":"\u66f4\u591a\u64cd\u4f5c..."},"Set parents":{"str":"\u8bbe\u7f6e\u7236\u6bcd"},"Add partner/ex":{"str":"\u6dfb\u52a0\u4f34\u4fa3/\u524d\u4f34\u4fa3"},"Partner with person already on tree":{"str":"\u4e0e\u5bb6\u8c31\u4e0a\u5df2\u6709\u7684\u4eba\u5efa\u7acb\u4f34\u4fa3\u5173\u7cfb"},"Are you sure you want to remove this family from your account?":{"str":"\u60a8\u786e\u5b9a\u8981\u4ece\u60a8\u7684\u8d26\u6237\u4e2d\u79fb\u9664\u6b64\u5bb6\u5ead\u5417\uff1f"},"If you have shared this family it will still be available to others.":{"str":"\u5982\u679c\u60a8\u5df2\u5171\u4eab\u6b64\u5bb6\u5ead\uff0c\u5b83\u4ecd\u5c06\u5bf9\u5176\u4ed6\u4eba\u53ef\u7528\u3002"},"The new passwords do not match - please reenter.":{"str":"\u65b0\u5bc6\u7801\u4e0d\u5339\u914d - \u8bf7\u91cd\u65b0\u8f93\u5165\u3002"},"The new password was set successfully.":{"str":"\u65b0\u5bc6\u7801\u8bbe\u7f6e\u6210\u529f\u3002"},"The new password could not be set - please try again.":{"str":"\u65e0\u6cd5\u8bbe\u7f6e\u65b0\u5bc6\u7801 - \u8bf7\u91cd\u8bd5\u3002"},"The name could not be changed - please try again.":{"str":"\u65e0\u6cd5\u66f4\u6539\u540d\u79f0 - \u8bf7\u91cd\u8bd5\u3002"},"The email could not be changed - please try again.":{"str":"\u65e0\u6cd5\u66f4\u6539\u7535\u5b50\u90ae\u4ef6 - \u8bf7\u91cd\u8bd5\u3002"},"Your Family Echo account was permanently closed. Thank you for using Family Echo.":{"str":"\u60a8\u7684Family Echo\u8d26\u6237\u5df2\u88ab\u6c38\u4e45\u5173\u95ed\u3002\u611f\u8c22\u60a8\u4f7f\u7528Family Echo\u3002"},"Your account could not be closed - please try again.":{"str":"\u65e0\u6cd5\u5173\u95ed\u60a8\u7684\u8d26\u6237 - \u8bf7\u91cd\u8bd5\u3002"},"The family could not be removed - please try again.":{"str":"\u65e0\u6cd5\u79fb\u9664\u5bb6\u5ead - \u8bf7\u91cd\u8bd5\u3002"},"Are you sure you want to restore this family to your account?":{"str":"\u60a8\u786e\u5b9a\u8981\u5c06\u6b64\u5bb6\u5ead\u6062\u590d\u5230\u60a8\u7684\u8d26\u6237\u5417\uff1f"},"The family could not be added - please try again.":{"str":"\u65e0\u6cd5\u6dfb\u52a0\u5bb6\u5ead - \u8bf7\u91cd\u8bd5\u3002"},"The family could not be renamed - please try again.":{"str":"\u65e0\u6cd5\u91cd\u547d\u540d\u5bb6\u5ead - \u8bf7\u91cd\u8bd5\u3002"},"If you leave this page before saving, your changes to this family will be lost.":{"str":"\u5982\u679c\u60a8\u5728\u4fdd\u5b58\u4e4b\u524d\u79bb\u5f00\u6b64\u9875\u9762\uff0c\u60a8\u5bf9\u8be5\u5bb6\u5ead\u7684\u66f4\u6539\u5c06\u4f1a\u4e22\u5931\u3002"},"You do not have permission to view this family.":{"str":"\u60a8\u6ca1\u6709\u6743\u9650\u67e5\u770b\u6b64\u5bb6\u65cf\u3002"},"This family could not currently be loaded.":{"str":"\u76ee\u524d\u65e0\u6cd5\u52a0\u8f7d\u6b64\u5bb6\u65cf\u3002"},"This may be due to occasional system maintenance, so please try again in a few hours.":{"str":"\u8fd9\u53ef\u80fd\u662f\u7531\u4e8e\u7cfb\u7edf\u7ef4\u62a4\uff0c\u8bf7\u5728\u51e0\u4e2a\u5c0f\u65f6\u540e\u91cd\u8bd5\u3002"},"Founded by $":{"str":"\u7531$\u521b\u5efa"},"The family could not be saved - please try again.":{"str":"\u65e0\u6cd5\u4fdd\u5b58\u5bb6\u65cf - \u8bf7\u91cd\u8bd5\u3002"},"The family could not be added to your account - please try again.":{"str":"\u65e0\u6cd5\u5c06\u5bb6\u65cf\u6dfb\u52a0\u5230\u60a8\u7684\u8d26\u6237 - \u8bf7\u91cd\u8bd5\u3002"},"Show ages on which date? Please enter the date in YYYY-MM-DD format and add \"B\" for BCE.":{"str":"\u663e\u793a\u54ea\u4e2a\u65e5\u671f\u7684\u5e74\u9f84\uff1f\u8bf7\u4ee5YYYY-MM-DD\u683c\u5f0f\u8f93\u5165\u65e5\u671f\uff0c\u5e76\u5728\u516c\u5143\u524d\u52a0\u4e0a\u201cB\u201d\u3002"},"Hide options":{"str":"\u9690\u85cf\u9009\u9879"},"Known date":{"str":"\u5df2\u77e5\u65e5\u671f"},"Approximate":{"str":"\u5927\u7ea6"},"Date range":{"str":"\u65e5\u671f\u8303\u56f4"},"Anon #":{"str":"\u533f\u540d#"},"$1 of $2":{"str":"$2\u7684$1"},"Me":{"str":"\u6211"},"Founder":{"str":"\u521b\u59cb\u4eba"},"Biological daughter":{"str":"\u4eb2\u751f\u5973\u513f"},"Biological son":{"str":"\u4eb2\u751f\u513f\u5b50"},"Biological child":{"str":"\u4eb2\u751f\u5b50\u5973"},"Adopted daughter":{"str":"\u517b\u5973"},"Adopted son":{"str":"\u517b\u5b50"},"Adopted child":{"str":"\u517b\u5b50\u5973"},"Foster daughter":{"str":"\u5bc4\u517b\u5973\u513f"},"Foster son":{"str":"\u5bc4\u517b\u513f\u5b50"},"Foster child":{"str":"\u5bc4\u517b\u5b50\u5973"},"Stepdaughter":{"str":"\u7ee7\u5973"},"Stepson":{"str":"\u7ee7\u5b50"},"Stepchild":{"str":"\u7ee7\u5b50\u5973"},"Goddaughter":{"str":"\u6559\u5973"},"Godson":{"str":"\u6559\u5b50"},"Godchild":{"str":"\u6559\u5b50\u5973"},"Daughter":{"str":"\u5973\u513f"},"Son":{"str":"\u513f\u5b50"},"Child":{"str":"\u5b50\u5973"},"Sister":{"str":"\u59d0\u59b9"},"Brother":{"str":"\u5144\u5f1f"},"Sibling":{"str":"\u5144\u5f1f\u59d0\u59b9"},"Half sister":{"str":"\u540c\u7236\u5f02\u6bcd\u6216\u540c\u6bcd\u5f02\u7236\u59d0\u59b9"},"Half brother":{"str":"\u540c\u7236\u5f02\u6bcd\u6216\u540c\u6bcd\u5f02\u7236\u5144\u5f1f"},"Half sibling":{"str":"\u540c\u7236\u5f02\u6bcd\u6216\u540c\u6bcd\u5f02\u7236\u5144\u5f1f\u59d0\u59b9"},"Unknown":{"str":"\u672a\u77e5"},"# ancestor/s":{"str":"#\u4f4d\u7956\u5148"},"# descendant/s":{"str":"#\u4f4d\u540e\u4ee3"},"No ancestors":{"str":"\u65e0\u7956\u5148"},"No descendants":{"str":"\u65e0\u540e\u4ee3"},"Approx $":{"str":"\u5927\u7ea6$"},"Before $":{"str":"$\u4e4b\u524d"},"After $":{"str":"$\u4e4b\u540e"},"$ (separated)":{"str":"$\uff08\u5206\u5f00\uff09"},"# day/s old":{"str":"#\u5929\u5927"},"# day/s":{"str":"#\u5929"},"# month/s old":{"str":"#\u4e2a\u6708\u5927"},"# month/s":{"str":"#\u4e2a\u6708"},"# year/s old":{"str":"#\u5c81"},"# year/s":{"str":"#\u5e74"},"at least $":{"str":"\u81f3\u5c11 $"},"at most $":{"str":"\u6700\u591a $"},"Download file":{"str":"\u4e0b\u8f7d\u6587\u4ef6"},"Uploaded $":{"str":"\u5df2\u4e0a\u4f20 $"},"$ image":{"str":"$ \u56fe\u50cf"},"Image":{"str":"\u56fe\u50cf"},"Text":{"str":"\u6587\u672c"},"$ audio":{"str":"$ \u97f3\u9891"},"Audio":{"str":"\u97f3\u9891"},"$ video":{"str":"$ \u89c6\u9891"},"Video":{"str":"\u89c6\u9891"},"$ archive":{"str":"$ \u538b\u7f29\u5305"},"Archive":{"str":"\u538b\u7f29\u5305"},"Delete":{"str":"\u5220\u9664"},"No files match the current search.":{"str":"\u6ca1\u6709\u6587\u4ef6\u7b26\u5408\u5f53\u524d\u641c\u7d22\u6761\u4ef6\u3002"},"There are currently no files in this family.":{"str":"\u6b64\u5bb6\u5ead\u76ee\u524d\u6ca1\u6709\u6587\u4ef6\u3002"},"# file/s":{"str":"#\u4e2a\u6587\u4ef6"},"$1 used (plus $2 in other families) of $3 available":{"str":"\u5df2\u4f7f\u7528 $1\uff08\u52a0\u4e0a\u5176\u4ed6\u5bb6\u5ead\u4e2d\u7684 $2\uff09\uff0c\u5171 $3 \u53ef\u7528"},"$1 used of $2 available":{"str":"\u5df2\u4f7f\u7528 $1\uff0c\u5171 $2 \u53ef\u7528"},"You do not currently have permission to $ files.":{"str":"\u60a8\u76ee\u524d\u6ca1\u6709\u6743\u9650 $ \u6587\u4ef6\u3002"},"download":{"str":"\u4e0b\u8f7d"},"upload":{"str":"\u4e0a\u4f20"},"edit":{"str":"\u7f16\u8f91"},"delete":{"str":"\u5220\u9664"},"View file":{"str":"\u67e5\u770b\u6587\u4ef6"},"Untitled":{"str":"\u65e0\u6807\u9898"},"Are you sure you want to permanently delete the file $?":{"str":"\u60a8\u786e\u5b9a\u8981\u6c38\u4e45\u5220\u9664\u6587\u4ef6 $ \u5417\uff1f"},"The file could not be deleted - please try again.":{"str":"\u65e0\u6cd5\u5220\u9664\u6587\u4ef6 - \u8bf7\u91cd\u8bd5\u3002"},"Detach this person":{"str":"\u89e3\u9664\u6b64\u4eba\u7684\u5173\u8054"},"Attach another person":{"str":"\u5173\u8054\u5176\u4ed6\u4eba"},"This file is $1 in size, which is larger than the maximum of $2.":{"str":"\u6b64\u6587\u4ef6\u5927\u5c0f\u4e3a $1\uff0c\u8d85\u8fc7\u4e86\u6700\u5927\u9650\u5236 $2\u3002"},"Please select a file to upload it.":{"str":"\u8bf7\u9009\u62e9\u4e00\u4e2a\u6587\u4ef6\u8fdb\u884c\u4e0a\u4f20\u3002"},"The file could not be uploaded - please try again.":{"str":"\u65e0\u6cd5\u4e0a\u4f20\u6587\u4ef6 - \u8bf7\u91cd\u8bd5\u3002"},"Please wait while uploading...":{"str":"\u4e0a\u4f20\u4e2d\uff0c\u8bf7\u7a0d\u5019..."},"Are you sure you want to permanently remove the picture for this person?":{"str":"\u60a8\u786e\u5b9a\u8981\u6c38\u4e45\u5220\u9664\u6b64\u4eba\u7684\u7167\u7247\u5417\uff1f"},"Back to me":{"str":"\u8fd4\u56de\u6211\u7684\u9875\u9762"},"Back to start":{"str":"\u8fd4\u56de\u5f00\u59cb"},"Back to $":{"str":"\u8fd4\u56de $"},"# people":{"str":"#\u4e2a\u4eba"},"(none)":{"str":"\uff08\u65e0\uff09"},"No matches found":{"str":"\u672a\u627e\u5230\u5339\u914d\u9879"},"The email will include a link allowing <> to view and download this family, but not make changes.":{"str":"\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u548c\u4e0b\u8f7d\u6b64\u5bb6\u5ead\uff0c\u4f46\u4e0d\u80fd\u8fdb\u884c\u66f4\u6539\u3002"},"The email will include a link allowing <> to view and download this family and its files, but not make changes.":{"str":"\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u548c\u4e0b\u8f7d\u6b64\u5bb6\u5ead\u53ca\u5176\u6587\u4ef6\uff0c\u4f46\u4e0d\u80fd\u8fdb\u884c\u66f4\u6539\u3002"},"The email will include a link allowing <> to view, download, modify and share this family.":{"str":"\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u3001\u4e0b\u8f7d\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u5ead\u3002"},"The email will include a link allowing <> to view, download, modify and share this family, but only view and download files.":{"str":"\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u3001\u4e0b\u8f7d\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u5ead\uff0c\u4f46\u53ea\u80fd\u67e5\u770b\u548c\u4e0b\u8f7d\u6587\u4ef6\u3002"},"The email will include a link allowing <> to view, modify and share this family, and upload, edit and delete files.":{"str":"\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u5ead\uff0c\u5e76\u4e0a\u4f20\u3001\u7f16\u8f91\u548c\u5220\u9664\u6587\u4ef6\u3002"},"Married":{"str":"\u5df2\u5a5a"},"Engaged":{"str":"\u8ba2\u5a5a"},"Relationship":{"str":"\u5173\u7cfb"},"Separated":{"str":"\u5206\u5c45"},"Divorced":{"str":"\u79bb\u5a5a"},"Annulled":{"str":"\u5a5a\u59fb\u65e0\u6548"},"Biological":{"str":"\u4eb2\u751f"},"Adopted":{"str":"\u9886\u517b"},"Foster":{"str":"\u5bc4\u517b"},"Step":{"str":"\u7ee7"},"Invite $ to share family":{"str":"\u9080\u8bf7 $ \u5206\u4eab\u5bb6\u5ead"},"Show relationship to $":{"str":"\u663e\u793a\u4e0e $ \u7684\u5173\u7cfb"},"Show $1's $2":{"str":"\u663e\u793a $1 \u7684 $2"},"Edit partnership details":{"str":"\u7f16\u8f91\u5408\u4f5c\u5173\u7cfb\u8be6\u60c5"},"Edit my details":{"str":"\u7f16\u8f91\u6211\u7684\u8be6\u60c5"},"Edit $'s details":{"str":"\u7f16\u8f91 $ \u7684\u8be6\u60c5"},"parent":{"str":"\u7236\u6bcd"},"Change multiple birth order":{"str":"\u66f4\u6539\u591a\u80de\u80ce\u51fa\u751f\u987a\u5e8f"},"Change sibling order":{"str":"\u66f4\u6539\u5144\u5f1f\u59d0\u59b9\u987a\u5e8f"},"Change partners":{"str":"\u66f4\u6362\u4f34\u4fa3"},"Change partner":{"str":"\u66f4\u6362\u4f34\u4fa3"},"Delete $":{"str":"\u5220\u9664 $"},"This person cannot be deleted because that would split the tree. Try deleting outer people on the tree first.":{"str":"\u6b64\u4eba\u65e0\u6cd5\u5220\u9664\uff0c\u56e0\u4e3a\u8fd9\u4f1a\u5206\u88c2\u5bb6\u8c31\u3002\u8bf7\u5148\u5c1d\u8bd5\u5220\u9664\u5bb6\u8c31\u5916\u90e8\u7684\u4eba\u3002"},"This person started the tree and cannot be deleted.":{"str":"\u6b64\u4eba\u662f\u5bb6\u8c31\u7684\u8d77\u59cb\uff0c\u65e0\u6cd5\u5220\u9664\u3002"},"You do not have permission to delete people.":{"str":"\u60a8\u6ca1\u6709\u6743\u9650\u5220\u9664\u4eba\u5458\u3002"},"Click to add your relatives:":{"str":"\u70b9\u51fb\u4ee5\u6dfb\u52a0\u60a8\u7684\u4eb2\u5c5e\uff1a"},"Click to add relatives of $:":{"str":"\u70b9\u51fb\u4ee5\u6dfb\u52a0 $ \u7684\u4eb2\u5c5e\uff1a"},"Add primary mother":{"str":"\u6dfb\u52a0\u4e3b\u8981\u6bcd\u4eb2"},"Add mother":{"str":"\u6dfb\u52a0\u6bcd\u4eb2"},"Add primary father":{"str":"\u6dfb\u52a0\u4e3b\u8981\u7236\u4eb2"},"Add father":{"str":"\u6dfb\u52a0\u7236\u4eb2"},"Add primary parents":{"str":"\u6dfb\u52a0\u4e3b\u8981\u7236\u6bcd"},"Add new parents":{"str":"\u6dfb\u52a0\u65b0\u7236\u6bcd"},"Add brother/sister":{"str":"\u6dfb\u52a0\u5144\u5f1f/\u59d0\u59b9"},"Add child":{"str":"\u6dfb\u52a0\u5b69\u5b50"},"Add second mother":{"str":"\u6dfb\u52a0\u7b2c\u4e8c\u6bcd\u4eb2"},"Add second father":{"str":"\u6dfb\u52a0\u7b2c\u4e8c\u7236\u4eb2"},"Add second parents":{"str":"\u6dfb\u52a0\u7b2c\u4e8c\u7236\u6bcd"},"Add third mother":{"str":"\u6dfb\u52a0\u7b2c\u4e09\u6bcd\u4eb2"},"Add third father":{"str":"\u6dfb\u52a0\u7b2c\u4e09\u7236\u4eb2"},"Add third parents":{"str":"\u6dfb\u52a0\u7b2c\u4e09\u7236\u6bcd"},"To add your parents, brothers or sisters, please sign in then create a new family branch.":{"str":"\u8981\u6dfb\u52a0\u60a8\u7684\u7236\u6bcd\u3001\u5144\u5f1f\u6216\u59d0\u59b9\uff0c\u8bf7\u767b\u5f55\u7136\u540e\u521b\u5efa\u4e00\u4e2a\u65b0\u7684\u5bb6\u5ead\u5206\u652f\u3002"},"To add your parents, brothers or sisters, please create a new family branch.":{"str":"\u8981\u6dfb\u52a0\u60a8\u7684\u7236\u6bcd\u3001\u5144\u5f1f\u6216\u59d0\u59b9\uff0c\u8bf7\u521b\u5efa\u4e00\u4e2a\u65b0\u7684\u5bb6\u5ead\u5206\u652f\u3002"},"Create new family for me":{"str":"\u4e3a\u6211\u521b\u5efa\u65b0\u5bb6\u5ead"},"To add $'s parents, brothers or sisters, a new family branch can be created after signing in.":{"str":"\u8981\u6dfb\u52a0 $ \u7684\u7236\u6bcd\u3001\u5144\u5f1f\u6216\u59d0\u59b9\uff0c\u767b\u5f55\u540e\u53ef\u4ee5\u521b\u5efa\u4e00\u4e2a\u65b0\u7684\u5bb6\u5ead\u5206\u652f\u3002"},"To add $'s parents, brothers or sisters, a new family branch can be created.":{"str":"\u8981\u6dfb\u52a0 $ \u7684\u7236\u6bcd\u3001\u5144\u5f1f\u6216\u59d0\u59b9\uff0c\u53ef\u4ee5\u521b\u5efa\u4e00\u4e2a\u65b0\u7684\u5bb6\u5ead\u5206\u652f\u3002"},"Create new family for $":{"str":"\u4e3a$\u521b\u5efa\u65b0\u5bb6\u5ead"},"You do not have permission to add new people.":{"str":"\u60a8\u6ca1\u6709\u6743\u9650\u6dfb\u52a0\u65b0\u6210\u5458\u3002"},"To protect your privacy, phone numbers, addresses and emails have been removed.":{"str":"\u4e3a\u4fdd\u62a4\u60a8\u7684\u9690\u79c1\uff0c\u7535\u8bdd\u53f7\u7801\u3001\u5730\u5740\u548c\u7535\u5b50\u90ae\u4ef6\u5df2\u88ab\u79fb\u9664\u3002"},"Location":{"str":"\u4f4d\u7f6e"},"End date":{"str":"\u7ed3\u675f\u65e5\u671f"},"Engagement date":{"str":"\u8ba2\u5a5a\u65e5\u671f"},"Separation date":{"str":"\u5206\u5c45\u65e5\u671f"},"Annulment date":{"str":"\u5a5a\u59fb\u65e0\u6548\u65e5\u671f"},"Start date":{"str":"\u5f00\u59cb\u65e5\u671f"},"Before the Common Era (BC)":{"str":"\u516c\u5143\u524d (BC)"},"BCE":{"str":"\u516c\u5143\u524d (BCE)"},"Day":{"str":"\u65e5"},"Month":{"str":"\u6708"},"Year":{"str":"\u5e74"},"Show more date options":{"str":"\u663e\u793a\u66f4\u591a\u65e5\u671f\u9009\u9879"},"Swap two dates":{"str":"\u4ea4\u6362\u4e24\u4e2a\u65e5\u671f"},"View $1 $2":{"str":"\u67e5\u770b$1 $2"},"Download $1 $2":{"str":"\u4e0b\u8f7d$1 $2"},"This person has no files attached.":{"str":"\u6b64\u4eba\u6ca1\u6709\u9644\u52a0\u6587\u4ef6\u3002"},"Set mother to $":{"str":"\u5c06\u6bcd\u4eb2\u8bbe\u4e3a$"},"Set father to $":{"str":"\u5c06\u7236\u4eb2\u8bbe\u4e3a$"},"Set second mother to $":{"str":"\u5c06\u7b2c\u4e8c\u6bcd\u4eb2\u8bbe\u4e3a$"},"Set second father to $":{"str":"\u5c06\u7b2c\u4e8c\u7236\u4eb2\u8bbe\u4e3a$"},"Set third mother to $":{"str":"\u5c06\u7b2c\u4e09\u6bcd\u4eb2\u8bbe\u4e3a$"},"Set third father to $":{"str":"\u5c06\u7b2c\u4e09\u7236\u4eb2\u8bbe\u4e3a$"},"Set stepmother to $":{"str":"\u5c06\u7ee7\u6bcd\u8bbe\u4e3a$"},"Set stepfather to $":{"str":"\u5c06\u7ee7\u7236\u8bbe\u4e3a$"},"Add new mother":{"str":"\u6dfb\u52a0\u65b0\u6bcd\u4eb2"},"Add new father":{"str":"\u6dfb\u52a0\u65b0\u7236\u4eb2"},"Add new second mother":{"str":"\u6dfb\u52a0\u65b0\u7b2c\u4e8c\u6bcd\u4eb2"},"Add new second father":{"str":"\u6dfb\u52a0\u65b0\u7b2c\u4e8c\u7236\u4eb2"},"Add new third mother":{"str":"\u6dfb\u52a0\u65b0\u7b2c\u4e09\u6bcd\u4eb2"},"Add new third father":{"str":"\u6dfb\u52a0\u65b0\u7b2c\u4e09\u7236\u4eb2"},"Move left (born earlier)":{"str":"\u5411\u5de6\u79fb\u52a8\uff08\u51fa\u751f\u8f83\u65e9\uff09"},"Move right (born later)":{"str":"\u5411\u53f3\u79fb\u52a8\uff08\u51fa\u751f\u8f83\u665a\uff09"},"Set partner to $":{"str":"\u5c06\u4f34\u4fa3\u8bbe\u4e3a$"},"Add new primary partner":{"str":"\u6dfb\u52a0\u65b0\u4e3b\u8981\u4f34\u4fa3"},"Add new extra partner":{"str":"\u6dfb\u52a0\u65b0\u989d\u5916\u4f34\u4fa3"},"Add new partner":{"str":"\u6dfb\u52a0\u65b0\u4f34\u4fa3"},"Add new ex-partner":{"str":"\u6dfb\u52a0\u65b0\u524d\u4f34\u4fa3"},"Set primary partner to $":{"str":"\u5c06\u4e3b\u8981\u4f34\u4fa3\u8bbe\u4e3a$"},"Change $ to ex-partner":{"str":"\u5c06$\u66f4\u6539\u4e3a\u524d\u4f34\u4fa3"},"Change $ to extra partner":{"str":"\u5c06$\u66f4\u6539\u4e3a\u989d\u5916\u4f34\u4fa3"},"Remove partner $":{"str":"\u79fb\u9664\u4f34\u4fa3$"},"Remove ex-partner $":{"str":"\u79fb\u9664\u524d\u4f34\u4fa3$"},"Add adopted child with $":{"str":"\u4e0e$\u6dfb\u52a0\u9886\u517b\u5b50\u5973"},"Add adopted child with new partner":{"str":"\u4e0e\u65b0\u4f34\u4fa3\u6dfb\u52a0\u9886\u517b\u5b50\u5973"},"Add adopted child without partner":{"str":"\u65e0\u4f34\u4fa3\u6dfb\u52a0\u9886\u517b\u5b50\u5973"},"Add foster child with $":{"str":"\u4e0e$\u6dfb\u52a0\u5bc4\u517b\u5b50\u5973"},"Add foster child with new partner":{"str":"\u4e0e\u65b0\u4f34\u4fa3\u6dfb\u52a0\u5bc4\u517b\u5b50\u5973"},"Add foster child without partner":{"str":"\u6dfb\u52a0\u6ca1\u6709\u4f34\u4fa3\u7684\u5bc4\u517b\u5b50\u5973"},"Add godchild with $":{"str":"\u6dfb\u52a0\u4e0e$\u7684\u6559\u5b50"},"Add godchild with new partner":{"str":"\u6dfb\u52a0\u4e0e\u65b0\u4f34\u4fa3\u7684\u6559\u5b50"},"Add godchild without partner":{"str":"\u6dfb\u52a0\u6ca1\u6709\u4f34\u4fa3\u7684\u6559\u5b50"},"Add child with $":{"str":"\u6dfb\u52a0\u4e0e$\u7684\u5b50\u5973"},"Add child with new partner":{"str":"\u6dfb\u52a0\u4e0e\u65b0\u4f34\u4fa3\u7684\u5b50\u5973"},"Add child without partner":{"str":"\u6dfb\u52a0\u6ca1\u6709\u4f34\u4fa3\u7684\u5b50\u5973"},"Add adopted child":{"str":"\u6dfb\u52a0\u9886\u517b\u5b50\u5973"},"Add foster child":{"str":"\u6dfb\u52a0\u5bc4\u517b\u5b50\u5973"},"Add godchild":{"str":"\u6dfb\u52a0\u6559\u5b50"},"To add a child who is already on the tree, select that child and set their parent to this person.":{"str":"\u8981\u6dfb\u52a0\u5df2\u7ecf\u5728\u5bb6\u8c31\u4e0a\u7684\u5b50\u5973\uff0c\u8bf7\u9009\u62e9\u8be5\u5b50\u5973\u5e76\u5c06\u5176\u7236\u6bcd\u8bbe\u7f6e\u4e3a\u6b64\u4eba\u3002"},"Choose the person to partner with:":{"str":"\u9009\u62e9\u8981\u4e0e\u4e4b\u6210\u4e3a\u4f34\u4fa3\u7684\u4eba\uff1a"},"Add as primary partner":{"str":"\u6dfb\u52a0\u4e3a\u4e3b\u8981\u4f34\u4fa3"},"Add as extra partner":{"str":"\u6dfb\u52a0\u4e3a\u989d\u5916\u4f34\u4fa3"},"Add as partner":{"str":"\u6dfb\u52a0\u4e3a\u4f34\u4fa3"},"Add as ex-partner":{"str":"\u6dfb\u52a0\u4e3a\u524d\u4f34\u4fa3"},"Second parents":{"str":"\u7b2c\u4e8c\u7236\u6bcd"},"Type of second parents":{"str":"\u7b2c\u4e8c\u7236\u6bcd\u7684\u7c7b\u578b"},"Third parents":{"str":"\u7b2c\u4e09\u7236\u6bcd"},"Type of third parents":{"str":"\u7b2c\u4e09\u7236\u6bcd\u7684\u7c7b\u578b"},"Primary parents":{"str":"\u4e3b\u8981\u7236\u6bcd"},"Type of primary parents":{"str":"\u4e3b\u8981\u7236\u6bcd\u7684\u7c7b\u578b"},"Switch primary and second parents":{"str":"\u5207\u6362\u4e3b\u8981\u7236\u6bcd\u548c\u7b2c\u4e8c\u7236\u6bcd"},"This choice of parents is not allowed because it would split the tree. Please try deleting the parents and their relatives instead, or deleting this person.":{"str":"\u4e0d\u5141\u8bb8\u9009\u62e9\u8fd9\u4e9b\u7236\u6bcd\uff0c\u56e0\u4e3a\u8fd9\u4f1a\u5206\u88c2\u5bb6\u8c31\u3002\u8bf7\u5c1d\u8bd5\u5220\u9664\u8fd9\u4e9b\u7236\u6bcd\u53ca\u5176\u4eb2\u5c5e\uff0c\u6216\u5220\u9664\u6b64\u4eba\u3002"},"Add adopted parents":{"str":"\u6dfb\u52a0\u9886\u517b\u7236\u6bcd"},"Add foster parents":{"str":"\u6dfb\u52a0\u5bc4\u517b\u7236\u6bcd"},"Add godmother":{"str":"\u6dfb\u52a0\u6559\u6bcd"},"Add godfather":{"str":"\u6dfb\u52a0\u6559\u7236"},"Add biological parents":{"str":"\u6dfb\u52a0\u751f\u7236\u6bcd"},"Add biological parents (was adopted)":{"str":"\u6dfb\u52a0\u751f\u7236\u6bcd\uff08\u5df2\u88ab\u9886\u517b\uff09"},"Add biological parents (was fostered)":{"str":"\u6dfb\u52a0\u751f\u7236\u6bcd\uff08\u5df2\u88ab\u5bc4\u517b\uff09"},"Choose parents from tree":{"str":"\u4ece\u5bb6\u8c31\u4e2d\u9009\u62e9\u7236\u6bcd"},"Are you sure you want to permanently delete $?":{"str":"\u60a8\u786e\u5b9a\u8981\u6c38\u4e45\u5220\u9664$\u5417\uff1f"},"This will create a new family for your relatives.":{"str":"\u8fd9\u5c06\u4e3a\u60a8\u7684\u4eb2\u5c5e\u521b\u5efa\u4e00\u4e2a\u65b0\u5bb6\u5ead\u3002"},"This will create a new family for $'s relatives.":{"str":"\u8fd9\u5c06\u4e3a$\u7684\u4eb2\u5c5e\u521b\u5efa\u4e00\u4e2a\u65b0\u5bb6\u5ead\u3002"},"Are you sure you want to proceed?":{"str":"\u60a8\u786e\u5b9a\u8981\u7ee7\u7eed\u5417\uff1f"},"Please wait a few moments...":{"str":"\u8bf7\u7a0d\u7b49\u7247\u523b..."},"Click to change photo":{"str":"\u70b9\u51fb\u66f4\u6362\u7167\u7247"},"Add my photo":{"str":"\u6dfb\u52a0\u6211\u7684\u7167\u7247"},"Add photo for $":{"str":"\u4e3a$\u6dfb\u52a0\u7167\u7247"},"Are you sure you want to clear this entire family and start again?":{"str":"\u60a8\u786e\u5b9a\u8981\u6e05\u9664\u6574\u4e2a\u5bb6\u5ead\u5e76\u91cd\u65b0\u5f00\u59cb\u5417\uff1f"},"None of your work will be saved!":{"str":"\u60a8\u7684\u5de5\u4f5c\u5c06\u4e0d\u4f1a\u88ab\u4fdd\u5b58\uff01"},"^ birthday":{"str":"\u7b2c^\u4e2a\u751f\u65e5"},"^ anniversary":{"str":"\u7b2c^\u4e2a\u5468\u5e74\u7eaa\u5ff5"},"There are no birthdays or anniversaries to display.":{"str":"\u6ca1\u6709\u751f\u65e5\u6216\u5468\u5e74\u7eaa\u5ff5\u53ef\u663e\u793a\u3002"},"<$> born":{"str":"<$> \u51fa\u751f"},"<$> died":{"str":"<$> \u53bb\u4e16"},"<$1> and <$2> married":{"str":"<$1> \u548c <$2> \u7ed3\u5a5a"},"There are no birth dates, death dates or marriages to display.":{"str":"\u6ca1\u6709\u51fa\u751f\u65e5\u671f\u3001\u53bb\u4e16\u65e5\u671f\u6216\u5a5a\u59fb\u53ef\u663e\u793a\u3002"},"Create account":{"str":"\u521b\u5efa\u8d26\u6237"},"Log in":{"str":"\u767b\u5f55"},"Duplicate:":{"str":"\u91cd\u590d\uff1a"},"Not yet born":{"str":"\u5c1a\u672a\u51fa\u751f"},"Born":{"str":"\u51fa\u751f"},"Died":{"str":"\u53bb\u4e16"},"Buried":{"str":"\u5b89\u846c"},"(h)":{"str":"\uff08\u592b\uff09"},"(w)":{"str":"\uff08\u59bb\uff09"},"(m)":{"str":"\uff08\u5a5a\uff09"},"m.":{"str":"\u7ed3\u5a5a"},"d.":{"str":"\u53bb\u4e16"},"Daughter-in-law":{"str":"\u513f\u5ab3"},"Son-in-law":{"str":"\u5973\u5a7f"},"Child-in-law":{"str":"\u5b50\u5973\u7684\u914d\u5076"},"Mother-in-law":{"str":"\u5cb3\u6bcd/\u5a46\u5a46"},"Father-in-law":{"str":"\u5cb3\u7236/\u516c\u516c"},"Parent-in-law":{"str":"\u5cb3\u7236\u6bcd/\u516c\u5a46"},"Sister-in-law":{"str":"\u5ac2\u5b50/\u5f1f\u5ab3/\u5c0f\u59d1/\u5927\u59d1"},"Brother-in-law":{"str":"\u59d0\u592b/\u59b9\u592b/\u5c0f\u53d4/\u5927\u4f2f"},"Sibling-in-law":{"str":"\u914d\u5076\u7684\u5144\u5f1f\u59d0\u59b9"},"Unrelated":{"str":"\u65e0\u5173"},"Grandmother":{"str":"\u7956\u6bcd"},"Grandfather":{"str":"\u7956\u7236"},"Grandparent":{"str":"\u7956\u7236\u6bcd"},"Granddaughter":{"str":"\u5b59\u5973"},"Grandson":{"str":"\u5b59\u5b50"},"Grandchild":{"str":"\u5b59\u8f88"},"Great-grandmother":{"str":"\u66fe\u7956\u6bcd"},"Great-grandfather":{"str":"\u66fe\u7956\u7236"},"Great-grandparent":{"str":"\u66fe\u7956\u7236\u6bcd"},"Great-granddaughter":{"str":"\u66fe\u5b59\u5973"},"Great-grandson":{"str":"\u66fe\u5b59\u5b50"},"Great-grandchild":{"str":"\u66fe\u5b59\u8f88"},"Great-great-grandmother":{"str":"\u9ad8\u7956\u6bcd"},"Great-great-grandfather":{"str":"\u9ad8\u7956\u7236"},"Great-great-grandparent":{"str":"\u9ad8\u7956\u7236\u6bcd"},"Great-great-granddaughter":{"str":"\u9ad8\u66fe\u5b59\u5973"},"Great-great-grandson":{"str":"\u9ad8\u66fe\u5b59\u5b50"},"Great-great-grandchild":{"str":"\u9ad8\u66fe\u5b59\u8f88"},"Aunt":{"str":"\u59d1\u59d1/\u59e8"},"Uncle":{"str":"\u53d4\u53d4/\u8205"},"Auncle":{"str":"\u53d4\u8205"},"Great-aunt":{"str":"\u59d1\u5a46/\u59e8\u5a46"},"Great-uncle":{"str":"\u53d4\u516c/\u8205\u516c"},"Great-auncle":{"str":"\u53d4\u8205\u516c"},"Great-great-aunt":{"str":"\u66fe\u59d1\u5a46/\u66fe\u59e8\u5a46"},"Great-great-uncle":{"str":"\u66fe\u53d4\u516c/\u66fe\u8205\u516c"},"Great-great-auncle":{"str":"\u66fe\u53d4\u8205\u516c"},"Niece":{"str":"\u4f84\u5973/\u5916\u7525\u5973"},"Nephew":{"str":"\u4f84\u5b50/\u5916\u7525"},"Nibling":{"str":"\u4f84\u5b50/\u4f84\u5973"},"Great-niece":{"str":"\u4f84\u5b59\u5973"},"Great-nephew":{"str":"\u4f84\u5b59"},"Great-nibling":{"str":"\u4f84\u5b59/\u4f84\u5b59\u5973"},"Great-great-niece":{"str":"\u4f84\u66fe\u5b59\u5973"},"Great-great-nephew":{"str":"\u4f84\u66fe\u5b59"},"Great-great-nibling":{"str":"\u4f84\u66fe\u5b59/\u4f84\u66fe\u5b59\u5973"},"Expand this relationship":{"str":"\u5c55\u5f00\u6b64\u5173\u7cfb"},"Contract this relationship":{"str":"\u6536\u7f29\u6b64\u5173\u7cfb"},"Are you sure you want to stop $ from accessing this family tree?":{"str":"\u60a8\u786e\u5b9a\u8981\u963b\u6b62$\u8bbf\u95ee\u6b64\u5bb6\u8c31\u5417\uff1f"},"This will also disable the invitation links created for this person.":{"str":"\u8fd9\u4e5f\u5c06\u7981\u7528\u4e3a\u6b64\u4eba\u521b\u5efa\u7684\u9080\u8bf7\u94fe\u63a5\u3002"},"Are you sure you want to disable this invitation for $?":{"str":"\u60a8\u786e\u5b9a\u8981\u7981\u7528$\u7684\u6b64\u9080\u8bf7\u5417\uff1f"},"Stepsister":{"str":"\u7ee7\u59d0\u59b9"},"Stepbrother":{"str":"\u7ee7\u5144\u5f1f"},"Stepsibling":{"str":"\u7ee7\u5144\u5f1f\u59d0\u59b9"},"Female cousin":{"str":"\u5973\u6027\u5802/\u8868\u4eb2"},"Male cousin":{"str":"\u7537\u6027\u5802/\u8868\u4eb2"},"Cousin":{"str":"\u5802/\u8868\u4eb2"},"Female second cousin":{"str":"\u5973\u6027\u4e8c\u7b49\u5802/\u8868\u4eb2"},"Second cousin":{"str":"\u4e8c\u7b49\u5802/\u8868\u4eb2"},"Female third cousin":{"str":"\u5973\u6027\u4e09\u7b49\u5802/\u8868\u4eb2"},"Third cousin":{"str":"\u4e09\u7b49\u5802/\u8868\u4eb2"},"Female fourth cousin":{"str":"\u5973\u6027\u56db\u7b49\u5802/\u8868\u4eb2"},"Male fourth cousin":{"str":"\u7537\u6027\u56db\u7b49\u5802/\u8868\u4eb2"},"Fourth cousin":{"str":"\u56db\u7b49\u5802/\u8868\u4eb2"},"Tree stats":{"str":"\u5bb6\u8c31\u7edf\u8ba1"},"Great-...-grandmother (# gens)":{"str":"\u9ad8\u7956\u6bcd\uff08#\u4ee3\uff09"},"Great-...-grandfather (# gens)":{"str":"\u9ad8\u7956\u7236\uff08#\u4ee3\uff09"},"Great-...-grandparent (# gens)":{"str":"\u9ad8\u7956\u7236\u6bcd\uff08#\u4ee3\uff09"},"Great-...-granddaughter (# gens)":{"str":"\u9ad8\u5b59\u5973\uff08#\u4ee3\uff09"},"Great-...-grandson (# gens)":{"str":"\u9ad8\u5b59\uff08#\u4ee3\uff09"},"Great-...-grandchild (# gens)":{"str":"\u9ad8\u5b59\u5b50\u5973\uff08#\u4ee3\uff09"},"Great-...-aunt (# gens)":{"str":"\u9ad8\u59d1/\u59e8\uff08#\u4ee3\uff09"},"Great-...-uncle (# gens)":{"str":"\u9ad8\u53d4/\u8205\uff08#\u4ee3\uff09"},"Great-...-auncle (# gens)":{"str":"\u9ad8\u53d4/\u8205/\u59d1/\u59e8\uff08#\u4ee3\uff09"},"Great-...-niece (# gens)":{"str":"\u9ad8\u4f84\u5973\uff08#\u4ee3\uff09"},"Great-...-nephew (# gens)":{"str":"\u9ad8\u4f84\uff08#\u4ee3\uff09"},"Great-...-nibling (# gens)":{"str":"\u9ad8\u4f84\u5b50\u5973\uff08#\u4ee3\uff09"},"Distant female cousin (# degrees)":{"str":"\u8fdc\u623f\u5973\u6027\u5802/\u8868\u4eb2\uff08#\u5ea6\uff09"},"Distant male cousin (# degrees)":{"str":"\u8fdc\u623f\u7537\u6027\u5802/\u8868\u4eb2\uff08#\u5ea6\uff09"},"Distant cousin (# degrees)":{"str":"\u8fdc\u623f\u5802/\u8868\u4eb2\uff08#\u5ea6\uff09"},"birthday":{"str":"\u751f\u65e5"},"anniversary":{"str":"\u5468\u5e74\u7eaa\u5ff5"},"Male second cousin":{"str":"\u7537\u6027\u4e8c\u7b49\u5802/\u8868\u4eb2"},"Male third cousin":{"str":"\u7537\u6027\u4e09\u7b49\u5802/\u8868\u4eb2"},"Some of the $ translation is AI-generated, so it may not be perfect.":{"str":"\u90e8\u5206$\u7ffb\u8bd1\u662f\u7531AI\u751f\u6210\u7684\uff0c\u56e0\u6b64\u53ef\u80fd\u4e0d\u5b8c\u7f8e\u3002"},"Please contact us if you would like to help improve the $ translation.":{"str":"\u5982\u679c\u60a8\u60f3\u5e2e\u52a9\u6539\u8fdb$\u7ffb\u8bd1\uff0c\u8bf7\u8054\u7cfb\u6211\u4eec\u3002"},"Mth_1":{"str":"1\u6708"},"Month_1":{"str":"\u4e00\u6708"},"Mth_2":{"str":"2\u6708"},"Month_2":{"str":"\u4e8c\u6708"},"Mth_3":{"str":"3\u6708"},"Month_3":{"str":"\u4e09\u6708"},"Mth_4":{"str":"4\u6708"},"Month_4":{"str":"\u56db\u6708"},"Mth_5":{"str":"5\u6708"},"Month_5":{"str":"\u4e94\u6708"},"Mth_6":{"str":"6\u6708"},"Month_6":{"str":"\u516d\u6708"},"Mth_7":{"str":"7\u6708"},"Month_7":{"str":"\u4e03\u6708"},"Mth_8":{"str":"8\u6708"},"Month_8":{"str":"\u516b\u6708"},"Mth_9":{"str":"9\u6708"},"Month_9":{"str":"\u4e5d\u6708"},"Mth_10":{"str":"10\u6708"},"Month_10":{"str":"\u5341\u6708"},"Mth_11":{"str":"11\u6708"},"Month_11":{"str":"\u5341\u4e00\u6708"},"Mth_12":{"str":"12\u6708"},"Month_12":{"str":"\u5341\u4e8c\u6708"},"This link will allow <> to view and download this family, but not make changes.":{"str":"\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u548c\u4e0b\u8f7d\u6b64\u5bb6\u65cf\uff0c\u4f46\u4e0d\u80fd\u8fdb\u884c\u66f4\u6539\u3002"},"This link will allow <> to view and download this family and its files, but not make changes.":{"str":"\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u548c\u4e0b\u8f7d\u6b64\u5bb6\u65cf\u53ca\u5176\u6587\u4ef6\uff0c\u4f46\u4e0d\u80fd\u8fdb\u884c\u66f4\u6539\u3002"},"This link will allow <> to view, download, modify and share this family.":{"str":"\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u3001\u4e0b\u8f7d\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u65cf\u3002"},"This link will allow <> to view, download, modify and share this family, but only view and download files.":{"str":"\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u3001\u4e0b\u8f7d\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u65cf\uff0c\u4f46\u53ea\u80fd\u67e5\u770b\u548c\u4e0b\u8f7d\u6587\u4ef6\u3002"},"This link will allow <> to view, modify and share this family, and upload, edit and delete files.":{"str":"\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u65cf\uff0c\u5e76\u4e0a\u4f20\u3001\u7f16\u8f91\u548c\u5220\u9664\u6587\u4ef6\u3002"}};
+    </script>
+    <script type="text/javascript" src="script/common.js"></script>
+    <script type="text/javascript" src="script/family.js"></script>
+    <script type="text/javascript" src="script/edit.js"></script>
+    <script type="text/javascript" src="script/build.js"></script>
+    <script type="text/javascript" src="script/navigation.js"></script>
+    <script type="text/javascript" src="script/tree.js"></script>
+    <script type="text/javascript" src="script/sidebar.js"></script>
+    <script type="text/javascript" src="script/upload.js"></script>
+</HEAD>
+
+<BODY CLASS="light" STYLE="overflow:hidden;" onLoad="PL();" onResize="EPR();">
+<TABLE WIDTH="100%" HEIGHT="100%" CELLSPACING=0 CELLPADDING=0>
+
+
+
+    <TR HEIGHT="8">
+        <TD STYLE="border-bottom:solid #666666 1px; padding:8px;" VALIGN="middle">
+            <FORM NAME="topform" ACTION="./" METHOD="POST">
+                <TABLE WIDTH="100%" HEIGHT="100%" CELLSPACING=0 CELLPADDING=0><TR VALIGN="middle">
+                    <TD NOWRAP WIDTH="5%"><FONT STYLE="font-size:28px;">		<SPAN ID="lfamilyname"><IMG SRC="logo-320x64.png" CLASS="felogo" WIDTH="160" HEIGHT="32" BORDER="0" ALT="Family Echo" ALIGN="ABSMIDDLE"></SPAN>&nbsp;<SPAN ID="lfamilyinfo"></SPAN> <SPAN ID="lfamilylabels"></SPAN>
+
+                        <IFRAME ID="backframe" WIDTH="1" HEIGHT="1" FRAMEBORDER="0" SCROLLING="no"></IFRAME>
+                    </FONT></TD>
+                    <TD WIDTH="*" ALIGN="center" NOWRAP><DIV ID="ads_banner">
+                        <A HREF="#" onClick="var elem=document.getElementById('ads_banner'); elem.parentNode.removeChild(elem); return false;" STYLE="font-size:9px; text-decoration:none; vertical-align:top;">隐藏：</A>
+                        <DIV STYLE="display:inline-block; vertical-align:top; min-width:728px;"><div id="adngin-top_banner-0" style="max-width:970px; height:90px; overflow:hidden;"></div></DIV>
+                    </DIV></TD>
+
+                    <TD NOWRAP STYLE="text-align:right;" WIDTH="5%">
+
+                        <INPUT TYPE="hidden" ID="newscript" NAME="newscript" VALUE="">
+                        <INPUT TYPE="hidden" ID="personid" NAME="personid" VALUE="START">
+                        <INPUT TYPE="hidden" ID="viewpersonid" NAME="viewpersonid" VALUE="START">
+                        <INPUT TYPE="hidden" ID="viewmode" NAME="viewstate" VALUE="edit">
+                        <INPUT TYPE="hidden" ID="name" NAME="name" VALUE="">
+                        <INPUT TYPE="hidden" ID="email" NAME="email" VALUE="">
+
+
+                        <INPUT TYPE="hidden" NAME="affiliate" VALUE="">
+                        <INPUT TYPE="hidden" ID="sessionid" VALUE="">
+                        <INPUT TYPE="hidden" ID="familyid" NAME="familyid" VALUE="">
+                        <INPUT TYPE="hidden" ID="importcacheid" NAME="importcacheid" VALUE="">
+                        <INPUT TYPE="hidden" ID="checksum" NAME="checksum" VALUE="">
+
+                        <INPUT TYPE="hidden" NAME="do_startbranch" ID="do_startbranch">
+
+                        <SPAN>
+			<SPAN ID="lsave" STYLE="display:none;"><FONT COLOR="red"><B>家谱未保存。</B></FONT> <br/><br/>要保存、分享、添加照片：</SPAN>
+			<SPAN ID="linitial" STYLE="display:none;">想要保存或检索家谱吗？</SPAN>
+			<SPAN ID="lreadonly" STYLE="display:none;"><FONT COLOR="red"><B>此家谱为只读。</B></FONT></SPAN>
+			<SPAN ID="lwriteone" STYLE="display:none;"><FONT COLOR="red"><B>您只能编辑自己的详细信息。</B></FONT> <br/><br/> 登录以编辑他人或添加更多。</SPAN>
+			<SPAN ID="lsaving" STYLE="display:none;">正在保存更改... </SPAN>
+			<SPAN ID="lsaved" STYLE="display:none;">所有更改已保存。 </SPAN>
+		</SPAN>
+
+                        <br/><br/>
+
+                        <SPAN ID="savefamily" STYLE="display:none;"><INPUT TYPE="submit" VALUE="保存" CLASS="ibutton" onClick="ESS(); return false;"> &nbsp;</SPAN>
+                        <INPUT TYPE="submit" NAME="do_signin" ID="do_signin" VALUE="登录" CLASS="ibutton" onClick="ESC(); return true;">
+                    </TD>
+                </TR></TABLE>
+            </FORM>
+        </TD>
+    </TR>
+    <TR HEIGHT="*"><TD STYLE="position:relative;">
+
+        <SCRIPT TYPE="text/javascript"><!--
+        document.write('<DIV ID="noajax"'+(document.getElementById ? ' STYLE="display:none;"' : '')+'><TABLE HEIGHT="100%" WIDTH="100%"><TR><TD ALIGN="center"><FONT COLOR="red"><B>Sorry. This site requires a modern web browser such as Firefox, Internet Explorer 6+ or Safari.</B></FONT></TD></TR></TABLE></DIV>');
+        --></SCRIPT>
+
+        <NOSCRIPT>
+            <TABLE HEIGHT="100%" WIDTH="100%"><TR><TD ALIGN="center">
+                <FONT COLOR="red"><B>
+                    Sorry - this site requires JavaScript in order to display your family.
+                    <P>
+                        If a security warning has appeared at the top of the browser window,
+                        please click it to allow blocked content.
+                    <P>
+                        Otherwise, please switch on JavaScript in the Options... window of your browser.
+                </B></FONT>
+            </TD></TR></TABLE>
+        </NOSCRIPT>
+
+        <DIV ID="main" CLASS="fullsize" STYLE="position:relative;" onMouseDown="EMD();" onTouchStart="EMD();">
+
+            <DIV ID="treediv" CLASS="dright" STYLE="top:0px; height:100%; overflow:hidden; background:solid;"><DIV ID="treemargin" CLASS="marginon" STYLE="cursor:move;"><DIV ID="treebg" CLASS="fullsize rbody" STYLE="position:relative;"></DIV></DIV></DIV>
+
+            <DIV ID="fadediv" CLASS="dright" STYLE="bottom:33px; height:4px;"></DIV>
+
+            <DIV ID="navdiv" CLASS="dright" STYLE="bottom:0px; height:33px; overflow:hidden; "><DIV ID="navmargin" CLASS="marginon">
+                <DIV ID="navbg" CLASS="rbody" STYLE="height:33px; position:relative;">
+
+                    <DIV ID="navrow" STYLE="position: absolute; height:33px; line-height:33px; bottom:0; left:0; right:0; text-align:center; white-space: nowrap; margin:0 32px;">
+                        <A HREF="#" onClick="ETO(); return false;" TITLE="显示/隐藏选项"><IMG SRC="data:;base64,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" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN ID="optionslinktext">选项</SPAN></A>
+                        <SPAN ID="printbutton">
+								<SPAN CLASS="buttondash">&ndash;</SPAN>
+								<A HREF="#" onClick="ESM('print'); return false;" TITLE="打印家谱"><IMG SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAYAAAAehFoBAAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACygAwAEAAAAAQAAACwAAAAA06l3rAAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAABRRJREFUWAnVmMurHEUUxu81vl9BEQlBV0KCbhRMFkKQCD72QhDxD0jE7IIbwZXgxq0gZisoQVRcZCG4EbIQlJBN8AFZhMQkCInvvDTG36+nvmt1T7pn5jIz0QNfn6pTVed8VXWqumdWVoZldbh5Ia2DMYcab4DO3+BesKOUh/rTZd1ylZHGOwTOlbKxp5aamE50uAwYK1JziK1XbygtG9FnwTLIGsNYxlTCYVQrzxtbtX8rDlbU54Fp8RV4C9wJrgBXwPZaU21s6u4Kdftal9Tv4FWwHRhLuxI9qpVnH+G6UwYew/hh3TDH8vP4knBi9bqehnBW6tbiRf0XiL3X+YQGyRn/IojviT6nIZxZ59T+SQBTYh7S9Z16r+8uYWfooMw0unYQW3TdNku5jlOPi99ar01EwjaY/K5aGrKa0TSNtaWvbeuV+K99xRZt2xpHCWswJ5WbgXUv8UulnpnmmrHPvFJCn+ZwfBtL/4pa0toug4ZjyOzFsBvUyR/im7HfAn4DZ4DObZuHGN/JbwJ3ARfpFAjRxHFS74K3wco+YMP/Afuc4Q/AVfwRHAFZdYqNmB7anFDyqmmY48MYkW4M4z4G7geufpMfGg9Y+Y+K3OR4ub7WMjOTPYdwGfyzoznIcrKs3bIHLtya2yADsi02OptFIyQkJ7YCD3feoranT7itpkBbQ1CtLJqs/pUQep/yt+AweKDYr8mtNtJvqZJ0fJKoLwK/2h4Be4CSu3lUK8/rSTirexwu5qmfrcrRkWrteDGNknqtsuSChF0wCT8LXgGfgw+AYl6PrXK2penR8/BQjg3s6bsesxy+KKjHJ89rW3NttAydimQduKxrzngi6UKxLUMrHLK3M2Rbe9jcay6K8b4G/kxKbIpt6SNcD/iUIU+3hy2sZg4/AzKBsUB9t0Ts/oJ9fGzU4gzGyq/mcGhF61vhJLz6D3AP8MPoHXAHyKuTYmv76p1Jm7pesdq3h1n/LwM/cCzX7fprSR/hulMc+CbaXzfMsfwUviScWL2upyGcWebjXu0p9rJ32+4uddREsf+vwPF+ZFn34zy+EwvTtUXCmVU6x+bXfz2hXDWmg7+cHwR+9vnut57x6tpnyuqbwEnwAjhR6qjWNZaY9tWXV2p8X7UxFQkqzjjiH3MhGptjJLgTPAFmFSe6E7wH4otiI8YyphI+dXnVAVnJhyn7irzNHoik/J2VeiaWl8jHtG0HW4A+3N4hkYyfj98DxyrxFd/GcvX9/egKKxeA3JRmEgcpuF1utboLiWv7BCjzfE3Hl76NkVhdDuF20FXxc+4bMGmF6HLdRG5y3GNKmPyPgueA961bZwe3y0++N8F9wFkr2T5P+etgK5glJb6j/xvAWya+4vtnbK8Bv43lFi4/Uf4MuAMTt/g4fXT4kZ2R5PRLlLtbN23dsUp86duxxhqSDc7C/HBF65Qwt1w1/xeu7VSb/uovwVGwCThzV0sYWK2knIl4kM4AxyrGrsVYxvSm8IDW7a72FQkrVkQk5Zxi7SGuNh2OAb/ikkYUJ4pj3V6vTn3UPqk2kpguQniUpvaLYc3YKbg6Su7n6NhON62zP8zhSHwmVuxjOis81lAZsr0PYdsFPIhuVezRmKaSkFKbeh4wfSuz+hqN4qkjZSM4C3S+DBjLmEo4jGrlmRxqGakkd36h7P23LDGWMZVwGNXKc2gLnIyDPLU7SnmoP13WLe6e8Q4Bb4jEpjibLIrgEIvBmP8ARdfk8H3jaCsAAAAASUVORK5CYII=" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN CLASS="iconlabel">打印</SPAN></A>
+							</SPAN>
+                        <SPAN ID="downloadbutton" STYLE="display:none;">
+								<SPAN CLASS="buttondash">&ndash;</SPAN>
+								<A HREF="#" onClick="ESM('download'); return false;" TITLE="下载/导出家谱"><IMG SRC="data:;base64,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" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN CLASS="iconlabel">下载</SPAN></A>
+							</SPAN>
+                        <SPAN ID="sharebutton" STYLE="display:none;">
+								<SPAN CLASS="buttondash">&ndash;</SPAN>
+								<A HREF="#" onClick="ESM('share'); return false;" TITLE="与家庭成员分享"><IMG SRC="data:;base64,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" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN CLASS="iconlabel">分享</SPAN></A>
+							</SPAN>
+                        <SPAN ID="usersbutton" STYLE="display:none;">
+								<SPAN CLASS="buttondash">&ndash;</SPAN>
+								<A HREF="#" onClick="ETU(); return false;" TITLE="查看邀请/用户"><IMG SRC="data:;base64,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" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN CLASS="iconlabel">用户</SPAN></A>
+							</SPAN>
+                        <SPAN ID="userstreebutton" STYLE="display:none;">
+								<SPAN CLASS="buttondash">&ndash;</SPAN>
+								<A HREF="#" onClick="ETU(); return false;" TITLE="显示家谱"><IMG SRC="data:;base64,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" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN CLASS="iconlabel">家谱</SPAN></A>
+							</SPAN>
+                        <SPAN CLASS="buttondash">&ndash;</SPAN>
+                        <A HREF="#" onClick="ESM('calendar'); return false;" TITLE="查看事件日历或时间线"><IMG SRC="data:;base64,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" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN CLASS="iconlabel">日历</SPAN></A>
+                        <SPAN ID="historybutton" STYLE="display:none;">
+								<SPAN CLASS="buttondash">&ndash;</SPAN>
+								<A HREF="#" onClick="ESM('history'); return false;" TITLE="查看编辑历史"><IMG SRC="data:;base64,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" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN CLASS="iconlabel">历史</SPAN></A>
+							</SPAN>
+                        <SPAN ID="filesbutton" STYLE="display:none;">
+								<SPAN CLASS="buttondash">&ndash;</SPAN>
+								<A HREF="#" onClick="ETF(); return false;" TITLE="查看/编辑文件"><IMG SRC="data:;base64,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" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN ID="fileslinktext" CLASS="iconlabel">文件</SPAN></A>
+							</SPAN>
+                        <SPAN ID="filestreebutton" STYLE="display:none;">
+								<SPAN CLASS="buttondash">&ndash;</SPAN>
+								<A HREF="#" onClick="ETF(); return false;" TITLE="显示家谱"><IMG SRC="data:;base64,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" CLASS="icon" ALIGN="ABSMIDDLE"><SPAN CLASS="iconlabel">家谱</SPAN></A>
+							</SPAN>
+                        &ndash;
+                        <IMG SRC="data:;base64,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" CLASS="icon" STYLE="cursor:pointer;" ALIGN="ABSMIDDLE" TITLE="缩小" onClick="ECZ(false);">
+                        <INPUT ID="showzoom" TYPE="range" MIN="0.5" MAX="4.0" STEP="0.001" STYLE="width:96px;" onInput="ESZ();" onChange="ESZ();">
+                        <IMG SRC="data:;base64,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" CLASS="icon" STYLE="cursor:pointer;" ALIGN="ABSMIDDLE" TITLE="放大" onClick="ECZ(true);">
+                        &ndash;
+                        <SPAN ID="backto">
+								<A HREF="#" onClick="EBS(); return false;"><SPAN ID="backtotext">返回开始</SPAN></A>
+								&ndash;
+							</SPAN>
+                        查找：							<INPUT ID="findfield" STYLE="width:8em;" onFocus="NFF();" onInput="NIF();" onClick="NIF();" autocomplete="off">
+                    </DIV>
+
+                    <DIV STYLE="position: absolute; bottom:0; left:0;">
+                        <IMG ID="sidehide" SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACCgAwAEAAAAAQAAACAAAAAAg0Hy/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAAAZVJREFUWAntl01OAzEMhcv/7xXYcxpULtEdEis4AwdiyY4FLBA/l+gtABu9b5QG7E5F6EhoKkXOZN6znxNP0kwmq/92RDkye2ftydqJxjZlI7OrF2dm59ZuImA0vq0XB2ZfrX2ozTSOOD0uGIKfiwN3AZQ94LwO/mikQxE3Agd18HfDuYDLAP9tuMz8TWR38GxtX+ho+qPg1+ItNVHmHnxPbATWzpYFj3idHwA+7XXmLYJHS/YloE/mYDrF6vTJPA0+Zj6uObtUq08tLTgqud7hyuBgmlc7DrPgfBFgsYyzt7O9ssP5+zRzHB1b58Ua0+59Npko8y2RpwXP+SsHdz+3hZN76+OcDB1T/nh/aoOIdnshkIvulbnjowNEvtZjBl8CT3PQIqTQMhFg6jX59aGDQwouEwEGDraZCLIcVARZZiIQygxgx5n43zPhf73Li8haT0qKLitMipdlwEaFeSVAxIPfWYA/ieBiwiHVkdSJRHBy1vjwOZqJB2P8+dUMVdFMzARAJPjS1jPBUV5ievUJ0uR6/glUld6hVUitEAAAAABJRU5ErkJggg==" CLASS="cornerbtn" TITLE="隐藏侧边栏" onClick="ETI();">
+                        <IMG ID="sideshow" SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACCgAwAEAAAAAQAAACAAAAAAg0Hy/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAAAW1JREFUWAntV0luAjEQnCyEbF/gzmsi+ERukXJK3pAH5cgtBzggCJ/gF5Aq0iVZ1rixGdAgMZZMD3ZXd7nsscdVVVVfqGvUF1SWu3+T/L22ngHsHHWC+mRtPbNFZgtv1bEhPRJK8hrgfvH8YNhbs9nmHZ4ksDG7j8SVRX6EnRmG+JCESJrrfvNpgXJJaBrugVsYliRWqMVKSLJSEsL1IxLFSlBSBTsWiWIlmpDQfHdKdEpgLe9Kp0QrSmgfUXJZtXuvqHxdW7dP6AAbGfImESFcE0v4CMfn5wSmtpkkFOwNzwpEOzREioSUYP9PgP3WoWL48zWtTkFd8vjYlsSxhGo/eBHmJE99PWm9eMnlExPf/W+SPGfk8mkl+clGrsCe7N3IL2fO+cnO4s556PCBP9zX400m9Z4rsLfgtCiZxy2ln+M6dOKLSXgnEEE3MTubXM2mwOtUDJNnj5wEFIB2zAaUlOzsU/CjXU5bvZ7/AajQ3qHL0j71AAAAAElFTkSuQmCC" CLASS="cornerbtn" STYLE="display:none;" TITLE="显示侧边栏" onClick="ETI();">
+                    </DIV>
+
+                    <DIV STYLE="position: absolute; bottom:0; right:0;">
+                        <IMG ID="darkmode" SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACCgAwAEAAAAAQAAACAAAAAAg0Hy/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAAAvlJREFUWAmtlymMFUEQhpcbgYKEIBDLuQYNEgwgECQES1atJcGCQi14EOAQGywBy5LFEcwSDgECQVAcCsO1wP/11P9SO/uGd0xX8k9V91TX1dX95s3MdNO29Oq45CVhVZiL+c3Bq7NNsrg1rM6KPxD+JlyUDFmnGVV64tyZzUv+JeDc/Ivk3QKEblXKzhdl2Vn/lPw7xk/Do4OMYR3mkt4IZzheC9kVuBOurBvD/swNtxAOcf4nZCrBGH5dgKzfjHo8KeUWgQzp7rsCxNywPUavKhEAmUG3G1aC6drjXaHjNTHsz87IBEa918gZnr8frqr3wKMRAfgUvIwAhm1PvJqc7deS7wIZ58bLFfA8/IgAdW1T83bMJ0ZOCjsEsuzKjHm2AX5BgGjUKnRLVsjWRy1nnmXfCe+la+ddAY8dGBU4GtqjjKFLFQ4Il2NNlfuAXzgydaPlrNuye+GH9AkE6hUEWbH/4xJVItDtwkPBVZk6CBuQrbGJO4CtOCasCLZBUKO2USobaVlTlNqXTbvsXWM37Sut9XZgnWoQ1P+IQEmk6PELN00ArHEQ9MQVwadDYqkGTgBBgYFTyYVYsFc4L9BgoyKXyjpiPT2B8bPCJWGn8En4KmCzDQLno+acsEYpDglvBYzxcpp9ZJ0DkVjsvBF/LXwQvgn0yD5hTqB/COKFUOiJnhiZtA9Yk8Fl5W3J813ykvQLcb2i1DcAO6LsVAR7BGQw9jy6fG0PSv5ccs0gHEybu0J8bRdi7yGiQZkykkF7YY0xtrFDJWaFAdHF0DUBBY5VDYfZBkk5+3nJkP2WgY/gPY0cRK1K5OZcLN6G/LHJx89BsJBy5UwmlZ01626Gc5LN/mJ6/UV0VbN2hhECGbci6KGfg1/QGOp03rxuIvN20Jg+HQ7GhjlOgCr5aPmddeGPBS4fiKt4aOblbeuRG4R7YlnAUTbeJfONyYfuacGU7XluZDQcUZedRQeFU8IJ4bCwR+CK5dR8Ft4Jz4QV4aMAueRUagP9A5HvmdN8kRfkAAAAAElFTkSuQmCC" CLASS="cornerbtn" TITLE="切换暗模式" onClick="ETD();">
+                    </DIV>
+
+                </DIV>
+            </DIV></DIV>
+
+            <DIV ID="optionsdiv" CLASS="dright rbody" STYLE="bottom:32px; display:none; border-top:solid #666666 1px; border-bottom:solid #666666 1px; text-align:center; overflow-x:auto;"><DIV ID="optionsmargin" CLASS="marginon">
+                <TABLE STYLE="margin:4px auto;" CELLPADDING="4"><TR VALIGN="top">
+                    <TD NOWRAP>
+                        <INPUT ID="detail_0p" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_0p">姓名</LABEL>
+                        <br/>&nbsp; &nbsp; <INPUT ID="detail_pm" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_pm">中间名</LABEL>
+                        <br/>&nbsp; &nbsp; <INPUT ID="detail_N" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_N">昵称</LABEL>
+                        <br/>&nbsp; &nbsp; <INPUT ID="detail_TJ" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_TJ">称号 + 后缀</LABEL>
+                        <br/>&nbsp; &nbsp; <INPUT ID="detail_0lq" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_0lq">姓氏</LABEL>
+                        <br/><INPUT ID="detail_r" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_r">照片</LABEL>
+                        <br/><INPUT ID="detail_age" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_age">年龄</LABEL>
+                        <SELECT ID="otherage" onChange="ECA();">
+                            <OPTION VALUE="">现在</OPTION>
+                            <OPTION VALUE="on">在...</OPTION>
+                        </SELECT>
+                        <br/><INPUT ID="detail_bd" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_bd">生平年份</LABEL>
+                    </TD>
+                    <TD NOWRAP>
+                        <INPUT ID="detail_b" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_b">出生日期</LABEL>
+                        <br/><INPUT ID="detail_v" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_v">出生地</LABEL>
+                        <br/><INPUT ID="detail_sm" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_sm">结婚日期</LABEL>
+                        <br/><INPUT ID="detail_sw" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_sw">结婚地点</LABEL>
+                        <br/><INPUT ID="detail_sd" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_sd">离婚日期</LABEL>
+                        <br/><INPUT ID="detail_d" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_d">去世日期</LABEL>
+                        <br/><INPUT ID="detail_y" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_y">去世地点</LABEL>
+                        <br/><INPUT ID="detail_Z" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_Z">去世原因</LABEL>
+                    </TD>
+                    <TD NOWRAP>
+                        <INPUT ID="detail_F" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_F">安葬日期</LABEL>
+                        <br/><INPUT ID="detail_U" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_U">安葬地点</LABEL>
+                        <br/><INPUT ID="detail_e" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_e">电子邮件</LABEL>
+                        <br/><INPUT ID="detail_tku" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_tku">电话</LABEL>
+                        <br/><INPUT ID="detail_a" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_a">地址</LABEL>
+                        <br/><INPUT ID="detail_j" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_j">职业</LABEL>
+                        <br/><INPUT ID="detail_E" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_E">公司</LABEL>
+                        <br/><INPUT ID="detail_I" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_I">兴趣</LABEL>
+                        <br/><INPUT ID="detail_A" TYPE="checkbox" onChange="ECD(this);"> <LABEL FOR="detail_A">活动</LABEL>
+                    </TD>
+
+                    <TD STYLE="padding-left:16px; padding-bottom:0; padding-right:16px; text-align:end;" NOWRAP>
+							<SPAN ID="backspan"><SPAN CLASS="cleft">背景:</SPAN> <INPUT ID="colorback" CLASS="cright" TYPE="color" onInput="ECR(this);">
+								<a href="#" class="creset" onClick="ERC('back', '#FFFFFF'); return false;">重置</a>
+							<br/></SPAN><SPAN CLASS="cleft">男性框:</SPAN> <INPUT ID="colormale" CLASS="cright" TYPE="color" onInput="ECR(this);">
+                        <a href="#" class="creset" onClick="ERC('male', '#D6DDFF'); return false;">重置</a>
+                        <br/><SPAN CLASS="cleft">女性框:</SPAN> <INPUT ID="colorfemale" CLASS="cright" TYPE="color" onInput="ECR(this);">
+                        <a href="#" class="creset" onClick="ERC('female', '#FFD6EE'); return false;">重置</a>
+                        <br/><SPAN CLASS="cleft">其他框:</SPAN> <INPUT ID="colorother" CLASS="cright" TYPE="color" onInput="ECR(this);">
+                        <a href="#" class="creset" onClick="ERC('other', '#FFFFFF'); return false;">重置</a>
+                        <br/><SPAN CLASS="cleft">在世文本:</SPAN> <INPUT ID="colorliving" CLASS="cright" TYPE="color" onInput="ECR(this);">
+                        <a href="#" class="creset" onClick="ERC('living', '#000000'); return false;">重置</a>
+                        <br/><SPAN CLASS="cleft">去世文本:</SPAN> <INPUT ID="colordeceased" CLASS="cright" TYPE="color" onInput="ECR(this);">
+                        <a href="#" class="creset" onClick="ERC('deceased', '#777777'); return false;">重置</a>
+                        <br/><SPAN CLASS="cleft">框宽度:</SPAN> <INPUT ID="showwidth" TYPE="range" MIN="0.5" MAX="2.0" STEP="0.001" CLASS="cright" onInput="ECW();" onChange="ECW();">
+                        <a href="#" class="creset" onClick="ERW(); return false;">重置</a>
+                        <br/><SPAN CLASS="cleft">文本大小:</SPAN> <INPUT ID="textsize" TYPE="range" MIN="0.5" MAX="2.0" STEP="0.001" CLASS="cright" onInput="ECT();" onChange="ECT();">
+                        <a href="#" class="creset" onClick="ERT(); return false;">重置</a>
+                    </TD>
+
+                    <TD STYLE="text-align:end; padding-right:16px;" NOWRAP>
+                        <SPAN CLASS="oleft">姓氏:</SPAN>
+                        <SELECT ID="showbirthname" CLASS="oright" onChange="ESN();" TITLE="显示哪个姓氏">
+                            <OPTION VALUE="0">现在</OPTION>
+                            <OPTION VALUE="1">出生时</OPTION>
+                            <OPTION VALUE="2">两者</OPTION>
+                        </SELECT><br><SPAN CLASS="oleft">名字:</SPAN>
+                        <SELECT ID="showsurnamefirst" CLASS="oright" onChange="ESF();" TITLE="名字在姓氏前或后显示">
+                            <OPTION VALUE="0">前</OPTION>
+                            <OPTION VALUE="1">后</OPTION>
+                        </SELECT><br><SPAN CLASS="oleft">左边的伴侣:</SPAN>
+                        <SELECT ID="showmaleleft" CLASS="oright" onChange="EML();" TITLE="关系的左右排序">
+                            <OPTION VALUE="0">女性</OPTION>
+                            <OPTION VALUE="1">男性</OPTION>
+                        </SELECT><br/><LABEL CLASS="oleft">父母:</LABEL>
+                        <SELECT ID="showparents" CLASS="oright" onChange="ECP();" TITLE="显示的祖先世代"><OPTION VALUE="1">1 代</OPTION><OPTION VALUE="2">2 代</OPTION><OPTION VALUE="3">3 代</OPTION><OPTION VALUE="4">4 代</OPTION><OPTION VALUE="5">5 代</OPTION><OPTION VALUE="6">6 代</OPTION><OPTION VALUE="8">8 代</OPTION><OPTION VALUE="10">10 代</OPTION><OPTION VALUE="12">12 代</OPTION><OPTION VALUE="15">15 代</OPTION><OPTION VALUE="20">20 代</OPTION><OPTION VALUE="25">25 代</OPTION><OPTION VALUE="30">30 代</OPTION><OPTION VALUE="40">40 代</OPTION><OPTION VALUE="50">50 代</OPTION></SELECT><br/><SPAN CLASS="oleft">子女:</SPAN>
+                        <SELECT ID="showchildren" CLASS="oright" onChange="ECH();" TITLE="显示的后代世代"><OPTION VALUE="1">1 代</OPTION><OPTION VALUE="2">2 代</OPTION><OPTION VALUE="3">3 代</OPTION><OPTION VALUE="4">4 代</OPTION><OPTION VALUE="5">5 代</OPTION><OPTION VALUE="6">6 代</OPTION><OPTION VALUE="8">8 代</OPTION><OPTION VALUE="10">10 代</OPTION><OPTION VALUE="12">12 代</OPTION><OPTION VALUE="15">15 代</OPTION><OPTION VALUE="20">20 代</OPTION><OPTION VALUE="25">25 代</OPTION><OPTION VALUE="30">30 代</OPTION><OPTION VALUE="40">40 代</OPTION><OPTION VALUE="50">50 代</OPTION></SELECT><br/><SPAN CLASS="oleft">其他:</SPAN>
+                        <SELECT ID="showcousins" CLASS="oright" onChange="ECO();" TITLE="显示的姑姑、叔叔、堂兄弟姐妹、侄子和侄女的世代">
+                            <OPTION VALUE="0">没有任何</OPTION><OPTION VALUE="1">1 代</OPTION><OPTION VALUE="2">2 代</OPTION><OPTION VALUE="3">3 代</OPTION><OPTION VALUE="4">4 代</OPTION><OPTION VALUE="5">5 代</OPTION><OPTION VALUE="6">6 代</OPTION><OPTION VALUE="8">8 代</OPTION><OPTION VALUE="10">10 代</OPTION><OPTION VALUE="12">12 代</OPTION><OPTION VALUE="15">15 代</OPTION><OPTION VALUE="20">20 代</OPTION><OPTION VALUE="25">25 代</OPTION><OPTION VALUE="30">30 代</OPTION><OPTION VALUE="40">40 代</OPTION><OPTION VALUE="50">50 代</OPTION></SELECT>
+                    </TD>
+
+                    <TD STYLE="text-align:end;" NOWRAP>
+                        <P CLASS="lright" STYLE="text-align:center; margin-bottom:0.5em;">连接线</P><SPAN CLASS="lleft">现任伴侣:</SPAN>
+                        <SELECT ID="linecurrent" CLASS="lright" onChange="ECE(this);">
+                            <OPTION VALUE="thin">细</OPTION>
+                            <OPTION VALUE="medium">中等</OPTION>
+                            <OPTION VALUE="thick">粗</OPTION>
+                            <OPTION VALUE="gray">灰色</OPTION>
+                            <OPTION VALUE="dashed">虚线</OPTION>
+                        </SELECT><br/><SPAN CLASS="lleft">其他伴侣:</SPAN>
+                        <SELECT ID="lineotherpartner" CLASS="lright" onChange="ECE(this);">
+                            <OPTION VALUE="thin">细</OPTION>
+                            <OPTION VALUE="medium">中等</OPTION>
+                            <OPTION VALUE="thick">粗</OPTION>
+                            <OPTION VALUE="gray">灰色</OPTION>
+                            <OPTION VALUE="dashed">虚线</OPTION>
+                        </SELECT><br/><SPAN CLASS="lleft">父母:</SPAN>
+                        <SELECT ID="linebiological" CLASS="lright" onChange="ECE(this);">
+                            <OPTION VALUE="thin">细</OPTION>
+                            <OPTION VALUE="medium">中等</OPTION>
+                            <OPTION VALUE="thick">粗</OPTION>
+                            <OPTION VALUE="gray">灰色</OPTION>
+                            <OPTION VALUE="dashed">虚线</OPTION>
+                        </SELECT><br/><SPAN CLASS="lleft">非生物:</SPAN>
+                        <SELECT ID="lineotherparent" CLASS="lright" onChange="ECE(this);">
+                            <OPTION VALUE="thin">细</OPTION>
+                            <OPTION VALUE="medium">中等</OPTION>
+                            <OPTION VALUE="thick">粗</OPTION>
+                            <OPTION VALUE="gray">灰色</OPTION>
+                            <OPTION VALUE="dashed">虚线</OPTION>
+                        </SELECT>
+                    </TD>
+                </TR></TABLE>
+            </DIV></DIV>
+
+            <DIV ID="filesdiv" CLASS="dright rbody" STYLE="bottom:32px; display:none; border-bottom:solid #666666 1px; top:0; overflow:auto;"><DIV ID="filesmargin" CLASS="marginon" STYLE="position:relative;">
+                <DIV STYLE="position:absolute; top:0; height:32px; left:0; right:0;">
+                    <TABLE WIDTH="100%">
+                        <TR>
+                            <TD CLASS="fboth" WIDTH="100%">
+                                <INPUT ID="filesfind" PLACEHOLDER="Search" onInput="DIF();" STYLE="width:100%; border:none;">
+                            </TD>
+                            <TD CLASS="fboth" NOWRAP>
+                                <SPAN ID="filesuploadfile"><INPUT TYPE="submit" VALUE="上传文件" onClick="DTU('', true); return false;">&nbsp;</SPAN>
+                                <INPUT TYPE="submit" VALUE="关闭" onClick="ETF(); return false;">
+                            </TD>
+                        </TR>
+                    </TABLE>
+                </DIV>
+                <DIV STYLE="position:absolute; top:32px; bottom:24px; left:0; right:0; overflow-y:auto;">
+                    <TABLE ID="filestable" WIDTH="100%">
+                        <TR ID="filesheader">
+                            <TH CLASS="fname"><A HREF="#" onclick="DCT('n', false); return false;" TITLE="按名称排序">姓名</A> <SPAN ID="filessortn"></SPAN></TH>
+                            <TH CLASS="fdesc">描述</TH>
+                            <TH CLASS="fattach"><A HREF="#" onclick="DCT('a', false); return false;" TITLE="按附加人员排序">附加到</A> <SPAN ID="filessorta"></SPAN></TH>
+                            <TH CLASS="ftype"><A HREF="#" onclick="DCT('t', false); return false;" TITLE="按类型排序">类型</A> <SPAN ID="filessortt"></SPAN></TH>
+                            <TH CLASS="fsize"><A HREF="#" onclick="DCT('s', true); return false;" TITLE="按大小排序">大小</A> <SPAN ID="filessorts"></SPAN></TH>
+                            <TH CLASS="fuploaded"><A HREF="#" onclick="DCT('u', true); return false;" TITLE="按上传日期排序">已上传</A> <SPAN ID="filessortu"></SPAN></TH>
+                            <TH CLASS="fbuttons"></TH>
+                        </TR>
+                        <TBODY ID="filesrows">
+                        </TBODY>
+                    </TABLE>
+                </DIV>
+                <DIV ID="filesstatus" STYLE="position:absolute; bottom:0; height:24px; left:0; right:0; line-height:24px; vertical-align:middle; text-align:center; font-style:italic; font-size:14px;"></DIV>
+            </DIV></DIV>
+
+            <DIV ID="usersdiv" CLASS="dright rbody" STYLE="bottom:32px; display:none; border-bottom:solid #666666 1px; top:0; overflow:auto;"><DIV ID="usersmargin" CLASS="marginon" STYLE="position:relative;"><IFRAME ID="usersframe" CLASS="fullsize" FRAMEBORDER="0" SCROLLING="auto"></IFRAME></DIV></DIV>
+
+            <DIV ID="findlist" CLASS="slist" STYLE="position:absolute; bottom:33px; height:20em; width:16em; padding:2px 0; border:1px solid black; display:none; overflow-x:hidden; overflow-y:auto;"></DIV>
+
+            <DIV ID="welcomediv" STYLE="position:absolute; width:100%; top:16px;"><DIV ID="welcomemargin" CLASS="marginon"><CENTER>
+
+                <TABLE CLASS="mbody" STYLE="margin:8px;" CELLSPACING="6">
+                    <TR><TD STYLE="font-size:18px; font-weight:bold;" ALIGN="center"><SPAN STYLE="float:right; font-size:14px;"><A HREF="#" onClick="EHW(); return false;" STYLE="text-decoration:none;">&#x2715;</A></SPAN>&nbsp; 欢迎来到 Family Echo！</TD></TR>
+
+
+                    <TR><TD ALIGN="center">在左侧输入您的名字以开始您的家谱。</TD></TR>
+                    <TR><TD ALIGN="center">然后添加父母、子女、伴侣、兄弟姐妹等。</TD></TR>
+                    <TR><TD ALIGN="center">您还可以从 GEDCOM 或 FamilyScript 格式<a href="#" onclick="ESM('import'); return false;">导入</a>。</TD></TR>
+                    <TR><TD ALIGN="center"><a href="#" onClick="GE('do_signin').click(); return false;">登录</a>以保存和分享您的家谱并添加照片。</TD></TR>
+
+
+                    <TR><TD ALIGN="center">信息是<a href="?page=policies" TARGET="_new" onClick="return UL(this);">私密</a>的，仅对受邀的家庭成员显示。</TD></TR>
+                    <TR><TD ALIGN="center">Family Echo 是一项免费服务，我们希望您喜欢！</TD></TR>
+                </TABLE>
+            </CENTER></DIV></DIV>
+
+            <DIV ID="fileviewdiv" CLASS="dright" STYLE="top:0px; height:100%; display:none;">
+                <DIV ID="fileviewmargin" CLASS="marginon" STYLE="background-color:white; position:relative;">
+                    <DIV STYLE="position:absolute; left:0; right:0; top:0; height:35px; padding:0 8px; font-size:16px; line-height:36px; border-bottom:1px solid #999; overflow:hidden;">
+                        <SPAN ID="fileviewname" STYLE="font-weight:bold;"></SPAN>
+                        &ndash;
+                        <SPAN ID="fileviewmeta"></SPAN>
+                        &ndash;
+                        <SPAN ID="fileviewdate"></SPAN>
+                    </DIV>
+                    <DIV STYLE="position:absolute; inset-inline-end:0; top:0; height:35px; padding:0 8px; line-height:36px; text-align:end;">
+                        &nbsp;<INPUT TYPE="submit" VALUE="关闭" onClick="DHV(); return false;">
+                    </DIV>
+                    <DIV STYLE="position:absolute; left:0; right:0; top:36px; bottom:0;">
+                        <IFRAME ID="fileviewiframe" CLASS="fullsize" FRAMEBORDER="0" SCROLLING="auto"></IFRAME>
+                    </DIV>
+                    <DIV ID="fileviewinline" STYLE="display:flex; align-items:center; justify-content:center; position:absolute; left:8px; right:8px; top:40px; bottom:8px;">
+                        <IMG ID="fileviewimage" STYLE="max-width:100%; max-height:100%;">
+                        <AUDIO ID="fileviewaudio" CONTROLS>
+                    </DIV>
+                </DIV>
+            </DIV>
+
+            <DIV ID="leftdiv" CLASS="dleft lbody" STYLE="">
+
+                <TABLE WIDTH="100%" HEIGHT="100%" CELLSPACING=0 CELLPADDING=6><FORM onSubmit="return false;">
+
+                    <TR VALIGN="top"><TD ALIGN="center">
+
+                        <SPAN ID="nametitle" CLASS="sdefname">加载中...</SPAN><BR>
+                        <IMG CLASS="blankpixel" WIDTH="1" HEIGHT="6"><BR>
+
+                        <IMG ID="personimage" CLASS="simage" STYLE="display:none; margin-bottom:6px;" onClick="SIC(); return false;"><br>
+
+                        <DIV ID="nonrelations" STYLE="display:none; margin-top:6px;">
+
+                            <DIV ID="nonediting">
+                                <IFRAME ID="uploadiframe" CLASS="simage" STYLE="display:none; margin-top:6px; width:auto; height:120px;" SCROLLING="no" FRAMEBORDER="0"></IFRAME>
+                                <INPUT ID="uploadbutton" TYPE="submit" VALUE="上传照片" CLASS="sbutton" STYLE="display:none; margin-top:6px;" onClick="SIC(); return false;">
+
+                                <INPUT ID="showpath" TYPE="submit" CLASS="sbutton" STYLE="display:none; margin-top:6px;" onClick="ESM('path'); return false;">
+                                <INPUT ID="hideurl" TYPE="submit" VALUE="返回家谱" CLASS="sbutton" STYLE="display:none; margin-top:6px;" onClick="ESM('view'); return false;">
+                                <INPUT ID="showurl" TYPE="submit" CLASS="sbutton" STYLE="display:none; margin-top:6px;" onClick="return UL(GE('urllink'));"><INPUT ID="urlmode" TYPE="hidden" VALUE=""><A HREF="#" ID="urllink" STYLE="display:none;"></A>
+                                <INPUT ID="shareperson" TYPE="submit" VALUE="分享家庭" CLASS="sbutton" STYLE="display:none; margin-top:6px;" onClick="ESM('share'); return false;">
+                            </DIV>
+
+                            <TABLE WIDTH="100%" CELLSPACING=0 CELLPADDING=0 STYLE="margin-top:12px;">
+                                <TR>
+                                    <TD ALIGN="center" ID="switchpanel0" CLASS="sswitched">
+                                        <A HREF="#" onMouseDown="SWA(0); return false;" onClick="return false;" ID="switchlink0" CLASS="sswitchedlink">个人的</A>
+                                    </TD>
+                                    <TD ALIGN="center" ID="switchpanel3" CLASS="sswitch">
+                                        <A HREF="#" onMouseDown="SWA(3); return false;" onClick="return false;" ID="switchlink3">伙伴</A>
+                                    </TD>
+                                    <TD ALIGN="center" ID="switchpanel1" CLASS="sswitch">
+                                        <A HREF="#" onMouseDown="SWA(1); return false;" onClick="return false;" ID="switchlink1">接触</A>
+                                    </TD>
+                                    <TD ALIGN="center" ID="switchpanel2" CLASS="sswitch">
+                                        <A HREF="#" onMouseDown="SWA(2); return false;" onClick="return false;" ID="switchlink2">传</A>
+                                    </TD>
+                                    <TD ALIGN="center" ID="switchpanel4" CLASS="sswitch">
+                                        <A HREF="#" onMouseDown="SWA(4); return false;" onClick="return false;" ID="switchlink4">文件</A>
+                                    </TD>
+                                </TR>
+                            </TABLE>
+
+                            <TABLE WIDTH="100%" CELLSPACING=0 CELLPADDING=0 CLASS="spanel">
+                                <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="6"></TD></TR>
+
+                                <TBODY ID="personalview" CLASS="hiderows">
+                                </TBODY>
+
+                                <TBODY ID="personaledit1" CLASS="hiderows">
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        名字:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="personalname" CLASS="sfieldexpand" onChange="SCV('personalname');">
+                                        <SPAN ID="nameexpand"> <A HREF="#" CLASS="sdatelink" onClick="SEN()" TITLE="显示更多名称选项">&#x25BA;</A></SPAN>
+                                    </TD>
+                                </TR>
+                                </TBODY>
+                                <TBODY ID="nameexpandedit" CLASS="hiderows">
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        昵称:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="nickname" CLASS="sfield" onChange="SCV('nickname');">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        称谓:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="title" CLASS="sfield" STYLE="width:64px;" onChange="SCV('title');">
+                                        <SPAN STYLE="float:end;">后缀:
+										<INPUT ID="suffix" CLASS="sfield" STYLE="width:64px;" onChange="SCV('suffix');"></SPAN>
+                                    </TD>
+                                </TR>
+                                </TBODY>
+                                <TBODY ID="personaledit2" CLASS="hiderows">
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        现姓:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="familyname" CLASS="sfield" onChange="SCV('familyname');">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        出生时姓氏:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="familybirth" CLASS="sfield" onChange="SCV('familybirth');" onFocus="SFV('familybirth');">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft" VALIGN="baseline">
+                                        性别:
+                                    </TD>
+                                    <TD CLASS="sright" VALIGN="baseline">
+                                        <DIV STYLE="margin-top:2px; vertical-align:middle;">
+                                            <INPUT TYPE="radio" NAME="gender" ID="gender_f" onClick="SSG('f');" STYLE="margin-right:4px;"><LABEL FOR="gender_f">女性</LABEL>&nbsp;<INPUT TYPE="radio" NAME="gender" ID="gender_m" onClick="SSG('m');" STYLE="margin-right:4px;"><LABEL FOR="gender_m">男性</LABEL>&nbsp;<INPUT TYPE="radio" NAME="gender" ID="gender_o" onClick="SCV('othergender'); FS('othergender');" STYLE="margin-right:4px;"><LABEL FOR="gender_o">其他:</LABEL>
+                                        </DIV>
+                                        <DIV ID="othergenderdiv" STYLE="margin-top:4px; display:none;">
+                                            <INPUT ID="othergender" CLASS="sfield" onChange="SCV('othergender');">
+                                        </DIV>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft" VALIGN="baseline">
+                                        出生日期:
+                                    </TD>
+                                    <TD CLASS="sright" VALIGN="baseline" ID="birthdate">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <DIV STYLE="margin:2px 0px;">
+                                            <INPUT TYPE="checkbox" ID="alive" onClick="SCV('alive');">
+                                            <LABEL FOR="alive">此人尚在世</LABEL>
+                                        </DIV>
+                                    </TD>
+                                </TR>
+                                </TBODY>
+                                <TBODY ID="personaleditdeath" CLASS="hiderows">
+                                <TR>
+                                    <TD CLASS="sleft" VALIGN="baseline">
+                                        去世日期:
+                                    </TD>
+                                    <TD CLASS="sright" VALIGN="baseline" ID="deathdate">
+                                    </TD>
+                                </TR>
+                                </TBODY>
+
+                                <TBODY ID="partnersviewedit" CLASS="hiderows">
+                                </TBODY>
+
+                                <TBODY ID="contactview" CLASS="hiderows">
+                                </TBODY>
+
+                                <TBODY ID="contactedit" CLASS="hiderows">
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        电子邮件:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="c_email" CLASS="sfield" onChange="SCV('c_email');" DIR="ltr">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        网站:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="website" CLASS="sfield" onChange="SCV('website');" DIR="ltr">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        博客:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="blog" CLASS="sfield" onChange="SCV('blog');" DIR="ltr">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        照片网站:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="photosite" CLASS="sfield" onChange="SCV('photosite');" DIR="ltr">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        家庭电话:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="hometel" CLASS="sfield" onChange="SCV('hometel');" DIR="ltr">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        工作电话:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="worktel" CLASS="sfield" onChange="SCV('worktel');" DIR="ltr">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        手机:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="mobile" CLASS="sfield" onChange="SCV('mobile');" DIR="ltr">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        地址:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <TEXTAREA ID="address" CLASS="sfield" ROWS=3 onChange="SCV('address');"></TEXTAREA>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        其他:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="othercontact" CLASS="sfield" onChange="SCV('othercontact');">
+                                    </TD>
+                                </TR>
+                                </TBODY>
+
+                                <TBODY ID="contacteditskype" CLASS="hiderows">
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        Skype:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="skype" CLASS="sfield" onChange="SCV('skype');">
+                                    </TD>
+                                </TR>
+                                </TBODY>
+
+                                <TBODY ID="bioview" CLASS="hiderows">
+                                </TBODY>
+
+                                <TBODY ID="bioedit1" CLASS="hiderows">
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        出生地:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="birthplace" CLASS="sfield" onChange="SCV('birthplace');">
+                                    </TD>
+                                </TR>
+                                </TBODY>
+
+                                <TBODY ID="bioeditdeath" CLASS="hiderows">
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        去世地点:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="deathplace" CLASS="sfield" onChange="SCV('deathplace');">
+                                    </TD>
+                                </TR>
+
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        死亡原因:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="deathcause" CLASS="sfield" onChange="SCV('deathcause');">
+                                    </TD>
+                                </TR>
+
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        安葬地点:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="burialplace" CLASS="sfield" onChange="SCV('burialplace');">
+                                    </TD>
+                                </TR>
+
+                                <TR>
+                                    <TD CLASS="sleft" VALIGN="baseline">
+                                        安葬日期:
+                                    </TD>
+                                    <TD CLASS="sright" VALIGN="baseline" ID="burialdate">
+                                    </TD>
+                                </TR>
+                                </TBODY>
+
+                                <TBODY ID="bioedit2" CLASS="hiderows">
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        职业:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="profession" CLASS="sfield" onChange="SCV('profession');">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        公司:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <INPUT ID="employer" CLASS="sfield" onChange="SCV('employer');">
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        兴趣:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <TEXTAREA ID="interests" CLASS="sfield" ROWS=3 onChange="SCV('interests');"></TEXTAREA>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        活动:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <TEXTAREA ID="activities" CLASS="sfield" ROWS=3 onChange="SCV('activities');"></TEXTAREA>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD CLASS="sleft">
+                                        生平笔记:
+                                    </TD>
+                                    <TD CLASS="sright">
+                                        <TEXTAREA ID="bionotes" CLASS="sfield" ROWS=4 onChange="SCV('bionotes');"></TEXTAREA>
+                                    </TD>
+                                </TR>
+                                </TBODY>
+
+                                <TBODY ID="filesview" CLASS="hiderows">
+                                </TBODY>
+
+                                <TBODY ID="filesview2" CLASS="hiderows">
+                                <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="6"></TD></TR>
+                                <TR>
+                                    <TD CLASS="sboth" COLSPAN="2">
+										<SPAN ID="sideuploadfile"><INPUT TYPE="submit" VALUE="上传文件" CLASS="sbutton2" onClick="DTU(Spe, true); return false;">
+										&nbsp;</SPAN>
+                                        <INPUT TYPE="submit" VALUE="显示所有文件" CLASS="sbutton2" onClick="ETF(); return false;">
+                                    </TD>
+                                </TR>
+                                </TBODY>
+
+
+                                <TBODY ID="viewfooter" CLASS="hiderows">
+                                <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="6"></TD></TR>
+                                <TR>
+                                    <TD CLASS="sboth" COLSPAN="2">
+                                        <INPUT TYPE="submit" ID="editbutton" VALUE="编辑详细信息" CLASS="sbutton" onClick="SED(); return false;">
+                                    </TD>
+                                </TR>
+                                </TBODY>
+
+                                <TBODY ID="editfooter" CLASS="hiderows">
+                                <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="12"></TD></TR>
+                                <TR>
+                                    <TD CLASS="sboth" COLSPAN="2">
+                                        您也可以稍后添加或更改详细信息。									</TD>
+                                </TR>
+                                <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="6"></TD></TR>
+                                <TR>
+                                    <TD CLASS="sboth" COLSPAN="2">
+                                        <INPUT TYPE="submit" VALUE="确定" CLASS="sbutton2" onClick="SAS(); return false;">
+                                        &nbsp;
+                                        <INPUT TYPE="submit" VALUE="取消" CLASS="sbutton2" onClick="SCS(); return false;">
+                                    </TD>
+                                </TR>
+                                </TBODY>
+
+                                <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="6"></TD></TR>
+                            </TABLE>
+
+                        </DIV>
+
+                        <TABLE WIDTH="100%" CELLSPACING=0 CELLPADDING=0>
+                            <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="12"></TD></TR>
+
+                            <TBODY ID="readonlyfooter" CLASS="hiderows">
+                            <TR>
+                                <TD CLASS="sboth" COLSPAN="2">
+                                    您目前没有权限编辑这个家庭。									</TD>
+                            </TR>
+                            <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="12"></TD></TR>
+                            </TBODY>
+
+                            <TBODY ID="writemefooter" CLASS="hiderows">
+                            <TR>
+                                <TD CLASS="sboth" COLSPAN="2">
+                                    <a href="#" onClick="GE('do_signin').click(); return false;">登录</a>以向此家庭添加更多成员。									</TD>
+                            </TR>
+                            <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="12"></TD></TR>
+                            </TBODY>
+
+                            <TBODY ID="writenotfooter" CLASS="hiderows">
+                            <TR>
+                                <TD CLASS="sboth" COLSPAN="2">
+                                    <a href="#" onClick="GE('do_signin').click(); return false;">登录</a>以编辑这些详细信息或添加新成员。									</TD>
+                            </TR>
+                            <TR><TD><IMG CLASS="blankpixel" WIDTH="1" HEIGHT="12"></TD></TR>
+                            </TBODY>
+
+                            <TBODY ID="relactions" CLASS="hiderows">
+                            </TBODY>
+                        </TABLE>
+
+                    </TD></TR>
+
+                    <TR VALIGN="bottom"><TD ALIGN="center">
+                        <TABLE WIDTH="100%" CELLSPACING=0 CELLPADDING=0>
+                            <TBODY ID="importfooter" CLASS="hiderows">
+                            <TR>
+                                <TD CLASS="sboth" COLSPAN="2">
+                                    <INPUT TYPE="submit" VALUE="导入 GEDCOM 或 FamilyScript..." CLASS="sbutton" onClick="ESM('import'); return false;">
+                                </TD>
+                            </TR>
+                            </TBODY>
+                            <TBODY ID="clearfooter" CLASS="hiderows">
+                            <TR>
+                                <TD CLASS="sboth" COLSPAN="2">
+                                    <INPUT TYPE="submit" VALUE="清除家庭并重新开始..." CLASS="sbutton" onClick="SCC(); return false;">
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD></TR>
+
+                </FORM></TABLE>
+
+            </DIV>
+
+            <DIV ID="pathdiv" CLASS="dleft lbody" STYLE="text-align:center; display:none;">
+                <DIV STYLE="padding:6px;">
+                    <DIV ID="pathtitle" CLASS="sname" STYLE="margin-bottom:12px;"></DIV>
+                    <SELECT ID="pathstartid" CLASS="sfield" onChange="SSS();"></SELECT>
+                    <DIV ID="pathcontent" STYLE="margin-bottom:12px;"></DIV>
+                    <!--<INPUT TYPE="checkbox" ID="pathmarried" VALUE="1" CHECKED onChange="STM();">
+						<LABEL FOR="pathmarried">Include partner relationships</LABEL>-->
+                    <INPUT TYPE="submit" VALUE="完成" CLASS="sbutton" STYLE="margin-top:12px;" onClick="ESM('view'); return false;">
+                </DIV>
+            </DIV>
+
+            <DIV ID="caltimediv" CLASS="dleft lbody" STYLE="display:none;">
+                <INPUT TYPE="submit" VALUE="完成" STYLE="position:absolute; right:6px; top:6px;" onClick="ESM('view'); return false;">
+                <h2 style="margin:6px; text-align:center;">
+                    <SPAN ID="showcalendar">日历 / <a href="#" onClick="ESM('timeline'); return false;">时间线</A></SPAN>
+                    <SPAN ID="showtimeline"><a href="#" onClick="ESM('calendar'); return false;">日历</A> / 时间线</SPAN>
+                </h2>
+                <DIV ID="caltimecontent" CLASS="bordertop" STYLE="position:absolute; top:32px; bottom:8px; left:0; right:0; overflow:scroll;"></DIV>
+            </DIV>
+
+            <DIV ID="extradiv" CLASS="dleft lbody" STYLE="visibility:hidden;"><IFRAME ID="extraframe" CLASS="fullsize" FRAMEBORDER="0" SCROLLING="auto"></IFRAME></DIV>
+
+            <DIV ID="uploaddiv" CLASS="dright" STYLE="position:absolute; top:0; bottom:0; display:none; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+                <DIV CLASS="rbody" STYLE="padding:16px; border:1px solid #999; max-height:80%; overflow-y:auto;">
+                    <TABLE>
+                        <TR>
+                            <TD COLSPAN="2" STYLE="text-align:center; font-size:18px; font-weight:bold; padding-bottom:12px;">上传文件</TD>
+                        </TR>
+                        <TR>
+                            <TD CLASS="uleft">文件:</TD>
+                            <TD STYLE="width:320px; display:flex; align-items:center;"><input id="uploadfile" type="file" style="flex:1;" onchange="DUC();"><SPAN style="flex:0; white-space:nowrap; font-size:11px;">(最大 <SPAN ID="uploadmax">12345</SPAN>)</SPAN></TD>
+                        </TR>
+                        <TR>
+                            <TD CLASS="uleft">姓名:</TD>
+                            <TD><input id="uploadname" type="text" style="width:100%;"></TD>
+                        </TR>
+                        <TR>
+                            <TD CLASS="uleft">描述:</TD>
+                            <TD><textarea id="uploaddesc" type="text" rows="4" style="width:100%;"></textarea></TD>
+                        </TR>
+                        <TR>
+                            <TD CLASS="uleft">附加到:</TD>
+                            <TD>
+                                <TABLE CELLSPACING=0 CELLPADDING=0 style="width:100%;">
+                                    <TBODY ID="uploadattachrows">
+                                    </TBODY>
+                                </TABLE>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD></TD>
+                            <TD>
+                                <input type="submit" value="上传文件" onClick="DCU(); return false;">
+                                &nbsp;
+                                <input type="submit" value="取消" onClick="DTU(); return false;">
+                            </TD>
+                        </TR>
+                    </TABLE>
+                </DIV>
+            </DIV>
+
+            <TEXTAREA READONLY ID="exporttext" CLASS="rbody" STYLE="top:0px; height:100%; width:100%; position:absolute; display:none; border:0; padding:0.5em; font-family:monospace;"></TEXTAREA>
+
+        </DIV>
+
+    </TD></TR>
+
+    <TR HEIGHT="8">
+        <TD STYLE="border-top:solid #666666 1px; padding:8px;" VALIGN="middle">
+            <DIV STYLE="float:left;">
+						<SPAN ID="lfooterlinks">
+							<A HREF="./?page=about" TARGET="_new" onClick="return UL(this);" TITLE="关于 Family Echo">关于</A>
+							&nbsp; &nbsp;
+							<A HREF="./?page=faqs" TARGET="_new" onClick="return UL(this);" TITLE="常见问题">常见问题</A>
+							&nbsp; &nbsp;
+							<A HREF="./?page=api" TARGET="_new" onClick="return UL(this);" TITLE="家谱 API">API</A>
+							&nbsp; &nbsp;
+							<A HREF="http://www.magicbabynames.com/" TARGET="_new" onClick="return UL(this);" TITLE="家谱中的婴儿名字">婴儿名字</A>
+							&nbsp; &nbsp;
+							<A HREF="./?page=resources" TARGET="_new" onClick="return UL(this);" TITLE="家谱链接和信息">资源</A>
+							&nbsp; &nbsp;
+							<A HREF="./?page=terms" TARGET="_new" onClick="return UL(this);" TITLE="使用条款协议">条款</A>
+							/
+							<A HREF="./?page=policies" TARGET="_new" onClick="return UL(this);" TITLE="隐私和下载政策">数据政策</A>
+							&nbsp; &nbsp;
+							<A HREF="http://answers.familyecho.com/" TARGET="_blank" TITLE="Family Echo 问答">帮助论坛</A>
+							&nbsp; &nbsp;
+							<A HREF="./?page=feedback" TARGET="_new" onClick="return UL(this);" TITLE="我们如何改进 Family Echo？">发送反馈</A>
+						</SPAN>
+            </DIV>
+            <DIV STYLE="float:right;">
+                &copy; Familiality 2007-2024 - All rights reserved						<SPAN ID="footerlang" STYLE="display:none;">
+							&ndash;
+							<A HREF="#" onClick="LC(); return false;"><IMG SRC="data:;base64,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"><B><SPAN ID="currentlang">Language</SPAN></B></A>
+						</SPAN>
+                <DIV ID="langoverlay" STYLE="display:none;"><DIV ID="langcontent"></DIV></DIV>
+            </DIV>
+        </TD>
+    </TR>
+</TABLE>
+</BODY>
+
+</HTML>
