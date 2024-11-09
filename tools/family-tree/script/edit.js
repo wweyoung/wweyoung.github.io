@@ -7,8 +7,8 @@ let Efa = {};
 var Eff = {};
 // Efo 家谱OwnerId
 var OwnerPersonId;
-// Ewp 允许编辑的人员
-var AllowWritePersonId = null;
+// Ewp 允许编辑的人员 废弃
+
 var Edt, Eda, Edc, Edm;
 // Eve 脚本长度 废弃
 var ScriptTextLength;
@@ -38,9 +38,23 @@ var IsSafariBrowser;
 var Eoh = null;
 // Evp 当前选中的节点
 let ViewPersonId;
-let FileHandler;
-let FileWriteHandler;
-
+let FileHandler = {
+    handler: undefined,
+    writeHandler: undefined,
+    options: {
+        types: [
+            {
+                description: "Text file",
+                accept: {
+                    "text/plain": [".txt"],
+                },
+            },
+        ],
+        suggestedName: "我的家谱",
+        excludeAcceptAllOption: true,
+        multiple: false,
+    }
+};
 
 // PL
 function OnBodyOnload() {
@@ -219,7 +233,6 @@ function LoadScriptText(script = "iSTART", familyId) {
     console.log(arguments)
     ParseScriptText(script);
     ScriptText = script; // t
-    AllowWritePersonId = null;
     OwnerPersonId = 'START'; // fp
     Edd = true; // al
     AllowDownload = true; // dy
@@ -237,18 +250,18 @@ function LoadScriptText(script = "iSTART", familyId) {
     Edm = 16777216; // dm
     var e = GetElement("lfamilylabels");
     e.innerHTML = "";
-    var _1b = ['test', 'test2']; // fl
-    if (_1b && _1b.length) {
-        for (var j = 0; j < _1b.length; j++) {
+    var tags = []; // fl
+    if (tags && tags.length) {
+        for (var j = 0; j < tags.length; j++) {
             var s = document.createElement("span");
             s.className = "lfamilylabel";
-            s.innerText = _1b[j].charAt(0).toUpperCase() + _1b[j].substring(1);
+            s.innerText = tags[j].charAt(0).toUpperCase() + tags[j].substring(1);
             e.appendChild(s);
         }
     }
     SetElementValue("familyid", familyId);
 
-    if (AllowWritePersonId && GetElement("welcomewrite")) {
+    if (GetElement("welcomewrite")) {
         SetElementClassShowRow("welcomewrite", true);
     }
     if (Eud) {
@@ -306,7 +319,7 @@ function EUS(r, viewPersonId, viewMode, d, s) {
         SetPersonCount(Object.entries(Efa).length);
         if ((staticMode || GetElementValue("familyid")) && OwnerPersonId && Efa[OwnerPersonId]) {
             var fb = FDN(Efa[OwnerPersonId], false, 1, false, false, false);
-            SetElementInnerText("lfamilyinfo", _t("Founded by $", fb));
+            SetElementInnerText("lfamilyinfo", '');
             if (!staticMode) {
                 SetElementShow("historybutton", true);
             }
@@ -428,19 +441,7 @@ function ESM(m) {
 
 function ImportScriptFile() {
     console.log('import')
-    window.showOpenFilePicker({
-        types: [
-            {
-                description: "Text file",
-                accept: {
-                    "text/plain": [".txt"],
-                },
-            },
-        ],
-        suggestedName: "testFile",
-        excludeAcceptAllOption: true,
-        multiple: false,
-    }).then(async fileHandle => {
+    window.showOpenFilePicker(FileHandler.options).then(async fileHandle => {
         let file = await fileHandle[0].getFile();
         console.log(file)
         let reader = new FileReader();
@@ -451,7 +452,7 @@ function ImportScriptFile() {
             SetElementInnerText("lfamilyname", file.name);
         };
         reader.readAsText(file);
-        FileHandler = fileHandle[0];
+        FileHandler.handler = fileHandle[0];
     });
 }
 
@@ -632,9 +633,9 @@ function GetSaveScript(historyScript) {
     }
     console.log(persons);
     let scriptBuilder = [];
-    Object.entries(persons).forEach(([type, fields])=>{
+    Object.entries(persons).forEach(([type, fields]) => {
         scriptBuilder.push(type);
-        Object.entries(fields).forEach(([paramName, value])=>{
+        Object.entries(fields).forEach(([paramName, value]) => {
             scriptBuilder.push('\t', paramName, value);
         })
         scriptBuilder.push('\n');
@@ -721,27 +722,27 @@ function GenerateId() {
 var IsSaving = false;
 
 // ESS 保存
-function SaveFamily() {
+function SaveFamily(saveFile = false) {
     if (!staticMode) {
-        var fi = GetElementValue("familyid");
-        var ic = GetElementValue("importcacheid");
+        var familyId = GetElementValue("familyid");
         if (!IsSaving) {
             let newScript = GetElementValue("newscript");
             var len = newScript.length;
-            if (len || ic) {
+            // 如果有修改且打开了文件或需要保存文件
+            if (len && (familyId || saveFile)) {
                 IsSaving = true;
-                let script = GetSaveScript(ScriptText+'\n'+newScript);
+                let script = GetSaveScript(ScriptText + '\n' + newScript);
                 console.log(script);
-                SaveScriptToFile(script).then(()=>{
+                SaveScriptToFile(script).then(() => {
                     ScriptText = script;
                     SetElementValue("newscript", '')
+                    // SavedCallback('', script.length)
+                }).finally(() => {
                     IsSaving = false;
                     OnSavingScript(true);
-                    // SavedCallback('', script.length)
                 })
                 OnSavingScript(false);
             } else {
-                IsSaving = true;
                 OnSavingScript(false);
                 IsSaving = false;
                 setTimeout("OnSavingScript(true);", 500);
@@ -751,8 +752,12 @@ function SaveFamily() {
 }
 
 async function SaveScriptToFile(script) {
-    await FileHandler.requestPermission();
-    let writableStream = await FileHandler.createWritable();
+    if (!FileHandler.handler) {
+        FileHandler.handler = await window.showSaveFilePicker(FileHandler.options);
+        SetElementInnerText("lfamilyname", (await FileHandler.handler.getFile()).name);
+    }
+    await FileHandler.handler.requestPermission();
+    let writableStream = await FileHandler.handler.createWritable();
     writableStream.write(script);
     writableStream.close();
 }
@@ -790,19 +795,17 @@ function OnSavingScript(isSaved) {
             p = "lsaving";
         } else if (newScriptLength || ic) {
             p = "lsave";
-        } else if (!AllowWrite) {
-            p = AllowWritePersonId ? "lwriteone" : "lreadonly";
         } else {
             p = isSaved ? "lsaved" : "linitial";
         }
 
-        var es = ["linitial", "lreadonly", "lwriteone", "lsave", "lsaving", "lsaved"];
+        var es = ["linitial", "lsave", "lsaving", "lsaved"];
         for (var j = 0; j < es.length; j++) {
             SetElementShow(es[j], p == es[j]);
         }
         var familyId = GetElementValue("familyid");
         var si = GetElementValue("sessionid");
-        SetElementShow("savefamily", (AllowWrite || newScriptLength || ic) && familyId);
+        SetElementShow("savefamily", (AllowWrite || newScriptLength) && p === 'lsave');
         SetElementShow("sharebutton", Esf && si && familyId && !Eaf);
         SetElementShow("usersbutton", Eaf && si && familyId);
         SetElementShow("downloadbutton", familyId && AllowDownload && !Eis.length);

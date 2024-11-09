@@ -83,7 +83,7 @@ function SPL() {
 }
 
 function SPW(i) {
-    return AllowWrite || (i && (AllowWritePersonId == i));
+    return AllowWrite;
 }
 
 function SPN(p) {
@@ -169,9 +169,6 @@ function SSA(_a, _b) {
     SetElementClassShowRow("filesview2", (Spa == 4) && !Sed);
     SetElementClassShowRow("viewfooter", pw && (!Sed) && (Spa != 4));
     SetElementClassShowRow("editfooter", Sed && (Spa != 4));
-    SetElementClassShowRow("readonlyfooter", (!staticMode) && (!AllowWrite) && (!AllowWritePersonId));
-    SetElementClassShowRow("writemefooter", (!AllowWrite) && pw);
-    SetElementClassShowRow("writenotfooter", AllowWritePersonId && !pw);
     if (Spa == 3) {
         var et = _t("Edit partnership details");
     } else {

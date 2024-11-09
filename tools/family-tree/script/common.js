@@ -186,25 +186,12 @@ function ShowAlert(message) {
 
 // SC 设置Cookie
 function SetCookie(name, value, s) {
-    const d = new Date();
-    d.setTime(d.getTime() + 365 * 86400000);
-    const t = ".familyecho.com";
-    document.cookie = name + "=" + value + "; expires=" + d.toGMTString() + "; path=/" + ((s && (window.location.hostname.substr(-t.length) == t)) ? ("; domain=" + t) : "");
+    localStorage.setItem("family_"+name, value);
 }
 
 // GC
 function GetCookie(name) {
-    const cs = document.cookie.split(";");
-    for (let j = 0; j < cs.length; j++) {
-        let c = cs[j];
-        while (c.charAt(0) == " ") {
-            c = c.substring(1, c.length);
-        }
-        if (c.substring(0, name.length + 1) == (name + "=")) {
-            return c.substring(name.length + 1, c.length);
-        }
-    }
-    return null;
+    return localStorage.getItem("family_"+name);
 }
 
 function UL(l) {
@@ -377,13 +364,6 @@ var Lf = null;
 
 function LF(_6d) {
     Lf = _6d;
-    SetElementShow("footerlang", true);
-    const languageName = locale_names[locale_value];
-    SetElementInnerText("currentlang", languageName);
-    if ((locale_value != "en") && GetCookie("langnote")) {
-        alert(_t("Some of the $ translation is AI-generated, so it may not be perfect.", languageName) + " " + _t("Please contact us if you would like to help improve the $ translation.", languageName));
-        SetCookie("langnote", "");
-    }
 }
 
 // LL 获取支持的语言列表
@@ -405,7 +385,7 @@ function ShowLanguageContent() {
     var ls = LanguageList();
     h += "<div id=\"langlist\">";
     for (var i = 0; i < ls.length; i++) {
-        h += "<a href=\"#\" onClick=\""+LanguageSelect.name+"('" + ls[i].l + "'); return false;\">" + (ls[i].s ? "<B>" : "") + EncodeHTML(ls[i].c) + (ls[i].s ? "</B>" : "") + "</a><br>";
+        h += "<a href=\"#\" onClick=\"" + LanguageSelect.name + "('" + ls[i].l + "'); return false;\">" + (ls[i].s ? "<B>" : "") + EncodeHTML(ls[i].c) + (ls[i].s ? "</B>" : "") + "</a><br>";
     }
     h += "</div>";
     h += "<div id=\"langfooter\">Some of these translations are AI-generated, so they may not be perfect.<br>" + "Please <a href=\"?page=feedback\" target=\"_blank\">contact us</a> if you would like to help improve Famliy Echo in your language.</div>";
