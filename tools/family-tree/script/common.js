@@ -1,184 +1,214 @@
-function GE(e) {
-    return document.getElementById(e);
+// GE
+function GetElement(id) {
+    return document.getElementById(id);
 }
 
-function SV(e, v) {
-    GE(e).value = v ? v : "";
+// SV
+function SetElementValue(id, value) {
+    GetElement(id).value = value ? value : "";
 }
 
-function GV(e) {
-    return GE(e).value;
+// GV
+function GetElementValue(id) {
+    return GetElement(id).value;
 }
 
-function WV(e1, e2) {
-    var t = GV(e1);
-    SV(e1, GV(e2));
-    SV(e2, t);
+// WV
+function SwapElementValue(element1Id, element2Id) {
+    const t = GetElementValue(element1Id);
+    SetElementValue(element1Id, GetElementValue(element2Id));
+    SetElementValue(element2Id, t);
 }
 
-function SO(e, v) {
-    var s = GE(e);
-    var v = v ? v : "";
-    for (var j = 0; j < s.options.length; j++) {
-        if (s.options[j].value == v) {
-            s.selectedIndex = j;
+// SO
+function SetSelectElementSelected(elementId, selectValue) {
+    const element = GetElement(elementId);
+    selectValue = selectValue ? selectValue : "";
+    for (let j = 0; j < element.options.length; j++) {
+        if (element.options[j].value == selectValue) {
+            element.selectedIndex = j;
         }
     }
 }
 
-function GO(e) {
-    var v = GE(e);
-    return v.options[v.selectedIndex].value;
+// GO
+function GetSelectElementValue(id) {
+    const element = GetElement(id);
+    return element.options[element.selectedIndex].value;
 }
 
-function SS(e, s) {
-    GE(e).style.display = s ? "inline" : "none";
+// SS
+function SetElementShow(id, isShow) {
+    GetElement(id).style.display = isShow ? "inline" : "none";
 }
 
-function GS(e) {
-    return GE(e).style.display != "none";
+// GS
+function isElementShow(id) {
+    return GetElement(id).style.display != "none";
 }
 
-function SI(e, v) {
-    GE(e).style.visibility = v ? "visible" : "hidden";
+// SI
+function SetElementVisibility(id, isVisible) {
+    GetElement(id).style.visibility = isVisible ? "visible" : "hidden";
 }
 
-function GI(e) {
-    return GE(e).style.visibility != "hidden";
+// GI
+function IsElementVisibility(id) {
+    return GetElement(id).style.visibility != "hidden";
 }
 
-function SD(e, v) {
-    GE(e).disabled = v ? true : false;
+// SD
+function SetElementDisabled(id, isDisable) {
+    GetElement(id).disabled = isDisable ? true : false;
 }
 
-function FS(e) {
-    GE(e).focus();
-    GE(e).select();
+// FS 聚焦
+function FocusSelectElement(id) {
+    GetElement(id).focus();
+    GetElement(id).select();
 }
 
-function SR(e, s) {
-    GE(e).className = s ? "showrows" : "hiderows";
+// SR 设置class 为showrows 或 hiderows
+function SetElementClassShowRow(id, isShowRow) {
+    GetElement(id).className = isShowRow ? "showrows" : "hiderows";
 }
 
-function SH(e, h) {
-    GE(e).innerHTML = h;
+// SH
+function SetElementInnerHTML(id, html) {
+    GetElement(id).innerHTML = html;
 }
 
-function ST(e, t) {
-    GE(e).innerHTML = EH(t);
+// ST
+function SetElementInnerText(id, text) {
+    GetElement(id).innerHTML = EncodeHTML(text);
 }
 
-function NE(s) {
-    return s.replace(/\r\n?/g, "\n");
+// NE 替换\r\n => \n
+function ReplaceRN2N(str) {
+    return str.replace(/\r\n?/g, "\n");
 }
 
-function EH(v) {
-    return v.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+// EH HTML转码（&"<>）
+function EncodeHTML(html) {
+    return html.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function EL(v) {
-    return v ? EH(v.replace(/\n/g, "^$")).replace(/\^\$/g, "<BR>") : "";
+// EL HTML转码包含换行（\n&"<>）
+function EncodeHTMLLine(html) {
+    return html ? EncodeHTML(html.replace(/\n/g, "^$")).replace(/\^\$/g, "<BR>") : "";
 }
 
-function CU(v) {
-    return v ? v.replace(/(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig, function (url) {
+// CU 转换URL文本为HTML标签
+function ConvertURL2HTML(url) {
+    return url ? url.replace(/(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig, function (url) {
         return "<a href=\"" + url + "\" target=\"_blank\">" + url + "</a>";
     }) : "";
 }
 
-function SB(v) {
-    return v.replace(/\//g, "/<wbr>");
+// SB 替换 / => <wbr> 增加换行机会
+function SetBreak(html) {
+    return html.replace(/\//g, "/<wbr>");
 }
 
-function DT() {
-    return (new Date()).getTime();
+// DT 获取时间戳
+function DateTimestamp() {
+    return Date.now();
 }
 
-function BR(_23, _24, _25) {
-    var url = _23 + "ap_" + _24 + ".php?";
-    for (var j in _25) {
-        if (_25[j] != null) {
-            url += (j + "=" + escape(_25[j]) + "&");
+// BR 组装url
+function BuildURL(prefix, filename, paramMap) {
+    var url = prefix + "ap_" + filename + ".php?";
+    for (var j in paramMap) {
+        if (paramMap[j] != null) {
+            url += (j + "=" + escape(paramMap[j]) + "&");
         }
     }
     return url;
 }
 
-function BA(_28, _29, _2a) {
-    return BR(_28, _29, _2a) + "_=" + (DT() + Math.random());
+// BA 组装url 最后加随机数
+function BuildURLNoCache(prefix, filename, paramMap) {
+    return BuildURL(prefix, filename, paramMap) + "_=" + (DateTimestamp() + Math.random());
 }
 
-function AG(_2b, _2c, _2d, _2e) {
-    AP(_2b, _2c, "", _2d, _2e);
+function HttpPostNoBody(filename, paramMap, callback, callbackArg) {
+    HttpPost(filename, paramMap, "", callback, callbackArg);
 }
 
-function AP(_2f, _30, _31, _32, _33) {
+// AP 发送POST请求
+function HttpPost(filename, paramMap, body, callback, callbackArg) {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", BA("ap/", _2f, _30), true);
+    xhr.open("POST", BuildURLNoCache("ap/", filename, paramMap), true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            _32(_2f, _33, ((xhr.status == 200) && xhr.responseText) ? eval("(" + xhr.responseText + ")") : {});
+            callback(filename, callbackArg, ((xhr.status == 200) && xhr.responseText) ? eval("(" + xhr.responseText + ")") : {});
         }
     };
-    xhr.send(_31);
+    xhr.send(body);
 }
 
 var Bw = null;
 
 function CE(w) {
     Bw = w;
-    window.onerror = SE;
+    window.onerror = OnWindowError;
 }
 
-function TR() {
-    var s = "";
-    for (var a = TR; a; a = a.caller) {
-        s += (a.name || a.toString().match(/function (\w*)/)) + "<";
-        if (a.caller == a) {
-            break;
-        }
-    }
-    return s;
-}
+// TR
+// function TR() {
+//     var s = "";
+//     for (var a = TR; a; a = a.caller) {
+//         s += (a.name || a.toString().match(/function (\w*)/)) + "<";
+//         if (a.caller == a) {
+//             break;
+//         }
+//     }
+//     return s;
+// }
 
-function SE(m, u, l, w) {
+// SE 触发异常事件
+function OnWindowError(m, u, l, w) {
     w = w || window;
     if (Bw) {
         if (Bw.SE) {
             Bw.SE(m, u, l, w);
         }
     } else {
-        AP("log_js_error", {}, m + "|" + (w ? w.location : "") + "|" + u + "|" + l + "|", function () {
+        HttpPost("log_js_error", {}, m + "|" + (w ? w.location : "") + "|" + u + "|" + l + "|", function () {
         }, null);
     }
 }
 
-function RE(e) {
-    alert(e);
+// RE alert
+function ShowAlert(message) {
+    alert(message);
 }
 
-function SC(n, v, s) {
-    var d = new Date();
+// SC 设置Cookie
+function SetCookie(name, value, s) {
+    const d = new Date();
     d.setTime(d.getTime() + 365 * 86400000);
-    var t = ".familyecho.com";
-    document.cookie = n + "=" + v + "; expires=" + d.toGMTString() + "; path=/" + ((s && (window.location.hostname.substr(-t.length) == t)) ? ("; domain=" + t) : "");
+    const t = ".familyecho.com";
+    document.cookie = name + "=" + value + "; expires=" + d.toGMTString() + "; path=/" + ((s && (window.location.hostname.substr(-t.length) == t)) ? ("; domain=" + t) : "");
 }
 
-function GC(n) {
-    var cs = document.cookie.split(";");
-    for (var j = 0; j < cs.length; j++) {
-        var c = cs[j];
+// GC
+function GetCookie(name) {
+    const cs = document.cookie.split(";");
+    for (let j = 0; j < cs.length; j++) {
+        let c = cs[j];
         while (c.charAt(0) == " ") {
             c = c.substring(1, c.length);
         }
-        if (c.substring(0, n.length + 1) == (n + "=")) {
-            return c.substring(n.length + 1, c.length);
+        if (c.substring(0, name.length + 1) == (name + "=")) {
+            return c.substring(name.length + 1, c.length);
         }
     }
     return null;
 }
 
 function UL(l) {
+    console.log(">UL", l)
     var dw = self.screen.width, dh = self.screen.height;
     if (top.innerHeight) {
         dw = top.innerWidth;
@@ -208,27 +238,30 @@ function _i(_4a) {
     return _4a;
 }
 
-function _t(_4b) {
+// _t 翻译文本
+function _t(text) {
     var _4c = Array.from(arguments);
     _4c = _4c.slice(1);
-    _4b = SL(_4b, _4c);
-    _4b = SN(_4b, _4c);
-    return _4b;
+    text = SL(text, _4c);
+    text = SN(text, _4c);
+    return text;
 }
 
-function _h(_4d) {
+// _h 翻译并转义HTML
+function _h(text) {
     var _4e = Array.from(arguments);
     _4e = _4e.slice(1);
-    _4d = SL(_4d, _4e);
-    _4d = SN(_4d, _4e);
-    _4d = EH(_4d);
-    _4d = SG(_4d, _4e);
-    return _4d;
+    text = SL(text, _4e);
+    text = SN(text, _4e);
+    text = EncodeHTML(text);
+    text = SG(text, _4e);
+    return text;
 }
 
 var Pr = null, ordinalRules = null;
 
-function SL(_4f, _50) {
+function SL(text, _50) {
+    console.log(">SL", arguments);
     if ((typeof Intl !== "undefined") && (typeof Intl.PluralRules !== undefined)) {
         if (!Pr) {
             Pr = new Intl.PluralRules(locale_value);
@@ -238,20 +271,20 @@ function SL(_4f, _50) {
         }
     }
     var _51 = "str";
-    var _52 = _4f.indexOf("#");
+    var _52 = text.indexOf("#");
     if (_52 >= 0) {
         if (Pr) {
-            var _53 = (_4f.substring(0, _52).match(/\$/g) || []).length;
+            var _53 = (text.substring(0, _52).match(/\$/g) || []).length;
             var _54 = _50[_53];
             if (Number.isInteger(parseFloat(_54))) {
                 _51 = Pr.select(parseInt(_54));
             }
         }
     } else {
-        var _55 = _4f.indexOf("^");
+        var _55 = text.indexOf("^");
         if (_55 >= 0) {
             if (ordinalRules) {
-                var _53 = (_4f.substring(0, _55).match(/\$/g) || []).length;
+                var _53 = (text.substring(0, _55).match(/\$/g) || []).length;
                 var _54 = _50[_53];
                 if (Number.isInteger(parseFloat(_54))) {
                     _51 = ordinalRules.select(parseInt(_54));
@@ -260,19 +293,19 @@ function SL(_4f, _50) {
         }
     }
     var _56 = undefined;
-    if (locale_phrases[_4f]) {
-        _56 = locale_phrases[_4f][_51];
+    if (locale_phrases[text]) {
+        _56 = locale_phrases[text][_51];
         var _57 = ["str", "many", "few", "two", "one", "zero"];
         for (var i = 0; i < _57.length; i++) {
             if (_56 !== undefined) {
                 break;
             } else {
-                _56 = locale_phrases[_4f][_57[i]];
+                _56 = locale_phrases[text][_57[i]];
             }
         }
     }
     if (_56 === undefined) {
-        _56 = _4f;
+        _56 = text;
     }
     if (Dp) {
         return "{" + _56 + "}";
@@ -344,18 +377,19 @@ var Lf = null;
 
 function LF(_6d) {
     Lf = _6d;
-    SS("footerlang", true);
-    var c = locale_names[locale_value];
-    ST("currentlang", c);
-    if ((locale_value != "en") && GC("langnote")) {
-        alert(_t("Some of the $ translation is AI-generated, so it may not be perfect.", c) + " " + _t("Please contact us if you would like to help improve the $ translation.", c));
-        SC("langnote", "");
+    SetElementShow("footerlang", true);
+    const languageName = locale_names[locale_value];
+    SetElementInnerText("currentlang", languageName);
+    if ((locale_value != "en") && GetCookie("langnote")) {
+        alert(_t("Some of the $ translation is AI-generated, so it may not be perfect.", languageName) + " " + _t("Please contact us if you would like to help improve the $ translation.", languageName));
+        SetCookie("langnote", "");
     }
 }
 
-function LL() {
-    var ls = [];
-    for (var l in locale_names) {
+// LL 获取支持的语言列表
+function LanguageList() {
+    let ls = [];
+    for (const l in locale_names) {
         ls[ls.length] = {l: l, c: locale_names[l], s: (l == locale_value)};
     }
     ls = ls.sort(function (a, b) {
@@ -364,32 +398,35 @@ function LL() {
     return ls;
 }
 
-function LC() {
-    var h = "<a id=\"langclose\" HREF=\"#\" TITLE=\"Close\" onClick=\"LH(); return false;\">&#x2715;</a>";
+// LC 展示语言选择框
+function ShowLanguageContent() {
+    var h = "<a id=\"langclose\" HREF=\"#\" TITLE=\"Close\" onClick=\"" + HideLanguageContent.name + "(); return false;\">&#x2715;</a>";
     h += "<div id=\"langtitle\">Please click to choose your preferred language:</div>";
-    var ls = LL();
+    var ls = LanguageList();
     h += "<div id=\"langlist\">";
     for (var i = 0; i < ls.length; i++) {
-        h += "<a href=\"#\" onClick=\"LS('" + ls[i].l + "'); return false;\">" + (ls[i].s ? "<B>" : "") + EH(ls[i].c) + (ls[i].s ? "</B>" : "") + "</a><br>";
+        h += "<a href=\"#\" onClick=\""+LanguageSelect.name+"('" + ls[i].l + "'); return false;\">" + (ls[i].s ? "<B>" : "") + EncodeHTML(ls[i].c) + (ls[i].s ? "</B>" : "") + "</a><br>";
     }
     h += "</div>";
     h += "<div id=\"langfooter\">Some of these translations are AI-generated, so they may not be perfect.<br>" + "Please <a href=\"?page=feedback\" target=\"_blank\">contact us</a> if you would like to help improve Famliy Echo in your language.</div>";
-    SH("langcontent", h);
-    GE("langoverlay").style.display = "flex";
+    SetElementInnerHTML("langcontent", h);
+    GetElement("langoverlay").style.display = "flex";
 }
 
-function LH() {
-    SS("langoverlay", false);
+// LH 隐藏语言选择框
+function HideLanguageContent() {
+    SetElementShow("langoverlay", false);
 }
 
-function LS(l) {
-    SC("lang", l, true);
-    SC("langnote", 1);
+// LS 选择语言
+function LanguageSelect(language) {
+    SetCookie("lang", language, true);
+    SetCookie("langnote", 1);
     if (Lf) {
         document.forms[Lf].submit();
     } else {
-        var u = new URL(location.href);
-        var m = "delete";
+        const u = new URL(location.href);
+        const m = "delete";
         u.searchParams[m]("lang");
         location.href = u.href;
     }

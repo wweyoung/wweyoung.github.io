@@ -6,7 +6,7 @@ var Dec = 0;
 function DGU(i, d) {
     var f = Eff[i];
     if (f) {
-        var u = "file.php?f=" + escape(GV("familyid")) + "&p=" + escape(GV("personid")) + "&c=" + escape(GV("checksum")) + "&r=" + escape(i) + "&t=" + escape(f.t);
+        var u = "file.php?f=" + escape(GetElementValue("familyid")) + "&p=" + escape(GetElementValue("personid")) + "&c=" + escape(GetElementValue("checksum")) + "&r=" + escape(i) + "&t=" + escape(f.t);
         if (d) {
             u += "&n=" + escape(f.n + (f.t ? ("." + f.t) : ""));
         }
@@ -20,31 +20,31 @@ function DSI(i) {
         var v = DTV(f.t);
         var _8 = (v == "iframe");
         var u = DGU(i, false);
-        ST("fileviewname", f.n);
-        SH("fileviewmeta", "<a href=\"" + EH(DGU(i, true)) + "\" title=\"" + _h("Download file") + "\">" + _h("$1 $2", DSH(f.s), DTH(f.t)) + "</a>");
-        ST("fileviewdate", _t("Uploaded $", DDT(f.u)));
+        SetElementInnerText("fileviewname", f.n);
+        SetElementInnerHTML("fileviewmeta", "<a href=\"" + EncodeHTML(DGU(i, true)) + "\" title=\"" + _h("Download file") + "\">" + _h("$1 $2", DSH(f.s), DTH(f.t)) + "</a>");
+        SetElementInnerText("fileviewdate", _t("Uploaded $", DDT(f.u)));
         if (v == "iframe") {
-            GE("fileviewiframe").src = "";
-            GE("fileviewiframe").src = u;
+            GetElement("fileviewiframe").src = "";
+            GetElement("fileviewiframe").src = u;
         } else {
             if (v == "audio") {
-                GE("fileviewaudio").src = "";
-                GE("fileviewaudio").src = u;
+                GetElement("fileviewaudio").src = "";
+                GetElement("fileviewaudio").src = u;
             } else {
-                GE("fileviewimage").src = "";
-                GE("fileviewimage").src = u;
+                GetElement("fileviewimage").src = "";
+                GetElement("fileviewimage").src = u;
             }
-            SS("fileviewimage", v != "audio");
-            SS("fileviewaudio", v == "audio");
+            SetElementShow("fileviewimage", v != "audio");
+            SetElementShow("fileviewaudio", v == "audio");
         }
-        GE("fileviewiframe").style.display = _8 ? "block" : "none";
-        GE("fileviewinline").style.display = _8 ? "none" : "flex";
-        SS("fileviewdiv", true);
+        GetElement("fileviewiframe").style.display = _8 ? "block" : "none";
+        GetElement("fileviewinline").style.display = _8 ? "none" : "flex";
+        SetElementShow("fileviewdiv", true);
     }
 }
 
 function DHV() {
-    SS("fileviewdiv", false);
+    SetElementShow("fileviewdiv", false);
 }
 
 function DST(s) {
@@ -60,7 +60,7 @@ function DST(s) {
 }
 
 function DSH(s) {
-    return EH(DST(s));
+    return EncodeHTML(DST(s));
 }
 
 function DMT(s) {
@@ -141,16 +141,16 @@ function DTT(t, e) {
 }
 
 function DTH(t, e) {
-    return EH(DTT(t, e));
+    return EncodeHTML(DTT(t, e));
 }
 
 function DDT(u) {
     var d = new Date(u * 1000);
-    return FSD(d.getDate(), 1 + d.getMonth(), d.getFullYear());
+    return DateToString(d.getDate(), 1 + d.getMonth(), d.getFullYear());
 }
 
 function DCH(u) {
-    return EH(DDT(u));
+    return EncodeHTML(DDT(u));
 }
 
 function DTV(t) {
@@ -188,16 +188,16 @@ function DSD(a, b) {
 
 function DDF(z) {
     if (z) {
-        SV("filesfind", "");
-        GE("filestable").style.tableLayout = "auto";
-        SS("filesuploadfile", Eud);
+        SetElementValue("filesfind", "");
+        GetElement("filestable").style.tableLayout = "auto";
+        SetElementShow("filesuploadfile", Eud);
     } else {
         DFL();
     }
     while (Dec > 0) {
         DEI(false);
     }
-    var ss = GV("filesfind").trim().toLowerCase().split(" ");
+    var ss = GetElementValue("filesfind").trim().toLowerCase().split(" ");
     var fs = [];
     var l = 0;
     var hf = false;
@@ -236,7 +236,7 @@ function DDF(z) {
             l++;
         }
     }
-    var t = GE("filesrows");
+    var t = GetElement("filesrows");
     t.innerHTML = "";
     if (l) {
         fs.sort(DSL);
@@ -277,10 +277,10 @@ function DDF(z) {
             c.className = "fbuttons";
             var h = "";
             if (Eed) {
-                h += "<INPUT CLASS=\"sbutton4\" ID=\"fileedit" + EH(f.i) + "\" TYPE=\"submit\" onClick=\"DCE('" + f.i + "'); return false;\" VALUE=\"" + _h("Edit") + "\"> " + "<INPUT CLASS=\"sbutton4\" ID=\"filesave" + EH(f.i) + "\" TYPE=\"submit\" onClick=\"DCS('" + f.i + "', true); return false;\" VALUE=\"" + _h("Save") + "\" STYLE=\"display:none;\"> " + "<INPUT CLASS=\"sbutton4\" ID=\"filecancel" + EH(f.i) + "\" TYPE=\"submit\" onClick=\"DCS('" + f.i + "', false); return false;\" VALUE=\"" + _h("Cancel") + "\" STYLE=\"display:none;\"> ";
+                h += "<INPUT CLASS=\"sbutton4\" ID=\"fileedit" + EncodeHTML(f.i) + "\" TYPE=\"submit\" onClick=\"DCE('" + f.i + "'); return false;\" VALUE=\"" + _h("Edit") + "\"> " + "<INPUT CLASS=\"sbutton4\" ID=\"filesave" + EncodeHTML(f.i) + "\" TYPE=\"submit\" onClick=\"DCS('" + f.i + "', true); return false;\" VALUE=\"" + _h("Save") + "\" STYLE=\"display:none;\"> " + "<INPUT CLASS=\"sbutton4\" ID=\"filecancel" + EncodeHTML(f.i) + "\" TYPE=\"submit\" onClick=\"DCS('" + f.i + "', false); return false;\" VALUE=\"" + _h("Cancel") + "\" STYLE=\"display:none;\"> ";
             }
             if (Exd) {
-                h += "<INPUT CLASS=\"sbutton4\" ID=\"filedelete" + EH(f.i) + "\" TYPE=\"submit\" onClick=\"DCD('" + f.i + "'); return false;\" VALUE=\"" + _h("Delete") + "\">";
+                h += "<INPUT CLASS=\"sbutton4\" ID=\"filedelete" + EncodeHTML(f.i) + "\" TYPE=\"submit\" onClick=\"DCD('" + f.i + "'); return false;\" VALUE=\"" + _h("Delete") + "\">";
             }
             c.innerHTML = h;
             r.appendChild(c);
@@ -298,7 +298,7 @@ function DDF(z) {
     }
     for (var j = 0; j < Dso.length; j++) {
         var o = Dso[j];
-        SH("filessort" + o, (Dsf == o) ? (Dsr ? "&#x25BC;" : "&#x25B2;") : "<span style=\"visibility:hidden;\">&#x25B2;</span>");
+        SetElementInnerHTML("filessort" + o, (Dsf == o) ? (Dsr ? "&#x25BC;" : "&#x25B2;") : "<span style=\"visibility:hidden;\">&#x25B2;</span>");
     }
 }
 
@@ -329,13 +329,13 @@ function DUS() {
     if (np.length) {
         h += " " + _h("You do not currently have permission to $ files.", np.join(", "));
     }
-    SH("filesstatus", h);
+    SetElementInnerHTML("filesstatus", h);
 }
 
 function DFL() {
-    var e = GE("filestable");
+    var e = GetElement("filestable");
     if (e.style.tableLayout != "fixed") {
-        var cs = GE("filesheader").getElementsByTagName("th");
+        var cs = GetElement("filesheader").getElementsByTagName("th");
         for (i = 0; i < cs.length; i++) {
             cs[i].style.width = (cs[i].offsetWidth - 1) + "px";
         }
@@ -349,7 +349,7 @@ function DNH(i, f, exp) {
         if (DTV(f.t)) {
             h += "<a href=\"#\" title=\"" + _h("View file") + "\" onclick=\"DSI('" + i + "'); return false;\">";
         } else {
-            h += "<a href=\"" + EH(DGU(i, true)) + "\" title=\"" + _h("Download file") + "\">";
+            h += "<a href=\"" + EncodeHTML(DGU(i, true)) + "\" title=\"" + _h("Download file") + "\">";
         }
     }
     return h + NSE(f.n || _t("Untitled"), exp) + (Edd ? "</a>" : "");
@@ -378,7 +378,7 @@ function DAO(f) {
 function DAH(aa, exp) {
     var h = "";
     for (var k = 0; k < aa.length; k++) {
-        h += (h ? ", " : "") + "<a href=\"#\" onclick=\"ESP('" + EH(aa[k].i) + "', true); SWA(4); return false;\">" + NSE(aa[k].n, exp) + "</a>";
+        h += (h ? ", " : "") + "<a href=\"#\" onclick=\"ESP('" + EncodeHTML(aa[k].i) + "', true); SWA(4); return false;\">" + NSE(aa[k].n, exp) + "</a>";
     }
     return h ? h : "none";
 }
@@ -425,13 +425,13 @@ function DEI(f) {
     if (f) {
         if (Dec == 0) {
             DFL();
-            SI("filesfind", false);
+            SetElementVisibility("filesfind", false);
         }
         Dec++;
     } else {
         Dec--;
         if (Dec == 0) {
-            SI("filesfind", true);
+            SetElementVisibility("filesfind", true);
         }
     }
 }
@@ -439,13 +439,13 @@ function DEI(f) {
 function DCE(i) {
     DEI(true);
     var f = Eff[i];
-    var c = GE("filename" + i);
-    c.innerHTML = "<TEXTAREA ID=\"filenameedit" + EH(i) + "\" STYLE=\"width:100%;\" ROWS=\"2\">" + EH(f.n) + "</TEXTAREA>";
-    var c = GE("filedesc" + i);
-    c.innerHTML = "<TEXTAREA ID=\"filedescedit" + EH(i) + "\" STYLE=\"width:100%;\" ROWS=\"2\">" + EH(f.d) + "</TEXTAREA>";
-    var c = GE("fileattach" + i);
+    var c = GetElement("filename" + i);
+    c.innerHTML = "<TEXTAREA ID=\"filenameedit" + EncodeHTML(i) + "\" STYLE=\"width:100%;\" ROWS=\"2\">" + EncodeHTML(f.n) + "</TEXTAREA>";
+    var c = GetElement("filedesc" + i);
+    c.innerHTML = "<TEXTAREA ID=\"filedescedit" + EncodeHTML(i) + "\" STYLE=\"width:100%;\" ROWS=\"2\">" + EncodeHTML(f.d) + "</TEXTAREA>";
+    var c = GetElement("fileattach" + i);
     var ai = "fileattachrows" + i;
-    c.innerHTML = "<TABLE ID=\"" + EH(ai) + "\" STYLE=\"width:100%; border-spacing:0;\"></TABLE>";
+    c.innerHTML = "<TABLE ID=\"" + EncodeHTML(ai) + "\" STYLE=\"width:100%; border-spacing:0;\"></TABLE>";
     var aa = DAO(f);
     if (aa.length) {
         for (var k = 0; k < aa.length; k++) {
@@ -454,12 +454,12 @@ function DCE(i) {
     } else {
         DAA(ai, true, "");
     }
-    SS("fileedit" + i, false);
+    SetElementShow("fileedit" + i, false);
     if (Exd) {
-        SS("filedelete" + i, false);
+        SetElementShow("filedelete" + i, false);
     }
-    SS("filesave" + i, true);
-    SS("filecancel" + i, true);
+    SetElementShow("filesave" + i, true);
+    SetElementShow("filecancel" + i, true);
 }
 
 function DCS(i, s) {
@@ -468,12 +468,12 @@ function DCS(i, s) {
         var sf = {};
         var sc = 0;
         var ic = 0;
-        var n = GV("filenameedit" + i);
+        var n = GetElementValue("filenameedit" + i);
         if (n != f.n) {
             sf.n = n;
             sc++;
         }
-        var d = GV("filedescedit" + i);
+        var d = GetElementValue("filedescedit" + i);
         if (d != f.d) {
             sf.d = d;
             sc++;
@@ -498,19 +498,19 @@ function DCS(i, s) {
         }
         if (sc || ic) {
             EUS(false, null, null, false, false);
-            ESS();
+            SaveFamily();
         }
     }
     f = Eff[i];
-    GE("filename" + i).innerHTML = DNH(i, f);
-    GE("filedesc" + i).innerHTML = DDH(i, f);
-    GE("fileattach" + i).innerHTML = DAH(DAO(f));
-    SS("fileedit" + i, true);
+    GetElement("filename" + i).innerHTML = DNH(i, f);
+    GetElement("filedesc" + i).innerHTML = DDH(i, f);
+    GetElement("fileattach" + i).innerHTML = DAH(DAO(f));
+    SetElementShow("fileedit" + i, true);
     if (Exd) {
-        SS("filedelete" + i, true);
+        SetElementShow("filedelete" + i, true);
     }
-    SS("filesave" + i, false);
-    SS("filecancel" + i, false);
+    SetElementShow("filesave" + i, false);
+    SetElementShow("filecancel" + i, false);
     DEI(false);
 }
 
@@ -518,7 +518,13 @@ function DCD(i) {
     var f = Eff[i];
     if (f) {
         if (confirm(_t("Are you sure you want to permanently delete the file $?", f.n))) {
-            AP("file_delete", {f: GV("familyid"), p: GV("personid"), c: GV("checksum"), r: i, t: f.t}, "", DDR, {i: i});
+            HttpPost("file_delete", {
+                f: GetElementValue("familyid"),
+                p: GetElementValue("personid"),
+                c: GetElementValue("checksum"),
+                r: i,
+                t: f.t
+            }, "", DDR, {i: i});
         }
     }
 }
@@ -526,7 +532,7 @@ function DCD(i) {
 function DDR(_5c, _5d, _5e) {
     if (_5e.ok) {
         EDC(_5d.i, {x: ""});
-        GE("filesrows").removeChild(GE("filesrow" + _5d.i));
+        GetElement("filesrows").removeChild(GetElement("filesrow" + _5d.i));
         var ds = parseInt(_5e.ds);
         if (!isNaN(ds)) {
             Edt = ds;
@@ -536,10 +542,10 @@ function DDR(_5c, _5d, _5e) {
             Eda = da;
         }
         DUS();
-        ESS();
+        SaveFamily();
         EUS(false, null, null, false, false);
     } else {
-        RE(_5e.er || _t("The file could not be deleted - please try again."));
+        ShowAlert(_5e.er || _t("The file could not be deleted - please try again."));
     }
 }
 
@@ -555,9 +561,9 @@ function DAA(t, f, p) {
     w.appendChild(m);
     var r = document.createElement("TD");
     r.className = "fattachpm";
-    r.innerHTML = "<A HREF=\"#\" CLASS=\"fattachpmlink\" onClick=\"DDA(" + EH(i) + "); return false;\" TITLE=\"" + _h("Detach this person") + "\"" + (f ? "STYLE=\"visibility:hidden;\" " : "") + ">&minus;</A> " + "<A HREF=\"#\" CLASS=\"fattachpmlink\" onClick=\"DAA('" + t + "', false); return false;\" TITLE=\"" + _h("Attach another person") + "\">+</A>";
+    r.innerHTML = "<A HREF=\"#\" CLASS=\"fattachpmlink\" onClick=\"DDA(" + EncodeHTML(i) + "); return false;\" TITLE=\"" + _h("Detach this person") + "\"" + (f ? "STYLE=\"visibility:hidden;\" " : "") + ">&minus;</A> " + "<A HREF=\"#\" CLASS=\"fattachpmlink\" onClick=\"DAA('" + t + "', false); return false;\" TITLE=\"" + _h("Attach another person") + "\">+</A>";
     w.appendChild(r);
-    GE(t).appendChild(w);
+    GetElement(t).appendChild(w);
     var ra = [];
     for (var j in Efa) {
         ra.push(j);
@@ -566,15 +572,15 @@ function DAA(t, f, p) {
 }
 
 function DDA(i) {
-    var e = GE("fileattachrow" + i);
+    var e = GetElement("fileattachrow" + i);
     e.parentNode.removeChild(e);
 }
 
 function DRA(t) {
     var ii = {};
-    for (var r = GE(t).firstChild; r; r = r.nextSibling) {
+    for (var r = GetElement(t).firstChild; r; r = r.nextSibling) {
         if (r.id.indexOf("fileattachrow") == 0) {
-            var v = GV("fileattachsel" + r.id.substring(13));
+            var v = GetElementValue("fileattachsel" + r.id.substring(13));
             if (v) {
                 ii[v] = true;
             }
@@ -584,19 +590,19 @@ function DRA(t) {
 }
 
 function DTU(a, c) {
-    var s = !GS("uploaddiv");
+    var s = !isElementShow("uploaddiv");
     if (s) {
-        SV("uploadfile", null);
-        SV("uploadname", "");
-        SV("uploaddesc", "");
-        SRR("uploadattachrows");
+        SetElementValue("uploadfile", null);
+        SetElementValue("uploadname", "");
+        SetElementValue("uploaddesc", "");
+        RemoveElementAllChild("uploadattachrows");
         DAA("uploadattachrows", true, a);
-        ST("uploadmax", DMT(DMU()));
+        SetElementInnerText("uploadmax", DMT(DMU()));
         if (c) {
-            GE("uploadfile").click();
+            GetElement("uploadfile").click();
         }
     }
-    GE("uploaddiv").style.display = s ? "flex" : "none";
+    GetElement("uploaddiv").style.display = s ? "flex" : "none";
 }
 
 function DMU() {
@@ -607,14 +613,14 @@ function DUC() {
     var fnt = DUI();
     if (fnt.s > DMU()) {
         alert(_t("This file is $1 in size, which is larger than the maximum of $2.", DST(fnt.s), DST(DMU())));
-        SV("uploadfile", null);
+        SetElementValue("uploadfile", null);
     } else {
-        SV("uploadname", fnt.n);
+        SetElementValue("uploadname", fnt.n);
     }
 }
 
 function DUI() {
-    var f = GE("uploadfile").files.item(0);
+    var f = GetElement("uploadfile").files.item(0);
     var n = "";
     var t = "";
     var s = null;
@@ -634,14 +640,14 @@ function DCU() {
     var ii = DRA("uploadattachrows");
     var fnt = DUI();
     if (fnt.f) {
-        AP("file_upload", {
-            f: GV("familyid"),
-            p: GV("personid"),
-            c: GV("checksum"),
+        HttpPost("file_upload", {
+            f: GetElementValue("familyid"),
+            p: GetElementValue("personid"),
+            c: GetElementValue("checksum"),
             t: fnt.t
-        }, fnt.f, DUR, {n: GV("uploadname") || fnt.n, t: fnt.t, d: GV("uploaddesc"), ii: ii});
+        }, fnt.f, DUR, {n: GetElementValue("uploadname") || fnt.n, t: fnt.t, d: GetElementValue("uploaddesc"), ii: ii});
     } else {
-        RE(_t("Please select a file to upload it."));
+        ShowAlert(_t("Please select a file to upload it."));
     }
 }
 
@@ -651,7 +657,7 @@ function DUR(_7c, _7d, _7e) {
         EDC(_7e.r, {n: _7d.n, t: _7d.t, u: _7e.d, s: _7e.s, d: _7d.d});
         for (var i in _7d.ii) {
             EDC(_7e.r, {"+": i});
-            if ((i == Spe) || (ai === null)) {
+            if ((i == SidebarPersonId) || (ai === null)) {
                 ai = i;
             }
         }
@@ -663,32 +669,34 @@ function DUR(_7c, _7d, _7e) {
         if (!isNaN(da)) {
             Eda = da;
         }
-        ESS();
+        SaveFamily();
         EUS(false, ai, null, false, true);
         SWA(4);
-        if (GS("filesdiv")) {
+        if (isElementShow("filesdiv")) {
             DDF(true);
             DUS();
         } else {
             ETF();
         }
-        GE("uploaddiv").style.display = "none";
+        GetElement("uploaddiv").style.display = "none";
     } else {
-        RE(_7e.er || _t("The file could not be uploaded - please try again."));
+        ShowAlert(_7e.er || _t("The file could not be uploaded - please try again."));
     }
 }
 
-function DAD() {
-    GE("main").addEventListener("dragenter", DDE);
-    GE("main").addEventListener("dragover", DDE);
-    GE("main").addEventListener("dragleave", DDL);
-    GE("main").addEventListener("drop", DDD);
+// DAD 给main元素绑定事件
+function MainElementAddEventListener() {
+    GetElement("main").addEventListener("dragenter", OnMainElementDragEnter);
+    GetElement("main").addEventListener("dragover", OnMainElementDragEnter);
+    GetElement("main").addEventListener("dragleave", OnMainElementDragLeave);
+    GetElement("main").addEventListener("drop", OnMainElementDrop);
 }
 
 var Dut = false;
 var Dht = null;
 
-function DDE(e) {
+// DDE
+function OnMainElementDragEnter(e) {
     e = e || window.event;
     if (e.preventDefault) {
         e.preventDefault();
@@ -697,21 +705,22 @@ function DDE(e) {
         clearTimeout(Dht);
         Dht = null;
     }
-    if (!GS("uploaddiv")) {
+    if (!isElementShow("uploaddiv")) {
         Dut = true;
         DTU("", false);
     }
     return false;
 }
 
-function DDL(e) {
+// DDL
+function OnMainElementDragLeave(e) {
     e = e || window.event;
     if (e.preventDefault) {
         e.preventDefault();
     }
     if (Dut && !Dht) {
         Dht = setTimeout(function () {
-            if (GS("uploaddiv")) {
+            if (isElementShow("uploaddiv")) {
                 DTU();
             }
             Dut = false;
@@ -721,13 +730,14 @@ function DDL(e) {
     return false;
 }
 
-function DDD(e) {
-    DDE();
+// DDD
+function OnMainElementDrop(e) {
+    OnMainElementDragEnter();
     var f = e.dataTransfer.files;
     if (f.length == 1) {
-        GE("uploadfile").files = f;
+        GetElement("uploadfile").files = f;
         DUC();
-        FS("uploadname");
+        FocusSelectElement("uploadname");
     }
     Dut = false;
     return false;

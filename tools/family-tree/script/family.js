@@ -1,6 +1,9 @@
-var Fmn = ["", _t("Mth_1"), _t("Mth_2"), _t("Mth_3"), _t("Mth_4"), _t("Mth_5"), _t("Mth_6"), _t("Mth_7"), _t("Mth_8"), _t("Mth_9"), _t("Mth_10"), _t("Mth_11"), _t("Mth_12")];
-var Fgn = {"": "", "f": _t("Female"), "m": _t("Male"), "o": _t("Other")};
-var Fvn = {
+// Fmn 月份枚举
+var MonthNames = ["", _t("Mth_1"), _t("Mth_2"), _t("Mth_3"), _t("Mth_4"), _t("Mth_5"), _t("Mth_6"), _t("Mth_7"), _t("Mth_8"), _t("Mth_9"), _t("Mth_10"), _t("Mth_11"), _t("Mth_12")];
+// Fgn 性别枚举
+var GenderNames = {"": "", "f": _t("Female"), "m": _t("Male"), "o": _t("Other")};
+// Fvn 日期修饰
+var DateDecorates = {
     "": _t("Known date"),
     "app": _t("Approximate"),
     "bef": _t("Before"),
@@ -8,52 +11,55 @@ var Fvn = {
     "bet": _t("Date range")
 };
 
-function FAA(a, v) {
-    a[a.length] = v;
+// FAA array.push
+function ArrayPush(arr, value) {
+    arr.push(value);
 }
 
-function FAN(a, a2) {
-    for (var j = 0; j < a2.length; j++) {
-        if (a.indexOf(a2[j]) < 0) {
-            a[a.length] = a2[j];
+// FAN 数组合并到arr1并去重
+function ArrayMergeDistinct(arr1, arr2) {
+    for (var j = 0; j < arr2.length; j++) {
+        if (arr1.indexOf(arr2[j]) < 0) {
+            arr1[arr1.length] = arr2[j];
         }
     }
 }
 
-function FAI(a, ar) {
-    for (var j = 0; j < ar.length; j++) {
-        var i = a.indexOf(ar[j]);
+// FAI
+function ArrayRemoveAll(arr, toRemove) {
+    for (var j = 0; j < toRemove.length; j++) {
+        var i = arr.indexOf(toRemove[j]);
         if (i >= 0) {
-            a.splice(i, 1);
+            arr.splice(i, 1);
         }
     }
 }
 
-function FRF(f, ap, fp) {
-    for (var i in f) {
-        var p = f[i];
+function FRF(persons, personId, ownerPersonId) {
+    for (var i in persons) {
+        var p = persons[i];
         p.c = [];
         p.pc = {};
         p.fg = false;
-        if (p.m && !f[p.m]) {
+        if (p.m && !persons[p.m]) {
             p.m = null;
         }
-        if (p.f && !f[p.f]) {
+        if (p.f && !persons[p.f]) {
             p.f = null;
         }
-        if (p.s && !f[p.s]) {
+        if (p.s && !persons[p.s]) {
             p.s = null;
         }
-        if (p.X && !f[p.X]) {
+        if (p.X && !persons[p.X]) {
             p.X = null;
         }
-        if (p.Y && !f[p.Y]) {
+        if (p.Y && !persons[p.Y]) {
             p.Y = null;
         }
-        if (p.K && !f[p.K]) {
+        if (p.K && !persons[p.K]) {
             p.K = null;
         }
-        if (p.L && !f[p.L]) {
+        if (p.L && !persons[p.L]) {
             p.L = null;
         }
         if (p.s) {
@@ -61,15 +67,15 @@ function FRF(f, ap, fp) {
         }
         if (p.ep) {
             for (var j in p.ep) {
-                if (p.ep[j] && f[j]) {
+                if (p.ep[j] && persons[j]) {
                     p.pc[j] = true;
                 }
             }
         }
     }
     var ai = 0;
-    for (var i in f) {
-        var p = f[i];
+    for (var i in persons) {
+        var p = persons[i];
         var j = 0;
         if (p.m || p.f) {
             j++;
@@ -109,94 +115,76 @@ function FRF(f, ap, fp) {
             p.h = FDN(p, false, 0);
         }
         if (m1 && f1) {
-            f[m1].pc[f1] = true;
-            f[f1].pc[m1] = true;
+            persons[m1].pc[f1] = true;
+            persons[f1].pc[m1] = true;
         }
         if (m2 && f2) {
-            f[m2].pc[f2] = true;
-            f[f2].pc[m2] = true;
+            persons[m2].pc[f2] = true;
+            persons[f2].pc[m2] = true;
         }
         if (m3 && f3) {
-            f[m3].pc[f3] = true;
-            f[f3].pc[m3] = true;
+            persons[m3].pc[f3] = true;
+            persons[f3].pc[m3] = true;
         }
         if (m1) {
-            FAA(f[m1].c, i);
+            ArrayPush(persons[m1].c, i);
         }
         if (f1 && (f1 != m1)) {
-            FAA(f[f1].c, i);
+            ArrayPush(persons[f1].c, i);
         }
         if (m2 && (m2 != m1) && (m2 != f1)) {
-            FAA(f[m2].c, i);
+            ArrayPush(persons[m2].c, i);
         }
         if (f2 && (f2 != m1) && (f2 != f1) && (f2 != m2)) {
-            FAA(f[f2].c, i);
+            ArrayPush(persons[f2].c, i);
         }
         if (m3 && (m3 != m1) && (m3 != f1) && (m3 != m2) && (m3 != f2)) {
-            FAA(f[m3].c, i);
+            ArrayPush(persons[m3].c, i);
         }
         if (f3 && (f3 != m1) && (f3 != f1) && (f3 != m2) && (f3 != f2) && (f3 != m3)) {
-            FAA(f[f3].c, i);
+            ArrayPush(persons[f3].c, i);
         }
     }
-    for (var i in f) {
-        var p = f[i];
+    for (var i in persons) {
+        var p = persons[i];
         var mi = p.m1;
         var fi = p.f1;
         if (!p.h) {
-            if (i == ap) {
+            if (i == personId) {
                 p.h = _t("Me");
+            } else if (i == ownerPersonId) {
+                p.h = _t("Founder");
             } else {
-                if (i == fp) {
-                    p.h = _t("Founder");
-                } else {
-                    var r = p["^"];
-                    if (r && f[r] && f[r].h) {
-                        var s = null;
-                        if ((r == mi) || (r == fi)) {
-                            s = FIT(p.V, p.g);
-                        } else {
-                            if (f[r].m == i) {
-                                s = FPT(f[r].V, p.g, "f", 1);
-                            } else {
-                                if (f[r].f == i) {
-                                    s = FPT(f[r].V, p.g, "m", 1);
-                                } else {
-                                    if (f[r].X == i) {
-                                        s = FPT(f[r].W, p.g, "f", 2);
-                                    } else {
-                                        if (f[r].Y == i) {
-                                            s = FPT(f[r].W, p.g, "m", 2);
-                                        } else {
-                                            if (f[r].K == i) {
-                                                s = FPT(f[r].W, p.g, "f", 3);
-                                            } else {
-                                                if (f[r].L == i) {
-                                                    s = FPT(f[r].W, p.g, "m", 3);
-                                                } else {
-                                                    if ((mi && (f[r].m == mi)) || (fi && (f[r].f == fi))) {
-                                                        s = FST((f[r].m == mi) && (f[r].f == fi), p.g);
-                                                    } else {
-                                                        if ((r == p.s) || (p.ep && (p.ep[r] == 2))) {
-                                                            s = _t("Partner");
-                                                        } else {
-                                                            if (f[r].pc[i]) {
-                                                                s = _t("Ex-partner");
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (s) {
-                            p.h = _t("$1 of $2", s, f[r].h);
-                        }
+                var r = p["^"];
+                if (r && persons[r] && persons[r].h) {
+                    var s = null;
+                    if ((r == mi) || (r == fi)) {
+                        s = GetChildrenName(p.V, p.g);
+                    } else if (persons[r].m == i) {
+                        s = GetParentName(persons[r].V, p.g, "f", 1);
+                    } else if (persons[r].f == i) {
+                        s = GetParentName(persons[r].V, p.g, "m", 1);
+                    } else if (persons[r].X == i) {
+                        s = GetParentName(persons[r].W, p.g, "f", 2);
+                    } else if (persons[r].Y == i) {
+                        s = GetParentName(persons[r].W, p.g, "m", 2);
+                    } else if (persons[r].K == i) {
+                        s = GetParentName(persons[r].W, p.g, "f", 3);
+                    } else if (persons[r].L == i) {
+                        s = GetParentName(persons[r].W, p.g, "m", 3);
+                    } else if ((mi && (persons[r].m == mi)) || (fi && (persons[r].f == fi))) {
+                        s = GetSiblingName((persons[r].m == mi) && (persons[r].f == fi), p.g);
+                    } else if ((r == p.s) || (p.ep && (p.ep[r] == 2))) {
+                        s = _t("Partner");
+                    } else if (persons[r].pc[i]) {
+                        s = _t("Ex-partner");
+                    }
+
+                    if (s) {
+                        p.h = _t("$1 of $2", s, persons[r].h);
                     }
                 }
+
             }
             if (!p.h) {
                 p.h = _t("Anon #", p.ai);
@@ -208,8 +196,8 @@ function FRF(f, ap, fp) {
         }
         p.es = p.s || ((p.cp == 1) ? pi : null);
     }
-    if (fp) {
-        FSR(f, fp, "fg", true, true, true, true, true, false);
+    if (ownerPersonId) {
+        FSR(persons, ownerPersonId, "fg", true, true, true, true, true, false);
     }
 }
 
@@ -365,7 +353,7 @@ function FPL(f, i) {
     var ra = [];
     for (var j in f) {
         if ((j != i) && !p.pc[j]) {
-            FAA(ra, j);
+            ArrayPush(ra, j);
         }
     }
     return ra;
@@ -382,25 +370,22 @@ function FSS(p, si, s) {
                 if (p.mp && p.mp[pi]) {
                     d = p.mp[pi];
                 }
-            } else {
-                if (gpi == "e") {
-                    if (p.rp && p.rp[pi]) {
-                        d = p.rp[pi];
-                    }
-                } else {
-                    if (_60 || (gpi == "r")) {
-                        if (p.bp && p.bp[pi]) {
-                            d = p.bp[pi];
-                        }
-                    }
+            } else if (gpi == "e") {
+                if (p.rp && p.rp[pi]) {
+                    d = p.rp[pi];
+                }
+            } else if (_60 || (gpi == "r")) {
+                if (p.bp && p.bp[pi]) {
+                    d = p.bp[pi];
                 }
             }
-            var ds = FPD(new String(d));
+
+            var ds = DateStrToObj(new String(d));
             ds.i = pi;
             ps[ps.length] = ds;
         }
     }
-    ps.sort(FCD);
+    ps.sort(DateObjCompare);
     var po = {};
     if (s && si) {
         po[si] = true;
@@ -419,18 +404,19 @@ function FAL(f, i, si) {
     var pa = [];
     for (var j in f) {
         if ((!f[j].pf) && (si != j)) {
-            FAA(pa, j);
+            ArrayPush(pa, j);
         }
     }
     return pa;
 }
 
 function FAD(d) {
-    var p = FPD(d);
+    var p = DateStrToObj(d);
     return (p.m || p.y) ? true : false;
 }
 
-function FPD(d) {
+// FPD 日期文本转对象:"B20241109" => {y: -2024, m: 11, d: 9}
+function DateStrToObj(d) {
     try {
         var bce = (d.substring(0, 1) == "B");
         if (bce) {
@@ -446,25 +432,31 @@ function FPD(d) {
     }
 }
 
-function FCD(d1, d2) {
-    if (d1.y != d2.y) {
-        return d1.y - d2.y;
+// FCD 日期比较
+function DateObjCompare(date1, date2) {
+    if (date1.y != date2.y) {
+        return date1.y - date2.y;
+    } else if (date1.m != date2.m) {
+        return date1.m - date2.m;
     } else {
-        if (d1.m != d2.m) {
-            return d1.m - d2.m;
-        } else {
-            return d1.d - d2.d;
-        }
+        return date1.d - date2.d;
     }
+
 }
 
-function FPS(d, o) {
-    var s1 = FPD(d);
+
+/**
+ * FPS 日期字符串详情转对象: 19990629-20241109 => {v, y1, m1, d1, y2, m2, d2}
+ * @param dataStr 日期字符串 19990629[~><(-20241109)]
+ * @param isBetweenSort 区间是否排序
+ */
+function DateDetailStrToObj(dataStr, isBetweenSort) {
+    var s1 = DateStrToObj(dataStr);
     var p = {v: "", d1: s1.d, m1: s1.m, y1: s1.y};
-    var hi = d.indexOf("-");
+    var hi = dataStr.indexOf("-");
     if (hi >= 0) {
-        var s2 = FPD(d.substring(hi + 1));
-        if (o && (FCD(s1, s2) > 0)) {
+        var s2 = DateStrToObj(dataStr.substring(hi + 1));
+        if (isBetweenSort && (DateObjCompare(s1, s2) > 0)) {
             p = {v: "", d1: s2.d, m1: s2.m, y1: s2.y};
             s2 = s1;
         }
@@ -472,23 +464,18 @@ function FPS(d, o) {
         p.d2 = s2.d;
         p.m2 = s2.m;
         p.y2 = s2.y;
-    } else {
-        if (d.indexOf("~") >= 0) {
-            p.v = "app";
-        } else {
-            if (d.indexOf(">") >= 0) {
-                p.v = "bef";
-            } else {
-                if (d.indexOf("<") >= 0) {
-                    p.v = "aft";
-                }
-            }
-        }
+    } else if (dataStr.indexOf("~") >= 0) {
+        p.v = "app";
+    } else if (dataStr.indexOf(">") >= 0) {
+        p.v = "bef";
+    } else if (dataStr.indexOf("<") >= 0) {
+        p.v = "aft";
     }
     return p;
 }
 
-function FDY(y) {
+// FDY 年份转文本 -100 => 公元前100
+function DateYearToString(y) {
     var t = "";
     if (y) {
         t += Math.abs(y);
@@ -499,21 +486,27 @@ function FDY(y) {
     return t;
 }
 
-function FSD(d, m, y) {
-    if (m) {
-        if (d) {
-            var f = y ? "j M Y" : "j M";
+// FSD 日期转文本
+function DateToString(date, month, year) {
+    if (month) {
+        if (date) {
+            var f = year ? "j M Y" : "j M";
         } else {
-            var f = y ? "M Y" : "M";
+            var f = year ? "M Y" : "M";
         }
     } else {
-        f = y ? "Y" : "";
+        f = year ? "Y" : "";
     }
-    return f.replaceAll("j", String(d)).replaceAll("M", Fmn[m]).replaceAll("Y", FDY(y));
+    return f.replaceAll("j", String(date)).replaceAll("M", MonthNames[month]).replaceAll("Y", DateYearToString(year));
 }
 
-function FDT(d, c, b) {
-    var p = FPS(d ? d.toString() : "", true);
+/**
+ * FDT 日期字符串详情转展示文本: '19990629-20241109' => '29 6月 1999 ~ 9 11月 2024'
+ * @param isUpperCase 文本首字母是否大写
+ * @param isUseSymbol true展示符号 / false展示文字
+ */
+function DateDetailStrToString(dateStr, isUpperCase, isUseSymbol) {
+    var p = DateDetailStrToObj(dateStr ? dateStr.toString() : "", true);
     var s = "";
     if (p) {
         if (p.v == "bet") {
@@ -533,29 +526,29 @@ function FDT(d, c, b) {
                     var s1 = p.d1;
                     us = ((p.d2 - p.d1) == 1);
                 } else {
-                    var s1 = FSD(p.d1, p.m1, p.y1);
+                    var s1 = DateToString(p.d1, p.m1, p.y1);
                     us = sy && p.m1 && p.m2 && ((p.m2 - p.m1) == 1) && (!p.d1) && (!p.d2);
                 }
-                var s2 = FSD(p.d2, p.m2, p.y2);
+                var s2 = DateToString(p.d2, p.m2, p.y2);
                 if (s1 && s2) {
                     var s = s1 + (((s1 + "").indexOf(" ") > 0) ? " ~ " : (us ? "/" : "~")) + s2;
                 } else {
                     if (s1 || s2) {
-                        var s = (b ? ("~ " + s1 + s2) : (c ? _t("Approx $", s1 + s2) : _t("approx $", s1 + s2)));
+                        var s = (isUseSymbol ? ("~ " + s1 + s2) : (isUpperCase ? _t("Approx $", s1 + s2) : _t("approx $", s1 + s2)));
                     }
                 }
             }
         } else {
-            s = FSD(p.d1, p.m1, p.y1);
+            s = DateToString(p.d1, p.m1, p.y1);
             if (s) {
-                if (b) {
+                if (isUseSymbol) {
                     var es = {"app": "~ ", "bef": "< ", "aft": "> "};
                     s = (es[p.v] || "") + s;
                 } else {
                     var ts = {
-                        "app": c ? _i("Approx $") : _i("approx $"),
-                        "bef": c ? _i("Before $") : _i("before $"),
-                        "aft": c ? _i("After $") : _i("after $")
+                        "app": isUpperCase ? _i("Approx $") : _i("approx $"),
+                        "bef": isUpperCase ? _i("Before $") : _i("before $"),
+                        "aft": isUpperCase ? _i("After $") : _i("after $")
                     };
                     if (ts[p.v]) {
                         s = _t(ts[p.v], s);
@@ -567,27 +560,28 @@ function FDT(d, c, b) {
     return s;
 }
 
-function FYT(d) {
-    var p = FPS(d ? d.toString() : "", true);
+// FYT 日期字符串详情转年份: '19990629-20241109' => '1999~2024'
+function DateDetailStrToYearStr(d) {
+    var p = DateDetailStrToObj(d ? d.toString() : "", true);
     var s = "";
     if (p.v == "bet") {
         if (p.y1 && p.y2) {
             if (p.y1 == p.y2) {
-                s = FDY(p.y1);
+                s = DateYearToString(p.y1);
             } else {
                 if ((p.y2 - p.y1) == 1) {
                     s = FCT(p.y1, p.y2);
                 } else {
-                    s = Math.abs(p.y1) + "~" + FDY(p.y2);
+                    s = Math.abs(p.y1) + "~" + DateYearToString(p.y2);
                 }
             }
         } else {
             if (p.y1 || p.y2) {
-                s = "~" + FDY(p.y1) + FDY(p.y2);
+                s = "~" + DateYearToString(p.y1) + DateYearToString(p.y2);
             }
         }
     } else {
-        s = FDY(p.y1);
+        s = DateYearToString(p.y1);
         if (s) {
             var es = {"app": "~", "bef": "<", "aft": ">"};
             s = (es[p.v] || "") + s;
@@ -615,51 +609,54 @@ function FCT(y1, y2) {
 }
 
 function FYS(p) {
+    console.log("FYS>", arguments)
     if (!p) {
         return "";
     }
-    var by = FYT(p.b);
-    var dy = (p.z == "1") ? FYT(p.d) : "";
+    var by = DateDetailStrToYearStr(p.b);
+    var dy = (p.z == "1") ? DateDetailStrToYearStr(p.d) : "";
     var y = (by || "") + ((("" + by + dy).indexOf("~") >= 0) ? " - " : "-") + (dy || "");
     return (by || dy) ? (" (" + y.trim() + ")") : "";
+    console.log("FYS<", (by || dy) ? (" (" + y.trim() + ")") : "")
 }
 
-function FDE(v, m, l) {
-    v = parseInt(v);
-    v = "0000" + ((isNaN(v) || (v < 0)) ? 0 : ((v > m) ? m : v));
-    return v.substring(v.length - l, v.length);
+// FDE 日期数字前补0
+function DateNumberToStr(number, max, length) {
+    number = parseInt(number);
+    number = "0000" + ((isNaN(number) || (number < 0)) ? 0 : ((number > max) ? max : number));
+    return number.substring(number.length - length, number.length);
 }
 
-function FDS(d, m, y) {
-    return ((y < 0) ? "B" : "") + FDE((y < 0) ? -y : y, 9999, 4) + FDE(m, 12, 2) + FDE(d, 31, 2);
+// FDS 获取日期字符串：20241109
+function GetDateStr(date, month, year) {
+    return ((year < 0) ? "B" : "") + DateNumberToStr((year < 0) ? -year : year, 9999, 4)
+        + DateNumberToStr(month, 12, 2) + DateNumberToStr(date, 31, 2);
 }
 
-function FNS() {
+// FNS 获取当前日期字符串：20241109
+function GetNowDateStr() {
     var d = new Date();
-    return FDS(d.getDate(), 1 + d.getMonth(), d.getFullYear());
+    return GetDateStr(d.getDate(), 1 + d.getMonth(), d.getFullYear());
 }
 
-function FBS(v, d1, m1, y1, d2, m2, y2) {
-    var s = FDS(d1, m1, y1);
-    if (v == "bet") {
-        s += "-" + FDS(d2, m2, y2);
-    } else {
-        if (v == "app") {
-            s += "~";
-        } else {
-            if (v == "bef") {
-                s += ">";
-            } else {
-                if (v == "aft") {
-                    s += "<";
-                }
-            }
-        }
+// FBS 组装日期详情对象
+function BuildDateDetailStr(decorate, d1, m1, y1, d2, m2, y2) {
+    var s = GetDateStr(d1, m1, y1);
+    if (decorate == "bet") {
+        s += "-" + GetDateStr(d2, m2, y2);
+    } else if (decorate == "app") {
+        s += "~";
+    } else if (decorate == "bef") {
+        s += ">";
+    } else if (decorate == "aft") {
+        s += "<";
     }
+
     return s;
 }
 
 function FDN(p, mn, sn, sf, bn, ah, ni, ti, su) {
+    console.log(">FDN", arguments);
     if (!p) {
         return _t("Unknown");
     }
@@ -705,83 +702,74 @@ function FDN(p, mn, sn, sf, bn, ah, ni, ti, su) {
     if ((!n) && ah) {
         n = p.h;
     }
+    console.log("<FDN", n);
+
     return n;
 }
 
-function FIT(t, g) {
-    if (t == "b") {
+// FIT 获取子女称号
+function GetChildrenName(type, gender) {
+    console.log(">FIT", arguments);
+
+    if (type == "b") {
         var gs = {"f": _t("Biological daughter"), "m": _t("Biological son"), "": _t("Biological child")};
+    } else if (type == "a") {
+        var gs = {"f": _t("Adopted daughter"), "m": _t("Adopted son"), "": _t("Adopted child")};
+    } else if (type == "f") {
+        var gs = {"f": _t("Foster daughter"), "m": _t("Foster son"), "": _t("Foster child")};
+    } else if (type == "s") {
+        var gs = {"f": _t("Stepdaughter"), "m": _t("Stepson"), "": _t("Stepchild")};
+    } else if (type == "g") {
+        var gs = {"f": _t("Goddaughter"), "m": _t("Godson"), "": _t("Godchild")};
     } else {
-        if (t == "a") {
-            var gs = {"f": _t("Adopted daughter"), "m": _t("Adopted son"), "": _t("Adopted child")};
-        } else {
-            if (t == "f") {
-                var gs = {"f": _t("Foster daughter"), "m": _t("Foster son"), "": _t("Foster child")};
-            } else {
-                if (t == "s") {
-                    var gs = {"f": _t("Stepdaughter"), "m": _t("Stepson"), "": _t("Stepchild")};
-                } else {
-                    if (t == "g") {
-                        var gs = {"f": _t("Goddaughter"), "m": _t("Godson"), "": _t("Godchild")};
-                    } else {
-                        var gs = {"f": _t("Daughter"), "m": _t("Son"), "": _t("Child")};
-                    }
-                }
-            }
-        }
+        var gs = {"f": _t("Daughter"), "m": _t("Son"), "": _t("Child")};
     }
-    return gs[g] || gs[""];
+    console.log("<FIT", gs[gender] || gs[""]);
+
+    return gs[gender] || gs[""];
 }
 
-function FPT(t, g, dg, s) {
-    if (t == "b") {
+// FIT 获取父母称号
+function GetParentName(type, gender, defaultGender, second) {
+    if (type == "b") {
         var gs = {"f": _t("Biological mother"), "m": _t("Biological father"), "": _t("Biological parent")};
+    } else if (type == "a") {
+        var gs = {"f": _t("Adopted mother"), "m": _t("Adopted father"), "": _t("Adopted parent")};
+    } else if (type == "f") {
+        var gs = {"f": _t("Foster mother"), "m": _t("Foster father"), "": _t("Foster parent")};
+    } else if (type == "s") {
+        var gs = {"f": _t("Stepmother"), "m": _t("Stepfather"), "": _t("Stepparent")};
+    } else if (type == "g") {
+        var gs = {"f": _t("Godmother"), "m": _t("Godfather"), "": _t("Godparent")};
+    } else if (second == 2) {
+        var gs = {"f": _t("Second mother"), "m": _t("Second father"), "": _t("Second parent")};
+    } else if (second == 3) {
+        var gs = {"f": _t("Third mother"), "m": _t("Third father"), "": _t("Third parent")};
     } else {
-        if (t == "a") {
-            var gs = {"f": _t("Adopted mother"), "m": _t("Adopted father"), "": _t("Adopted parent")};
-        } else {
-            if (t == "f") {
-                var gs = {"f": _t("Foster mother"), "m": _t("Foster father"), "": _t("Foster parent")};
-            } else {
-                if (t == "s") {
-                    var gs = {"f": _t("Stepmother"), "m": _t("Stepfather"), "": _t("Stepparent")};
-                } else {
-                    if (t == "g") {
-                        var gs = {"f": _t("Godmother"), "m": _t("Godfather"), "": _t("Godparent")};
-                    } else {
-                        if (s == 2) {
-                            var gs = {"f": _t("Second mother"), "m": _t("Second father"), "": _t("Second parent")};
-                        } else {
-                            if (s == 3) {
-                                var gs = {"f": _t("Third mother"), "m": _t("Third father"), "": _t("Third parent")};
-                            } else {
-                                var gs = {"f": _t("Mother"), "m": _t("Father"), "": _t("Parent")};
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        var gs = {"f": _t("Mother"), "m": _t("Father"), "": _t("Parent")};
     }
-    return gs[g] || (((g || "").charAt(0) == "o") ? gs[""] : gs[dg]) || gs[""];
+    return gs[gender] || (((gender || "").charAt(0) == "o") ? gs[""] : gs[defaultGender]) || gs[""];
 }
 
-function FST(b, g) {
-    if (b) {
+// FST 获取兄弟姐妹称号
+function GetSiblingName(type, gender) {
+    if (type) {
         var gs = {"f": _t("Sister"), "m": _t("Brother"), "": _t("Sibling")};
     } else {
         var gs = {"f": _t("Half sister"), "m": _t("Half brother"), "": _t("Half sibling")};
     }
-    return gs[g] || gs[""];
+    return gs[gender] || gs[""];
 }
 
-function FET(g) {
+// FET 获取继姐妹称号
+function GetStepSiblingName(gender) {
     var gs = {"f": _t("Stepsister"), "m": _t("Stepbrother"), "": _t("Stepsibling")};
-    return gs[g] || gs[""];
+    return gs[gender] || gs[""];
 }
 
 function FPO(p, o) {
-    var d = FPD(p.b);
+    console.log(">FPO", arguments)
+    var d = DateStrToObj(p.b);
     if ((!o) && d.y) {
         return d.y * 10000 + d.m * 100 + d.d;
     }
@@ -814,7 +802,7 @@ function FBO(f, os, ys, o) {
             return lb + 10000;
         }
     } else {
-        return ub ? (ub - 10000) : (parseInt(FNS()) - 1000000);
+        return ub ? (ub - 10000) : (parseInt(GetNowDateStr()) - 1000000);
     }
 }
 
@@ -864,27 +852,18 @@ function FPP(p, i) {
     var x = null;
     if (i == p.m1) {
         x = "f1";
-    } else {
-        if (i == p.f1) {
-            x = "m1";
-        } else {
-            if (i == p.m2) {
-                x = "f2";
-            } else {
-                if (i == p.f2) {
-                    x = "m2";
-                } else {
-                    if (i == p.m3) {
-                        x = "f3";
-                    } else {
-                        if (i == p.f3) {
-                            x = "m3";
-                        }
-                    }
-                }
-            }
-        }
+    } else if (i == p.f1) {
+        x = "m1";
+    } else if (i == p.m2) {
+        x = "f2";
+    } else if (i == p.f2) {
+        x = "m2";
+    } else if (i == p.m3) {
+        x = "f3";
+    } else if (i == p.f3) {
+        x = "m3";
     }
+
     return x;
 }
 
@@ -950,7 +929,7 @@ function FLA(f, i) {
         var pf = FPP(cp, i);
         var oi = pf ? cp[pf] : null;
         if (!(oi && f[oi])) {
-            FAA(ac, c[j]);
+            ArrayPush(ac, c[j]);
         }
     }
     FSC(f, ac);
@@ -964,7 +943,7 @@ function FLP(f, i, pi) {
         var cp = f[c[j]];
         var pf = FPP(cp, i);
         if (pf && cp[pf] == pi) {
-            FAA(tc, c[j]);
+            ArrayPush(tc, c[j]);
         }
     }
     FSC(f, tc);
@@ -992,7 +971,7 @@ function FLS(f, i, s, t) {
         if (j != i) {
             if (FTM(f[j], mi, fi)) {
                 if ((!t) || (f[i].b == f[j].b)) {
-                    FAA(bs, j);
+                    ArrayPush(bs, j);
                 }
             }
         }
@@ -1306,7 +1285,7 @@ function FIM(f, r, j) {
 }
 
 function FSE(d) {
-    var p = FPS(d || "", true);
+    var p = DateDetailStrToObj(d || "", true);
     var e = null;
     if ((p.v != "bef") && p.y1) {
         e = {d: p.d1, m: p.m1, y: p.y1};
@@ -1324,7 +1303,7 @@ function FSE(d) {
 }
 
 function FSL(d) {
-    var p = FPS(d || "", true);
+    var p = DateDetailStrToObj(d || "", true);
     var l = null;
     if (p.v == "bet") {
         if (p.y2) {

@@ -101,8 +101,8 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zf, wf, ts, _35) {
     } else {
         if (ios) {
             if (!(o.ios_width && o.ios_height)) {
-                o.ios_width = GE("treebg").offsetWidth;
-                o.ios_height = GE("treebg").offsetHeight;
+                o.ios_width = GetElement("treebg").offsetWidth;
+                o.ios_height = GetElement("treebg").offsetHeight;
             }
             ox = o.ios_width / 2 + _36 / 2;
             oy = o.ios_height / 2 + _37 / 2;
@@ -171,7 +171,7 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zf, wf, ts, _35) {
         s.left = ox + (l * (sz.Tew + sz.Ths)) - sz.Ths / 2 + "px";
         s.top = oy + (t * (sz.Teh + sz.Tvs)) + "px";
         s.fontSize = sz.partnerfontsize + "px";
-        v.innerHTML = "<div class=\"" + (p.b ? "dpb" : "dpt") + "\">" + EH(TGP(yb, d.e[p.i].p, p.si)) + "</div>";
+        v.innerHTML = "<div class=\"" + (p.b ? "dpb" : "dpt") + "\">" + EncodeHTML(TGP(yb, d.e[p.i].p, p.si)) + "</div>";
         o.appendChild(v);
     }
     for (var i in d.e) {
@@ -195,12 +195,12 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zf, wf, ts, _35) {
                         ew = Math.floor(eh * er[1] / er[2]);
                     }
                 }
-                rs += "<TR HEIGHT=\"" + (ey ? sz.Tph : (sz.Tph + sz.Tep * 2)) + "\"><TD CLASS=\"dcell\" style=\"color:" + _53 + "; padding:0 " + sz.Tep + "px;\"><IMG SRC=\"" + u + "\" WIDTH=\"" + ew + "\" HEIGHT=\"" + eh + "\" TITLE=\"" + EH(fn) + "\"></TD></TR>";
+                rs += "<TR HEIGHT=\"" + (ey ? sz.Tph : (sz.Tph + sz.Tep * 2)) + "\"><TD CLASS=\"dcell\" style=\"color:" + _53 + "; padding:0 " + sz.Tep + "px;\"><IMG SRC=\"" + u + "\" WIDTH=\"" + ew + "\" HEIGHT=\"" + eh + "\" TITLE=\"" + EncodeHTML(fn) + "\"></TD></TR>";
                 sh += sz.Tph + sz.Tep * 2;
             }
         }
         if (ey) {
-            rs += "<TR><TD CLASS=\"dcell\" STYLE=\"font-size:" + sz.Tds + "px;color:" + _53 + "; padding:0 " + sz.Tep + "px;\" TITLE=\"" + EH(ey.replace(/\n/g, ", ")) + "\">" + EL(ey) + "</TD></TR>";
+            rs += "<TR><TD CLASS=\"dcell\" STYLE=\"font-size:" + sz.Tds + "px;color:" + _53 + "; padding:0 " + sz.Tep + "px;\" TITLE=\"" + EncodeHTML(ey.replace(/\n/g, ", ")) + "\">" + EncodeHTMLLine(ey) + "</TD></TR>";
             sh += sz.Tdh;
         }
         var sx = ox + (e.x) * (sz.Tew + sz.Ths);
@@ -225,7 +225,7 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zf, wf, ts, _35) {
         }
         if (spn) {
             var tn = FDN(e.p, mn, ssn ? ((bn == 2) ? 2 : 1) : 0, sf, (bn == 1), true, ni, tj, tj);
-            var ns = "<TR><TD CLASS=\"dcell\" STYLE=\"font-size:" + (e.d ? sz.Tds : sz.Tfs) + "px;color:" + _53 + "; padding:0 " + sz.Tep + "px;\"" + " TITLE=\"" + (e.d ? (_h("Duplicate:") + " ") : "") + EH(fn) + "\">" + (e.d ? "<I>" + _h("Duplicate:") + "</I><BR>" : "") + (spn ? (SB(EL(tn))) : "") + "</TD></TR>";
+            var ns = "<TR><TD CLASS=\"dcell\" STYLE=\"font-size:" + (e.d ? sz.Tds : sz.Tfs) + "px;color:" + _53 + "; padding:0 " + sz.Tep + "px;\"" + " TITLE=\"" + (e.d ? (_h("Duplicate:") + " ") : "") + EncodeHTML(fn) + "\">" + (e.d ? "<I>" + _h("Duplicate:") + "</I><BR>" : "") + (spn ? (SetBreak(EncodeHTMLLine(tn))) : "") + "</TD></TR>";
         } else {
             var ns = "";
         }
@@ -279,13 +279,13 @@ function TGL(yb, ad, p) {
         var ae = false;
         if ((p.z == 1) && p.d) {
             var dl = FSL(p.d);
-            if (dl && (FCD(dl, FPD(ad)) > 0)) {
+            if (dl && (DateObjCompare(dl, DateStrToObj(ad)) > 0)) {
                 ae = true;
             }
         }
         if ((p.z != "1") || ae) {
             var de = p.b ? FSE(p.b) : null;
-            if (de && (FCD(de, FPD(ad)) > 0)) {
+            if (de && (DateObjCompare(de, DateStrToObj(ad)) > 0)) {
                 ey += _t("Not yet born") + "\n";
             } else {
                 ey += FDR(p.b, ad, true) + "\n";
@@ -293,8 +293,8 @@ function TGL(yb, ad, p) {
         }
     }
     if (yb["bd"]) {
-        var bs = FYT(p.b);
-        var ds = (p.z == "1") ? FYT(p.d) : "";
+        var bs = DateDetailStrToYearStr(p.b);
+        var ds = (p.z == "1") ? DateDetailStrToYearStr(p.d) : "";
         if (bs && ds) {
             ey += bs + ((("" + bs + ds).indexOf("~") >= 0) ? " - " : "-") + ds + "\n";
         } else {
@@ -311,7 +311,7 @@ function TGL(yb, ad, p) {
         ey += p.j + "\n";
     }
     if (yb["b"] || yb["v"]) {
-        var bs = yb["b"] ? FDT(p.b, false) : "";
+        var bs = yb["b"] ? DateDetailStrToString(p.b, false) : "";
         var vs = yb["v"] ? (p.v || "") : "";
         if (bs || vs) {
             ey += _t("Born") + " " + bs + ((bs && vs) ? ", " : "") + vs + "\n";
@@ -319,7 +319,7 @@ function TGL(yb, ad, p) {
     }
     var az = (yb["age"] && (p.z == "1") && !ae) ? FDR(p.b, p.d, false) : null;
     if ((yb["d"] || az || yb["y"] || yb["Z"]) && (p.z == "1")) {
-        var ds = yb["d"] ? FDT(p.d, false) : "";
+        var ds = yb["d"] ? DateDetailStrToString(p.d, false) : "";
         var ys = yb["y"] ? (p.y || "") : "";
         var Zs = yb["Z"] ? (p.Z || "") : "";
         if (ds || az || ys || Zs) {
@@ -327,7 +327,7 @@ function TGL(yb, ad, p) {
         }
     }
     if ((yb["F"] || yb["U"]) && (p.z == "1")) {
-        var Fs = yb["F"] ? FDT(p.F, false) : "";
+        var Fs = yb["F"] ? DateDetailStrToString(p.F, false) : "";
         var Us = yb["U"] ? (p.U || "") : "";
         if (Fs || Us) {
             ey += _t("Buried") + " " + Fs + ((Fs && Us) ? ", " : "") + Us + "\n";
@@ -383,7 +383,7 @@ function TGP(yb, p, si) {
     if (yb["sm"] && p.gp && p.mp) {
         var t = p.gp[si];
         if ((t == "m") || (t == "s") || (t == "d") || (t == "a")) {
-            var mt = FDT(p.mp[si]);
+            var mt = DateDetailStrToString(p.mp[si]);
             if (mt) {
                 ml += mt;
             }
@@ -397,7 +397,7 @@ function TGP(yb, p, si) {
     }
     if (yb["sd"] && p.gp && p.dp) {
         if (p.gp[si] == "d") {
-            var dt = FDT(p.dp[si]);
+            var dt = DateDetailStrToString(p.dp[si]);
             if (dt) {
                 dl += dt;
             }
@@ -407,16 +407,16 @@ function TGP(yb, p, si) {
 }
 
 function TCD(i, t) {
-    var o = GE("treebg");
+    var o = GetElement("treebg");
     if (i && o && o.ps && o.ps[i]) {
         var dw, dh;
         dw = o.offsetWidth;
         dh = o.offsetHeight;
-        if (GS("navdiv")) {
-            dh -= GE("navdiv").offsetHeight;
+        if (isElementShow("navdiv")) {
+            dh -= GetElement("navdiv").offsetHeight;
         }
-        if (GS("optionsdiv")) {
-            dh -= GE("optionsdiv").offsetHeight;
+        if (isElementShow("optionsdiv")) {
+            dh -= GetElement("optionsdiv").offsetHeight;
         }
         if ((dw < 64) || (dw > 4096)) {
             dw = self.outerWidth;
@@ -431,7 +431,7 @@ function TCD(i, t) {
             sx += 0.9 * (Math.min(0, Math.max(o.es.l - as.l, o.es.r - as.r)) + Math.max(0, Math.min(o.es.l - as.l, o.es.r - as.r)));
             sy += 0.9 * (Math.min(0, Math.max(o.es.t - as.t, o.es.b - as.b)) + Math.max(0, Math.min(o.es.t - as.t, o.es.b - as.b)));
         }
-        var scs = DT();
+        var scs = DateTimestamp();
         TSS(sx, sy, scs, scs + t, "_sel");
     }
 }
@@ -458,7 +458,7 @@ var Tpd = false;
 var Tdx, Tdy, moveobject;
 
 function TGS() {
-    var e = GE("treebg");
+    var e = GetElement("treebg");
     if (self.pageYOffset) {
         scrolltop = self.pageYOffset;
         scrollleft = self.pageXOffset;
@@ -476,56 +476,57 @@ function TGS() {
     return {top: -(e.offsetTop - e.parentNode.offsetTop), left: -(e.offsetLeft - e.parentNode.offsetLeft)};
 }
 
-function TIS(o) {
-    moveobject = o;
-    o.onmousedown = function (_92) {
-        _92 = _92 ? _92 : window.event;
+// TIS 给图谱绑定事件
+function TreeElementAddEventListener(element) {
+    moveobject = element;
+    element.onmousedown = function (e) {
+        e = e ? e : window.event;
         Tpd = true;
         scrollpos = TGS();
-        Tdx = scrollpos.left + _92.screenX;
-        Tdy = scrollpos.top + _92.screenY;
+        Tdx = scrollpos.left + e.screenX;
+        Tdy = scrollpos.top + e.screenY;
     };
-    document.onmouseup = function (_93) {
+    document.onmouseup = function (e) {
         Tpd = false;
     };
-    document.onmousemove = function (_94) {
-        _94 = _94 ? _94 : window.event;
+    document.onmousemove = function (e) {
+        e = e ? e : window.event;
         if (Tpd) {
-            TSS(Tdx - _94.screenX, Tdy - _94.screenY, 0, 0, null);
+            TSS(Tdx - e.screenX, Tdy - e.screenY, 0, 0, null);
         }
     };
-    document.body.onselectstart = function (_95) {
+    document.body.onselectstart = function (e) {
         if (Tpd) {
             return false;
         }
     };
-    o.ontouchstart = function (_96) {
-        if ((_96.target == moveobject) && (_96.touches.length == 1)) {
+    element.ontouchstart = function (e) {
+        if ((e.target == moveobject) && (e.touches.length == 1)) {
             Tpd = true;
             scrollpos = TGS();
-            Tdx = scrollpos.left + _96.touches[0].screenX;
-            Tdy = scrollpos.top + _96.touches[0].screenY;
-            _96.preventDefault();
+            Tdx = scrollpos.left + e.touches[0].screenX;
+            Tdy = scrollpos.top + e.touches[0].screenY;
+            e.preventDefault();
         }
     };
-    o.ontouchend = function (_97) {
+    element.ontouchend = function (e) {
         if (Tpd) {
             Tpd = false;
-            _97.preventDefault();
+            e.preventDefault();
         }
     };
-    o.onwheel = function (_98) {
-        var d = _98.deltaY;
-        if (_98.deltaMode == 1) {
+    element.onwheel = function (e) {
+        var d = e.deltaY;
+        if (e.deltaMode == 1) {
             d /= 12;
         }
-        EZD(1 - d / 120);
-        _98.preventDefault();
+        ZoomInOutScale(1 - d / 120);
+        e.preventDefault();
     };
-    document.ontouchmove = function (_9a) {
+    document.ontouchmove = function (e) {
         if (Tpd) {
-            TSS(Tdx - _9a.touches[0].screenX, Tdy - _9a.touches[0].screenY, 0, 0, null);
-            _9a.preventDefault();
+            TSS(Tdx - e.touches[0].screenX, Tdy - e.touches[0].screenY, 0, 0, null);
+            e.preventDefault();
         }
     };
 }
@@ -542,7 +543,7 @@ function TSS(x, y, scs, scf, scv) {
     Tss = scs;
     Tse = scf;
     Tsv = scv;
-    if (DT() >= scf) {
+    if (DateTimestamp() >= scf) {
         TST();
     } else {
         Tst = setTimeout("TST()", 10);
@@ -550,11 +551,11 @@ function TSS(x, y, scs, scf, scv) {
 }
 
 function TST() {
-    var n = DT();
+    var n = DateTimestamp();
     if (n >= Tse) {
         TSD(Tsd.left, Tsd.top);
-        if (Tsv && GE(Tsv)) {
-            SI(Tsv, true);
+        if (Tsv && GetElement(Tsv)) {
+            SetElementVisibility(Tsv, true);
         }
     } else {
         var p = (n - Tss) / (Tse - Tss);
@@ -566,8 +567,8 @@ function TST() {
 
 function TSD(x, y) {
     if (true) {
-        GE("treebg").style.left = -x;
-        GE("treebg").style.top = -y;
+        GetElement("treebg").style.left = -x;
+        GetElement("treebg").style.top = -y;
     }
 }
 
@@ -582,16 +583,17 @@ function TFE(o, i) {
     return (o.ps && i) ? o.ps[i] : null;
 }
 
-function TRT(f, i, m, y, ad, bn, sf, c, l, fl, ch, ph, co, pi, zf, wf, ts, s) {
-    var o = GE("treebg");
+function TRT(efa, viewPersonId, personId, y, ad, bn, sf, c, l, fl, ch, ph, co, pi, zf, wf, ts, s) {
+    console.log("TRT", arguments)
+    var o = GetElement("treebg");
     var _b9 = null;
-    if (TFE(o, i)) {
-        var oi = i;
+    if (TFE(o, viewPersonId)) {
+        var oi = viewPersonId;
         var sd = 0;
-        if (i != pi) {
+        if (viewPersonId != pi) {
             _b9 = "_sel";
-            if (GE(_b9)) {
-                SI(_b9, false);
+            if (GetElement(_b9)) {
+                SetElementVisibility(_b9, false);
             }
         }
     } else {
@@ -599,16 +601,16 @@ function TRT(f, i, m, y, ad, bn, sf, c, l, fl, ch, ph, co, pi, zf, wf, ts, s) {
         var sd = oi ? 250 : 0;
     }
     var pg = TGG(y);
-    TRD(BFT(f, i, m, ch, ph, co, fl, pg), y, ad, bn, sf, c, l, o, oi, true, false, zf, wf, ts, _b9);
+    TRD(BFT(efa, viewPersonId, personId, ch, ph, co, fl, pg), y, ad, bn, sf, c, l, o, oi, true, false, zf, wf, ts, _b9);
     if (s && noCentering) {
-        if (_b9 && GE(_b9)) {
-            SI(_b9, true);
+        if (_b9 && GetElement(_b9)) {
+            SetElementVisibility(_b9, true);
         }
     } else {
-        setTimeout("TCD('" + i + "', " + (s ? 250 : 0) + ")", sd);
+        setTimeout("TCD('" + viewPersonId + "', " + (s ? 250 : 0) + ")", sd);
     }
-    o = GE("treediv");
-    if (EID()) {
+    o = GetElement("treediv");
+    if (IsDarkMode()) {
         o.style.backgroundColor = "";
     } else {
         o.style.backgroundColor = c.back;
@@ -636,19 +638,19 @@ function TPH(f, p, bn, sf, s) {
                     break;
                 case "o":
                     if (n && ((n.m == i) || (n.f == i))) {
-                        rt = FIT(n.V, n.g);
+                        rt = GetChildrenName(n.V, n.g);
                     } else {
                         if (n && ((n.X == i) || (n.Y == i))) {
-                            rt = FIT(n.W, n.g);
+                            rt = GetChildrenName(n.W, n.g);
                         } else {
                             if (n && ((n.K == i) || (n.L == i))) {
-                                rt = FIT(n.Q, n.g);
+                                rt = GetChildrenName(n.Q, n.g);
                             }
                         }
                     }
                     break;
                 case "g":
-                    rt = FIT("g", n.g);
+                    rt = GetChildrenName("g", n.g);
                     break;
                 case "s":
                     var sc = 0;
@@ -662,30 +664,30 @@ function TPH(f, p, bn, sf, s) {
                         }
                     }
                     if ((sc > 0) && (oc == 0)) {
-                        rt = FET(n.g);
+                        rt = GetStepSiblingName(n.g);
                     } else {
                         if (((e.m || e.f) && FTM(n, e.m, e.f)) || ((e.X || e.Y) && FTM(n, e.X, e.Y)) || ((e.K || e.L) && FTM(n, e.K, e.L))) {
-                            rt = FST(true, n.g);
+                            rt = GetSiblingName(true, n.g);
                         } else {
-                            rt = FST(false, n.g);
+                            rt = GetSiblingName(false, n.g);
                         }
                     }
                     break;
                 case "a":
                     if (ni && ((e.m == ni) || (e.f == ni))) {
-                        rt = FPT(e.V, n.g, "", 1);
+                        rt = GetParentName(e.V, n.g, "", 1);
                     } else {
                         if (ni && ((e.X == ni) || (e.Y == ni))) {
-                            rt = FPT(e.W, n.g, "", 2);
+                            rt = GetParentName(e.W, n.g, "", 2);
                         } else {
                             if (ni && ((e.K == ni) || (e.L == ni))) {
-                                rt = FPT(e.Q, n.g, "", 3);
+                                rt = GetParentName(e.Q, n.g, "", 3);
                             }
                         }
                     }
                     break;
                 case "d":
-                    rt = FPT("g", n.g, "", 1);
+                    rt = GetParentName("g", n.g, "", 1);
                     break;
                 case "oi":
                     if (n.g == "f") {
@@ -880,21 +882,21 @@ function TPH(f, p, bn, sf, s) {
                     break;
             }
             if (j || !s) {
-                h += "<p class=\"pi\" id=\"path-" + i + "\"><a href=\"#\" onClick=\"ESP('" + i + "', true); return false;\">" + EH(fn) + "</a></p>";
+                h += "<p class=\"pi\" id=\"path-" + i + "\"><a href=\"#\" onClick=\"ESP('" + i + "', true); return false;\">" + EncodeHTML(fn) + "</a></p>";
                 if (rt) {
                     h += "<p class=\"pa\">&darr;</p>";
                 }
             }
             if (p[j].p) {
-                h += "<p id=\"shortpath-" + i + "\" class=\"pr\"><a href=\"#\" onClick=\"SEP('" + i + "', true); return false;\" title=\"" + _h("Expand this relationship") + "\">" + EH(rt) + "</a></p>";
+                h += "<p id=\"shortpath-" + i + "\" class=\"pr\"><a href=\"#\" onClick=\"SEP('" + i + "', true); return false;\" title=\"" + _h("Expand this relationship") + "\">" + EncodeHTML(rt) + "</a></p>";
                 h += "<div id=\"longpath-" + i + "\" style=\"display:none;\">";
-                h += "<p class=\"pr\"><a href=\"#\" onClick=\"SEP('" + i + "', false); return false;\" title=\"" + _h("Contract this relationship") + "\">" + EH(rt) + "</a></p>";
+                h += "<p class=\"pr\"><a href=\"#\" onClick=\"SEP('" + i + "', false); return false;\" title=\"" + _h("Contract this relationship") + "\">" + EncodeHTML(rt) + "</a></p>";
                 h += "<div class=\"pl\">";
                 h += TPH(f, p[j].p, bn, sf, p[j + 1]);
                 h += "</div></div>";
             } else {
                 if (rt) {
-                    h += "<p class=\"pr\">" + EH(rt) + "</p>";
+                    h += "<p class=\"pr\">" + EncodeHTML(rt) + "</p>";
                 }
             }
         }

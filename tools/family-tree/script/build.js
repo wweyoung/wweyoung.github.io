@@ -168,7 +168,7 @@ function BDA(d, f, i, si, h, dr, fx, cy, fl, pg, dp, _5d, pcx, _5f) {
             dp.p[pi + "-" + i] = true;
             var pc = FLP(f, i, pi);
             if (_5d) {
-                FAI(pc, _5d);
+                ArrayRemoveAll(pc, _5d);
             }
             BDH(d, f, i, pi, pc, h, dr, fx, cy, ly, uy, fl, pg, dp, ax, pcx, _5f);
         }
@@ -385,7 +385,7 @@ function BGD(f, i, h, fl, pg, dp) {
         TAE(d, i, p, 0, 0);
         var c = p.c.slice();
         if (p.es) {
-            FAN(c, f[p.es].c);
+            ArrayMergeDistinct(c, f[p.es].c);
         }
         var _e3 = [];
         var _e4 = [];
@@ -427,7 +427,7 @@ function BGD(f, i, h, fl, pg, dp) {
             }
         }
         var ac = FLA(f, i);
-        FAI(ac, _e3);
+        ArrayRemoveAll(ac, _e3);
         _e7[""] = 0;
         if (ac.length) {
             if (dp.c[i]) {
@@ -445,7 +445,7 @@ function BGD(f, i, h, fl, pg, dp) {
                 dp.p[i + "-" + p.es] = true;
                 dp.p[p.es + "-" + i] = true;
                 var tc = FLP(f, i, p.es);
-                FAI(tc, _e3);
+                ArrayRemoveAll(tc, _e3);
                 if (tc.length) {
                     var ds = BGC(f, i, tc, h - 1, fl, pg, dp);
                     if (ac.length) {
@@ -463,7 +463,7 @@ function BGD(f, i, h, fl, pg, dp) {
                 BDD(d, f, p.es, i, sx, 0, true, null, false);
                 _e8[""] = sx;
                 var pac = FLA(f, p.es);
-                FAI(pac, _e4);
+                ArrayRemoveAll(pac, _e4);
                 if (pac.length) {
                     if (dp.c[p.es]) {
                         BAC(d, f, p.es, sx, 0);

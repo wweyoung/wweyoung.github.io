@@ -1,95 +1,107 @@
-function NSS(s) {
-    SS("sidehide", s);
-    SS("sideshow", !s);
+// NSS 切换侧边栏展开按钮:展开/关闭
+function SwapSideButton(isShow) {
+    SetElementShow("sidehide", isShow);
+    SetElementShow("sideshow", !isShow);
 }
 
 function NKS(s) {
-    SH("keylinktext", s ? "Hide" : "Show");
+    SetElementInnerHTML("keylinktext", s ? "Hide" : "Show");
 }
 
 function NSD(d) {
-    GE("detail_0p").checked = true;
-    GE("detail_0lq").checked = true;
+    GetElement("detail_0p").checked = true;
+    GetElement("detail_0lq").checked = true;
     var ds = (d + "").split(".");
     var db = {};
     for (var i = 0; i < ds.length; i++) {
         db[ds[i]] = true;
-        var e = GE("detail_" + ds[i]);
+        var e = GetElement("detail_" + ds[i]);
         if (e) {
             e.checked = (ds[i].substr(0, 1) == "0") ? false : true;
         }
     }
-    SD("detail_pm", db["0p"]);
-    SD("detail_N", db["0p"]);
-    SD("detail_TJ", db["0p"]);
-    SD("detail_0lq", db["0p"]);
-    SS("otherage", db["age"]);
+    SetElementDisabled("detail_pm", db["0p"]);
+    SetElementDisabled("detail_N", db["0p"]);
+    SetElementDisabled("detail_TJ", db["0p"]);
+    SetElementDisabled("detail_0lq", db["0p"]);
+    SetElementShow("otherage", db["age"]);
 }
 
-function NGR() {
+// NGR 获取所有颜色配置
+function GetConfigAllColors() {
     var c = {};
-    for (var j = 0; j < Ecf.length; j++) {
-        var f = Ecf[j];
-        c[f] = GV("color" + f);
+    for (var j = 0; j < ColorFields.length; j++) {
+        var f = ColorFields[j];
+        c[f] = GetElementValue("color" + f);
     }
     return c;
 }
 
-function NGL() {
+// NGL 获取所有连线配置
+function GetConfigAllLines() {
     var l = {};
-    for (var j = 0; j < Elf.length; j++) {
-        var f = Elf[j];
-        l[f] = GV("line" + f);
+    for (var j = 0; j < LineFields.length; j++) {
+        var f = LineFields[j];
+        l[f] = GetElementValue("line" + f);
     }
     return l;
 }
 
-function NGD() {
-    var v = GV("otherage");
-    var p = FPD(v);
-    return p.y ? v : FNS();
+// NGD 获取要展示某时年龄值的指定日期
+function GetConfigOtherAgeValue() {
+    var inputDateStr = GetElementValue("otherage");
+    var dateObj = DateStrToObj(inputDateStr);
+    return dateObj.y ? inputDateStr : GetNowDateStr();
 }
 
-function NGB() {
-    return parseInt(GO("showbirthname"));
+// NGB 获取姓氏选中值
+function GetConfigBirthNameValue() {
+    return parseInt(GetSelectElementValue("showbirthname"));
 }
 
-function NGS() {
-    return parseInt(GO("showsurnamefirst"));
+// NGS 名字前后选中值
+function GetConfigSurnameFirstValue() {
+    return parseInt(GetSelectElementValue("showsurnamefirst"));
 }
 
-function NGM() {
-    return parseInt(GO("showmaleleft"));
+// NGM 性别左右选中值
+function GetConfigMaleLeftValue() {
+    return parseInt(GetSelectElementValue("showmaleleft"));
 }
 
-function NGC() {
-    return parseInt(GO("showcousins"));
+// NGC 叔父代数
+function GetConfigCousinsLevelValue() {
+    return parseInt(GetSelectElementValue("showcousins"));
 }
 
-function NGH() {
-    return parseInt(GO("showchildren"));
+// NGH 子级代数
+function GetConfigChildrenLevelValue() {
+    return parseInt(GetSelectElementValue("showchildren"));
 }
 
-function NGA() {
-    return parseInt(GO("showparents"));
+// NGA 父级代数
+function GetConfigParentsLevelValue() {
+    return parseInt(GetSelectElementValue("showparents"));
 }
 
-function NSP(i) {
-    ST("backtotext", (i == GV("personid")) ? _t("Back to me") : (Efa[i] ? _t("Back to $", Efa[i].h) : _t("Back to start")));
+// NSP 设置 返回xxx按钮名称
+function SetBackToText(personId) {
+    SetElementInnerText("backtotext", (personId == GetElementValue("personid")) ? _t("Back to me") : (Efa[personId] ? _t("Back to $", Efa[personId].h) : _t("Back to start")));
 }
 
 function NRT() {
 }
 
 function NPF() {
-    var r = GE("findfield").getBoundingClientRect();
-    GE("findlist").style.left = r.left + "px";
+    var r = GetElement("findfield").getBoundingClientRect();
+    GetElement("findlist").style.left = r.left + "px";
 }
 
-function NRR() {
-    var e = GE("navrow");
+// NRR 根据宽度调整 navrow 展示的元素
+function JustifyNavrowElement() {
+    var e = GetElement("navrow");
     e.className = "";
-    for (s = 1; s <= 5; s++) {
+    for (let s = 1; s <= 5; s++) {
         if (e.scrollWidth <= e.offsetWidth) {
             break;
         }
@@ -97,15 +109,17 @@ function NRR() {
     }
 }
 
-function NCP(i) {
-    GE("findfield").placeholder = _t("# people", i);
+// NCP 更新展示的人员数量
+function SetPersonCount(count) {
+    GetElement("findfield").placeholder = _t("# people", count);
 }
 
-function NFF() {
+// NFF 展示人员搜索框
+function ShowFindList() {
     NPF();
     NUF(null);
-    SS("findlist", true);
-    GE("findlist").onclick = function (e) {
+    SetElementShow("findlist", true);
+    GetElement("findlist").onclick = function (e) {
         var i = e.target.id || e.target.parentElement.id;
         if (i.substring(0, 5) == "list_") {
             ESP(i.substring(5), true);
@@ -114,27 +128,27 @@ function NFF() {
 }
 
 function NHF() {
-    SS("findlist", false);
+    SetElementShow("findlist", false);
 }
 
 function NIF() {
-    SS("findlist", true);
-    setTimeout("NUF(" + GV("findfield").length + ");", 100);
+    SetElementShow("findlist", true);
+    setTimeout("NUF(" + GetElementValue("findfield").length + ");", 100);
 }
 
 function NUF(vl) {
-    var ev = GV("findfield");
+    var ev = GetElementValue("findfield");
     if ((vl !== null) && (vl != ev.length)) {
         return;
     }
-    NUL(GE("findlist"), ev, null, null, false);
+    NUL(GetElement("findlist"), ev, null, null, false);
 }
 
 function NUL(e, sv, ai, si, no) {
     var ss = sv.trim().toLowerCase().split(/[ \-]/);
-    var bn = NGB();
+    var bn = GetConfigBirthNameValue();
     var bn1 = (bn == 1);
-    var sf = NGS();
+    var sf = GetConfigSurnameFirstValue();
     if (ai === null) {
         ai = [];
         for (var j in Efa) {
@@ -202,7 +216,7 @@ function NSR(ss) {
     var reg = "";
     for (var k = 0; k < ss.length; k++) {
         if (ss[k].length) {
-            reg += EH(ss[k]).replace(esc, "\\$&") + "|";
+            reg += EncodeHTML(ss[k]).replace(esc, "\\$&") + "|";
         }
     }
     if (reg.length) {
@@ -214,7 +228,7 @@ function NSR(ss) {
 }
 
 function NSE(t, exp) {
-    var h = EH(t);
+    var h = EncodeHTML(t);
     if (exp) {
         h = h.replace(exp, "<u>$&</u>");
     }
