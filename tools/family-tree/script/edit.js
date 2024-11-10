@@ -6,7 +6,7 @@ var LineFields = ["current", "otherpartner", "biological", "otherparent"];
 let Efa = {};
 var Eff = {};
 // Efo 家谱OwnerId
-var OwnerPersonId;
+var OwnerPersonId = 'START';
 // Ewp 允许编辑的人员 废弃
 
 var Edt, Eda, Edc, Edm;
@@ -41,6 +41,7 @@ let ViewPersonId;
 let FileHandler = {
     handler: undefined,
     writeHandler: undefined,
+    accept: 'text/plain',
     options: {
         types: [
             {
@@ -60,7 +61,7 @@ let FileHandler = {
 function OnBodyOnload() {
     if (!staticMode) {
         CE();
-        LF("topform");
+        // LF("topform");
     }
     if (hideSidebar) {
         SwapHideSideBar(false);
@@ -119,7 +120,7 @@ function OnBodyOnload() {
             var m = a[0];
             var i = a[1];
             if (i) {
-                SetElementValue("viewpersonid", i);
+                OwnerPersonId = i;
             }
             if (m) {
                 SetElementValue("viewmode", m);
@@ -130,7 +131,6 @@ function OnBodyOnload() {
             AllowWrite = true;
             Eca = true;
             Ecd = true;
-            OwnerPersonId = GetElementValue("personid");
             var familyId = GetElementValue("familyid");
             var ic = GetElementValue("importcacheid");
             if (familyId || ic) {
@@ -304,7 +304,7 @@ function EUS(r, viewPersonId, viewMode, d, s) {
     var preViewPersonId = ViewPersonId = GetElementValue("viewpersonid");
     var preViewMode = GetElementValue("viewmode");
     if (r) {
-        var personId = GetElementValue("personid");
+        var personId = OwnerPersonId;
         if (OwnerPersonId && !Efa[OwnerPersonId]) {
             Efa[OwnerPersonId] = {};
         }
@@ -352,21 +352,21 @@ function EUS(r, viewPersonId, viewMode, d, s) {
     if (preViewMode == "history") {
         SwapHideSideBar(true);
         if ((!IsSafariBrowser && Elh != preViewMode) || (IsSafariBrowser && viewMode)) {
-            GetElement("extraframe").src = "history.php?f=" + escape(GetElementValue("familyid")) + "&p=" + escape(GetElementValue("personid")) + "&c=" + escape(GetElementValue("checksum")) + "&s=" + escape(GetElementValue("sessionid")) + (IsDarkMode() ? "&d=1" : "");
+            GetElement("extraframe").src = "history.php"
         }
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "share") {
         SwapHideSideBar(true);
-        GetElement("extraframe").src = "share.php?f=" + escape(GetElementValue("familyid")) + "&p=" + escape(GetElementValue("personid")) + "&c=" + escape(GetElementValue("checksum")) + "&i=" + escape(ViewPersonId) + "&s=" + escape(GetElementValue("sessionid")) + "&z=" + ((Efa[ViewPersonId].z != "1") ? 0 : 1) + (IsDarkMode() ? "&d=1" : "");
+        GetElement("extraframe").src = "share.php"
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "download") {
         SwapHideSideBar(true);
-        GetElement("extraframe").src = "download.php?f=" + escape(GetElementValue("familyid")) + "&p=" + escape(GetElementValue("personid")) + "&c=" + escape(GetElementValue("checksum")) + "&s=" + escape(GetElementValue("sessionid")) + (IsDarkMode() ? "&d=1" : "");
+        GetElement("extraframe").src = "download.php"
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "print") {
         SwapHideSideBar(true);
         if (viewMode) {
-            GetElement("extraframe").src = "print.php?f=" + escape(GetElementValue("familyid")) + "&p=" + escape(GetElementValue("personid")) + "&c=" + escape(GetElementValue("checksum")) + "&s=" + escape(GetElementValue("sessionid")) + (IsDarkMode() ? "&d=1" : "");
+            GetElement("extraframe").src = "print.php"
         }
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "import") {
@@ -386,7 +386,7 @@ function EUS(r, viewPersonId, viewMode, d, s) {
         ESB(preViewMode + ":" + ViewPersonId);
     }
     if (d || (ViewPersonId != preViewPersonId)) {
-        TRT(Efa, ViewPersonId, GetElementValue("personid"), PersonShowFields, GetConfigOtherAgeValue(), GetConfigBirthNameValue(),
+        TRT(Efa, ViewPersonId, OwnerPersonId, PersonShowFields, GetConfigOtherAgeValue(), GetConfigBirthNameValue(),
             GetConfigSurnameFirstValue(), GetConfigAllColors(), GetConfigAllLines(), GetConfigMaleLeftValue(),
             GetConfigChildrenLevelValue(), GetConfigParentsLevelValue(), GetConfigCousinsLevelValue(), preViewPersonId,
             GetElementValue("showzoom"), GetElementValue("showwidth"), GetElementValue("textsize"), s);
@@ -441,19 +441,40 @@ function ESM(m) {
 
 function ImportScriptFile() {
     console.log('import')
-    window.showOpenFilePicker(FileHandler.options).then(async fileHandle => {
-        let file = await fileHandle[0].getFile();
-        console.log(file)
-        let reader = new FileReader();
-        // 新建 FileReader 对象
+    if (!window.showOpenFilePicker) {
+        window.showOpenFilePicker(FileHandler.options).then(async fileHandle => {
+            let file = await fileHandle[0].getFile();
+            ImportReadScriptFile(file);
+            FileHandler.handler = fileHandle[0];
+        });
+    } else {
+        var inputObj = document.createElement('input')
+        inputObj.type = 'file';
+        inputObj.accept = FileHandler.accept;
+        inputObj.style.visibility = 'hidden';
+        inputObj.onchange = (e) => {
+            let file = e.target.files[0];
+            if (file) {
+                ImportReadScriptFile(file);
+            }
+            console.log(e);
+        }
+        document.body.appendChild(inputObj);
+        inputObj.click();
+        document.body.removeChild(inputObj);
+    }
+}
 
-        reader.onload = function () {
-            LoadScriptText(this.result, file.name);
-            SetElementInnerText("lfamilyname", file.name);
-        };
-        reader.readAsText(file);
-        FileHandler.handler = fileHandle[0];
-    });
+function ImportReadScriptFile(file) {
+    console.log(file)
+    let reader = new FileReader();
+    // 新建 FileReader 对象
+
+    reader.onload = function () {
+        LoadScriptText(this.result, file.name);
+        SetElementInnerText("lfamilyname", file.name);
+    };
+    reader.readAsText(file);
 }
 
 function ESP(i, s) {
@@ -729,7 +750,7 @@ function SaveFamily(saveFile = false) {
             let newScript = GetElementValue("newscript");
             var len = newScript.length;
             // 如果有修改且打开了文件或需要保存文件
-            if (len && (familyId || saveFile)) {
+            if (len && (FileHandler.handler || saveFile)) {
                 IsSaving = true;
                 let script = GetSaveScript(ScriptText + '\n' + newScript);
                 console.log(script);
@@ -752,14 +773,30 @@ function SaveFamily(saveFile = false) {
 }
 
 async function SaveScriptToFile(script) {
-    if (!FileHandler.handler) {
-        FileHandler.handler = await window.showSaveFilePicker(FileHandler.options);
-        SetElementInnerText("lfamilyname", (await FileHandler.handler.getFile()).name);
+    if (window.showSaveFilePicker) {
+        if (!FileHandler.handler) {
+            FileHandler.handler = await window.showSaveFilePicker(FileHandler.options);
+            SetElementInnerText("lfamilyname", (await FileHandler.handler.getFile()).name);
+        }
+        await FileHandler.handler.requestPermission();
+        let writableStream = await FileHandler.handler.createWritable();
+        writableStream.write(script);
+        writableStream.close();
+    } else {
+        let blob = new Blob([script], {
+            type: FileHandler.accept
+        });
+        let reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onload = function(e) {
+            let a = document.createElement('a');
+            a.download = FileHandler.options.suggestedName;
+            a.href = e.target.result;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
     }
-    await FileHandler.handler.requestPermission();
-    let writableStream = await FileHandler.handler.createWritable();
-    writableStream.write(script);
-    writableStream.close();
 }
 
 // ESR 保存回调 废弃
@@ -819,7 +856,7 @@ function EAS() {
     HttpPost("userfamily_add", {
         s: GetElementValue("sessionid"),
         f: GetElementValue("familyid"),
-        p: GetElementValue("personid"),
+        p: OwnerPersonId,
         c: GetElementValue("checksum")
     }, "", EAR, null);
 }
@@ -835,18 +872,17 @@ function EAR(_79, _7a, _7b) {
 
 // EBS 返回到personid
 function BackToPersonId() {
-    var ap = GetElementValue("personid");
-    ESP((ap && Efa[ap]) ? ap : OwnerPersonId, true);
+    ESP(OwnerPersonId, true);
 }
 
 // ECZ 画布单位放大/缩小
 function ZoomInOut(zi) {
-    ZoomInOutScale(zi ? 1.138788634756692 : 0.878126080186649);
+    ZoomInOutScale(zi ? 0.5 : -0.5);
 }
 
 // EZD 画布放大/缩小
 function ZoomInOutScale(scale) {
-    var zf = Math.max(0.5, Math.min(4, GetElementValue("showzoom") * scale));
+    var zf = Math.max(0.5, Math.min(4, Number(GetElementValue("showzoom")) + scale));
     SetCookie("zoomfactor", zf);
     SetElementValue("showzoom", zf);
     ERF();
@@ -1059,7 +1095,7 @@ function ETU() {
         ETF();
     }
     if (s) {
-        GetElement("usersframe").src = "users.php?f=" + escape(GetElementValue("familyid")) + "&p=" + escape(GetElementValue("personid")) + "&c=" + escape(GetElementValue("checksum")) + "&s=" + escape(GetElementValue("sessionid")) + (IsDarkMode() ? "&d=1" : "");
+        GetElement("usersframe").src = "users.php"
     }
     SetElementShow("usersdiv", s);
     SetElementShow("usersbutton", !s);
@@ -1068,6 +1104,7 @@ function ETU() {
     TCD(ViewPersonId, 250);
 }
 
+// ETI 侧边栏展开/收起
 function ETI() {
     var w = GetElement("leftdiv").offsetWidth;
     var s = TGS();
@@ -1124,7 +1161,7 @@ function SwapDayNightMode() {
 function EFB(i) {
     var sf = FCS(Efa, i);
     SetElementValue("do_startbranch", sf.join("\t"));
-    document.topform.submit();
+    // document.topform.submit();
 }
 
 function EIU(r) {
@@ -1134,7 +1171,7 @@ function EIU(r) {
     } else {
         return BuildURL("ap/", "image_read", {
             f: GetElementValue("familyid"),
-            p: GetElementValue("personid"),
+            p: OwnerPersonId,
             c: GetElementValue("checksum"),
             r: r
         });

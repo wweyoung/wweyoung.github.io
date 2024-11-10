@@ -360,11 +360,13 @@ function SG(_65, _66) {
     return _65;
 }
 
-var Lf = null;
+// Lf 废弃
+// var Lf = null;
 
-function LF(_6d) {
-    Lf = _6d;
-}
+// LF 废弃
+// function LF(_6d) {
+//     Lf = _6d;
+// }
 
 // LL 获取支持的语言列表
 function LanguageList() {
@@ -402,12 +404,12 @@ function HideLanguageContent() {
 function LanguageSelect(language) {
     SetCookie("lang", language, true);
     SetCookie("langnote", 1);
-    if (Lf) {
-        document.forms[Lf].submit();
-    } else {
-        const u = new URL(location.href);
-        const m = "delete";
-        u.searchParams[m]("lang");
-        location.href = u.href;
-    }
+    // if (Lf) {
+    //     document.forms[Lf].submit();
+    // } else {
+    //     const u = new URL(location.href);
+    //     const m = "delete";
+    //     u.searchParams[m]("lang");
+    //     location.href = u.href;
+    // }
 }

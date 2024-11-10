@@ -86,7 +86,7 @@ function GetConfigParentsLevelValue() {
 
 // NSP 设置 返回xxx按钮名称
 function SetBackToText(personId) {
-    SetElementInnerText("backtotext", (personId == GetElementValue("personid")) ? _t("Back to me") : (Efa[personId] ? _t("Back to $", Efa[personId].h) : _t("Back to start")));
+    SetElementInnerText("backtotext", (personId == OwnerPersonId) ? _t("Back to me") : (Efa[personId] ? _t("Back to $", Efa[personId].h) : _t("Back to start")));
 }
 
 function NRT() {

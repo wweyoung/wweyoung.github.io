@@ -1,4 +1,4 @@
-body {margin:0px;}
+body {margin:0;}
 body.dark {background:#282828;}
 body,td,select {font-family:arial; font-size:12px; color:black;}
 body.dark,.dark td,.dark th,.dark select {color:#ccc;}
@@ -41,15 +41,15 @@ input, select, textarea {padding:1px;}
 #fadediv {background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));}
 .dark #fadediv {background-image: linear-gradient(to bottom, rgba(40,40,40,0), rgba(40,40,40,1));}
 
-.tm {margin-top:12px; margin-bottom:0px;}
-.td {margin-top:24px; margin-bottom:0px;}
-.tt {margin-top:36px; margin-bottom:0px;}
+.tm {margin-top:12px; margin-bottom:0;}
+.td {margin-top:24px; margin-bottom:0;}
+.tt {margin-top:36px; margin-bottom:0;}
 .pt {margin-top:12px; margin-bottom:24px; text-align:center; font-weight:bold; font-size:20px;}
 
 .hiderows {display: none;}
 .showrows {display: block; display:table-row-group;}
 
-.dline,.ddotted,.ddashed {position:absolute; font-size:0px; line-height:0%;}
+.dline,.ddotted,.ddashed {position:absolute; font-size:0; line-height:0%;}
 .dline {background-color:#444;}
 .dark .dline {background-color:#bbb;}
 .dline.gray {background-color:#bbb;}
@@ -78,11 +78,11 @@ input, select, textarea {padding:1px;}
 .snormal {padding:2px 4px 2px 4px;}
 .sleft {color:#222222; padding:2px 2px 2px 6px; text-align:end; padding-inline-start:6px; padding-inline-end:2px;}
 .dark .sleft {color:#bbb;}
-.sright {width:176px; padding:2px 6px 2px 2px; padding-inline-start:2px; padding-inline-end:6px;}
+.sright {width: 210px; padding:2px 6px 2px 2px; padding-inline-start:2px; padding-inline-end:6px;}
 .sboth {padding:2px 4px 2px 4px; text-align:center;}
 .sfield {width:176px; font-family:arial; font-size:12px;}
 .sfieldexpand {width:160px; font-family:arial; font-size:12px;}
-.syear {width:3.5em;}
+.syear {width: 4em;}
 .sselect {font-family:arial; font-size:12px; max-width:240px;}
 .ibutton, .sbutton, .sbutton2, .sbutton4 {font-family:arial; font-size:12px; padding:1px 2px; text-overflow:ellipsis;}
 .sbutton {width:240px;}
@@ -112,10 +112,10 @@ a.sdatelink:hover {text-decoration:none;}
 .iconlabel,#optionslinktext {margin-left:4px; margin-right:2px;}
 .cornerbtn {width:16px; height:16px; margin:8px; cursor:pointer;}
 .dark .cornerbtn {filter:invert(100%);}
-.marginon {left:0px; top:0px; height:100%; margin-left:320px; margin-right:0px;}
-.marginoff {left:0px; top:0px; height:100%; margin-left:0px; margin-right:0px;}
-.dright {position:absolute; left:0px; width:100%}
-.dleft {position:absolute; left:0px; top:0px; width:320px; border-right:solid #666666 1px; height:100%; overflow-y:auto;}
+.marginon {left:0; top:0; height:100%; margin-right:320px; margin-left:0;}
+.marginoff {left:0; top:0; height:100%; margin-left:0; margin-right:0;}
+.dright {position:absolute; left:0; width:100%}
+.dleft {position:absolute; right:0; top:0; width:320px;transition: width .3s; border-right:solid #666666 1px; height:100%; overflow-y:auto;}
 
 .option {height:16%; vertical-align:middle;}
 input[type=range] { vertical-align:middle; padding-top:4px; padding-bottom:4px; }
@@ -184,8 +184,8 @@ a.fattachpmlink:hover {text-decoration:none;}
 
 .blankpixel {background-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw== );}
 
-@media screen and (max-width:1200px) {
-    #ad-leaderboard {display:none;}
+@media screen and (max-width:400px) {
+
 }
 
 .nshrink1 .iconlabel {display:none;}

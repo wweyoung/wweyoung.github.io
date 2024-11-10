@@ -1,11 +1,11 @@
 // Sen 人员字段
 var PersonColumnFields = [{
-    p: "personalname",
-    N: "nickname",
-    T: "title",
+    l: "familyname", // 姓
+    p: "personalname", // 名
+    N: "nickname", // 字
+    T: "title", // 号
     J: "suffix",
-    l: "familyname",
-    q: "familybirth"
+    q: "formername" // 生日
 }, {
     e: "c_email",
     w: "website",
@@ -99,7 +99,7 @@ function SetSidebarPersonAndViewMode(id, viewMode) {
     }
     var pi = SidebarPersonId;
     SidebarPersonId = id;
-    var md = (SidebarPersonId == GetElementValue("personid"));
+    var md = (SidebarPersonId == OwnerPersonId);
     var v = GetElement("nametitle");
     v.innerHTML = EncodeHTML(SPN(person));
     v.className = person.p ? "sname" : "sdefname";
@@ -138,7 +138,7 @@ function SSA(_a, _b) {
     }
     var f = Efa;
     var p = f[SidebarPersonId];
-    var md = (SidebarPersonId == GetElementValue("personid"));
+    var md = (SidebarPersonId == OwnerPersonId);
     var pw = SPW(SidebarPersonId);
     if (!pw) {
         Sed = false;
@@ -484,22 +484,18 @@ function SRP(e) {
             TableAppendContent("relactions", "<BR>" + _h("You do not have permission to delete people."), true, 1);
         }
     } else {
-        var md = (GetElementValue("personid") == SidebarPersonId);
-        var ap = p.fg || Eaf || (GetElementValue("personid") == OwnerPersonId);
+        var md = (OwnerPersonId == SidebarPersonId);
+        var ap = p.fg || Eaf || (OwnerPersonId == OwnerPersonId);
         if (Eca) {
             TableAppendContent("relactions", md ? _t("Click to add your relatives:") : _t("Click to add relatives of $:", p.h), false, 1);
             if (ap) {
                 if ((p.f && p.m) || ((p.V == "s") && (p.f || p.m))) {
+                } else if (p.f) {
+                    RelactionAppendButton((p.m2 || p.f2) ? _t("Add primary mother") : _t("Add mother"), "choosemother", "");
+                } else if (p.m) {
+                    RelactionAppendButton((p.m2 || p.f2) ? _t("Add primary father") : _t("Add father"), "choosefather", "");
                 } else {
-                    if (p.f) {
-                        RelactionAppendButton((p.m2 || p.f2) ? _t("Add primary mother") : _t("Add mother"), "choosemother", "");
-                    } else {
-                        if (p.m) {
-                            RelactionAppendButton((p.m2 || p.f2) ? _t("Add primary father") : _t("Add father"), "choosefather", "");
-                        } else {
-                            RelactionAppendButton((p.m2 || p.f2) ? _t("Add primary parents") : _t("Add new parents"), "addparents", "");
-                        }
-                    }
+                    RelactionAppendButton((p.m2 || p.f2) ? _t("Add primary parents") : _t("Add new parents"), "addparents", "");
                 }
             }
             RelactionAppendButton(_t("Add partner/ex"), "choosespouse", "");
@@ -509,34 +505,28 @@ function SRP(e) {
             RelactionAppendButton(_t("Add child"), "addchild", "");
             if (ap) {
                 if ((p.X && p.Y) || ((p.W == "s") && (p.X || p.Y))) {
-                } else {
-                    if (p.Y) {
-                        RelactionAppendButton(_t("Add second mother"), "choosemother2", "");
-                    } else {
-                        if (p.X) {
-                            RelactionAppendButton(_t("Add second father"), "choosefather2", "");
-                        } else {
-                            if (p.f || p.m) {
-                                RelactionAppendButton(_t("Add second parents"), "addparents2", "");
-                            }
-                        }
-                    }
+                } else if (p.Y) {
+                    RelactionAppendButton(_t("Add second mother"), "choosemother2", "");
+                } else if (p.X) {
+                    RelactionAppendButton(_t("Add second father"), "choosefather2", "");
+                } else if (p.f || p.m) {
+                    RelactionAppendButton(_t("Add second parents"), "addparents2", "");
                 }
+
                 if ((p.K && p.L) || ((p.Q == "s") && (p.K || p.L))) {
-                } else {
-                    if (p.L) {
-                        RelactionAppendButton(_t("Add third mother"), "choosemother3", "");
-                    } else {
-                        if (p.K) {
-                            RelactionAppendButton(_t("Add third father"), "choosefather3", "");
-                        } else {
-                            if ((p.f || p.m) && (p.X || p.Y)) {
-                                RelactionAppendButton(_t("Add third parents"), "addparents3", "");
-                            }
-                        }
-                    }
+                } else if (p.L) {
+                    RelactionAppendButton(_t("Add third mother"), "choosemother3", "");
+                } else if (p.K) {
+                    RelactionAppendButton(_t("Add third father"), "choosefather3", "");
+                } else if ((p.f || p.m) && (p.X || p.Y)) {
+                    RelactionAppendButton(_t("Add third parents"), "addparents3", "");
                 }
+
             }
+        }
+        if (SidebarPersonId !== OwnerPersonId) {
+            SLR("relactions", 1);
+            RelactionAppendButton("设置为自己", "setme", "");
         }
         var cf = 0;
         for (var j in f) {
@@ -585,9 +575,9 @@ function SP0(e) {
         GetElement("othergenderdiv").style.display = (g.charAt(0) == "o") ? "block" : "none";
         GetElement("alive").checked = (p.z != "1");
         if (e) {
-            SetElementInnerHTML("birthdate", SDH("birth", "SCV('birth');"));
+            SetElementInnerHTML("birthdate", SDH("birth", "OnPersonFieldValueChanged('birth');"));
             SSD("birth", p.b);
-            SetElementInnerHTML("deathdate", SDH("death", "SCV('death');"));
+            SetElementInnerHTML("deathdate", SDH("death", "OnPersonFieldValueChanged('death');"));
             SSD("death", p.d);
             SetElementValue("othergender", (g.charAt(0) == "o") ? p.g.substring(1) : "");
         }
@@ -653,7 +643,7 @@ function SP2(e) {
     var p = f[SidebarPersonId];
     if (Sed) {
         if (e) {
-            SetElementInnerHTML("burialdate", SDH("burial", "SCV('burial');"));
+            SetElementInnerHTML("burialdate", SDH("burial", "OnPersonFieldValueChanged('burial');"));
             SSD("burial", p.F);
         }
     } else {
@@ -768,7 +758,21 @@ function S3D(pi, t, ti, d, rc) {
 }
 
 function SDH(i, c) {
-    return "<SPAN ID=\"" + i + "options\" STYLE=\"display:none;\"><SELECT ID=\"" + i + "variant\" CLASS=\"sselect\" onChange=\"" + c + "\"></SELECT>&nbsp;" + "<SPAN TITLE=\"" + _h("Before the Common Era (BC)") + "\"><INPUT ID=\"" + i + "bce\" TYPE=\"checkbox\" onClick=\"" + c + "\"><LABEL FOR=\"" + i + "bce\">" + _h("BCE") + "</LABEL></SPAN><br/></SPAN>" + "<SELECT ID=\"" + i + "dom1\" CLASS=\"sselect\" TITLE=\"" + _h("Day") + "\" onChange=\"" + c + "\"></SELECT>&nbsp;" + "<SELECT ID=\"" + i + "month1\" CLASS=\"sselect\" TITLE=\"" + _h("Month") + "\" onChange=\"" + c + "\"></SELECT>&nbsp;" + "<INPUT ID=\"" + i + "year1\" CLASS=\"syear\" TITLE=\"" + _h("Year") + "\" onChange=\"" + c + "\" MAXLENGTH=4>" + "<SPAN ID=\"" + i + "expand\"> <A HREF=\"#\" CLASS=\"sdatelink\" onClick=\"SDR('" + i + "')\" TITLE=\"" + _h("Show more date options") + "\">" + (locale_rtl ? "&#x25C4;" : "&#x25BA;") + "</A></SPAN>" + "<SPAN ID=\"" + i + "date2\" STYLE=\"display:none;\"> to<br/>" + "<SELECT ID=\"" + i + "dom2\" CLASS=\"sselect\" TITLE=\"" + _h("Day") + "\" onChange=\"" + c + "\"></SELECT>&nbsp;" + "<SELECT ID=\"" + i + "month2\" CLASS=\"sselect\" TITLE=\"" + _h("Month") + "\" onChange=\"" + c + "\"></SELECT>&nbsp;" + "<INPUT ID=\"" + i + "year2\" CLASS=\"syear\" TITLE=\"" + _h("Year") + "\" onChange=\"" + c + "\" MAXLENGTH=4>" + " <A HREF=\"#\" CLASS=\"sdatelink\" onClick=\"SWR('" + i + "')\" TITLE=\"" + _h("Swap two dates") + "\" STYLE=\"font-weight:bold;\">&#x21C5;</A></SPAN>";
+    return "<SPAN ID=\"" + i + "options\" STYLE=\"display:none;\">" +
+        "<SELECT ID=\"" + i + "variant\" CLASS=\"sselect\" onChange=\"" + c + "\"></SELECT>&nbsp;" +
+        "<SPAN TITLE=\"" + _h("Before the Common Era (BC)") + "\">" +
+        "<INPUT ID=\"" + i + "bce\" TYPE=\"checkbox\" onClick=\"" + c + "\">" +
+        "<LABEL FOR=\"" + i + "bce\">" + _h("BCE") + "</LABEL>" +
+        "</SPAN><br/></SPAN>" +
+        "<INPUT ID=\"" + i + "year1\" CLASS=\"syear\" placeholder='年' TITLE=\"" + _h("Year") + "\" onChange=\"" + c + "\" MAXLENGTH=4>" +
+        "<SELECT ID=\"" + i + "month1\" CLASS=\"sselect\" TITLE=\"" + _h("Month") + "\" onChange=\"" + c + "\"></SELECT>&nbsp;" +
+        "<SELECT ID=\"" + i + "dom1\" CLASS=\"sselect\" TITLE=\"" + _h("Day") + "\" onChange=\"" + c + "\"></SELECT>&nbsp;" +
+        "<SPAN ID=\"" + i + "expand\"> <A HREF=\"#\" CLASS=\"sdatelink\" onClick=\"SDR('" + i + "')\" TITLE=\"" + _h("Show more date options") + "\">" +
+        (locale_rtl ? "&#x25C4;" : "&#x25BA;") + "</A></SPAN>" + "<SPAN ID=\"" + i + "date2\" STYLE=\"display:none;\"> to<br/>" +
+        "<INPUT ID=\"" + i + "year2\" CLASS=\"syear\" placeholder='年' TITLE=\"" + _h("Year") + "\" onChange=\"" + c + "\" MAXLENGTH=4>" +
+        "<SELECT ID=\"" + i + "month2\" CLASS=\"sselect\" TITLE=\"" + _h("Month") + "\" onChange=\"" + c + "\"></SELECT>&nbsp;" +
+        "<SELECT ID=\"" + i + "dom2\" CLASS=\"sselect\" TITLE=\"" + _h("Day") + "\" onChange=\"" + c + "\"></SELECT>&nbsp;" +
+        " <A HREF=\"#\" CLASS=\"sdatelink\" onClick=\"SWR('" + i + "')\" TITLE=\"" + _h("Swap two dates") + "\" STYLE=\"font-weight:bold;\">&#x21C5;</A></SPAN>";
 }
 
 function SDR(i) {
@@ -859,54 +863,47 @@ function SSG(v) {
     EUF();
 }
 
-function SCV(i) {
-    if (i == "birth") {
+// SCV
+function OnPersonFieldValueChanged(field) {
+    if (field == "birth") {
         UpdatePerson(SidebarPersonId, {b: SGD("birth")});
         SHD("birth");
+    } else if (field == "death") {
+        UpdatePerson(SidebarPersonId, {d: SGD("death")});
+        SHD("death");
+    } else if (field == "burial") {
+        UpdatePerson(SidebarPersonId, {F: SGD("burial")});
+        SHD("burial");
+    } else if (field == "alive") {
+        UpdatePerson(SidebarPersonId, {z: (GetElement(field).checked ? "0" : "1")});
+    } else if (field == "othergender") {
+        UpdatePerson(SidebarPersonId, {g: "o" + GetElementValue(field)});
     } else {
-        if (i == "death") {
-            UpdatePerson(SidebarPersonId, {d: SGD("death")});
-            SHD("death");
-        } else {
-            if (i == "burial") {
-                UpdatePerson(SidebarPersonId, {F: SGD("burial")});
-                SHD("burial");
-            } else {
-                if (i == "alive") {
-                    UpdatePerson(SidebarPersonId, {z: (GetElement(i).checked ? "0" : "1")});
-                } else {
-                    if (i == "othergender") {
-                        UpdatePerson(SidebarPersonId, {g: "o" + GetElementValue(i)});
-                    } else {
-                        for (var k = 0; k < PersonColumnFields.length; k++) {
-                            for (var j in PersonColumnFields[k]) {
-                                if (i == PersonColumnFields[k][j]) {
-                                    var c = {};
-                                    var v = new String(GetElementValue(i));
-                                    v = v.replace(/^\s+|\s+$/g, "");
-                                    if ((j == "p") || (j == "l") || (j == "q")) {
-                                        var s = v.split(" ");
-                                        for (var w = 0; w < s.length; w++) {
-                                            if ((s[w].length) && (Sec.indexOf("," + s[w] + ",") < 0) && (s[w].indexOf("'") < 0) && (s[w].indexOf("-") < 0)) {
-                                                var cp = s[w].codePointAt(0);
-                                                if ((cp < 4256) || (cp > 4351)) {
-                                                    s[w] = s[w].charAt(0).toUpperCase() + s[w].substring(1);
-                                                }
-                                            }
-                                        }
-                                        v = s.join(" ");
-                                    }
-                                    if ((j == "w") || (j == "B") || (j == "P")) {
-                                        if (v.length && (v.indexOf("://") < 0)) {
-                                            v = "http://" + v;
-                                        }
-                                    }
-                                    c[j] = v;
-                                    UpdatePerson(SidebarPersonId, c);
+        for (var k = 0; k < PersonColumnFields.length; k++) {
+            for (var j in PersonColumnFields[k]) {
+                if (field == PersonColumnFields[k][j]) {
+                    var c = {};
+                    var v = new String(GetElementValue(field));
+                    v = v.replace(/^\s+|\s+$/g, "");
+                    if ((j == "p") || (j == "l") || (j == "q")) {
+                        var s = v.split(" ");
+                        for (var w = 0; w < s.length; w++) {
+                            if ((s[w].length) && (Sec.indexOf("," + s[w] + ",") < 0) && (s[w].indexOf("'") < 0) && (s[w].indexOf("-") < 0)) {
+                                var cp = s[w].codePointAt(0);
+                                if ((cp < 4256) || (cp > 4351)) {
+                                    s[w] = s[w].charAt(0).toUpperCase() + s[w].substring(1);
                                 }
                             }
                         }
+                        v = s.join(" ");
                     }
+                    if ((j == "w") || (j == "B") || (j == "P")) {
+                        if (v.length && (v.indexOf("://") < 0)) {
+                            v = "http://" + v;
+                        }
+                    }
+                    c[j] = v;
+                    UpdatePerson(SidebarPersonId, c);
                 }
             }
         }
@@ -965,21 +962,22 @@ function SCT(s) {
     }
 }
 
-function SFV(i) {
-    if (!GetElementValue(i)) {
-        if (i == "familybirth") {
-            var sn = GetElementValue("familyname");
-            if (sn) {
-                UpdatePerson(SidebarPersonId, {q: sn});
-                SetElementValue(i, sn);
-                if (GetElementValue(i)) {
-                    GetElement(i).blur();
-                    setTimeout("FocusSelectElement(' )" + i + "')", 0);
-                }
-            }
-        }
-    }
-}
+// SFV
+// function SFV(i) {
+//     if (!GetElementValue(i)) {
+//         if (i == "formername") {
+//             var sn = GetElementValue("familyname");
+//             if (sn) {
+//                 UpdatePerson(SidebarPersonId, {q: sn});
+//                 SetElementValue(i, sn);
+//                 if (GetElementValue(i)) {
+//                     GetElement(i).blur();
+//                     setTimeout("FocusSelectElement(' )" + i + "')", 0);
+//                 }
+//             }
+//         }
+//     }
+// }
 
 function SAP(f, p, oi, spt, spm, apt, apm) {
     if (oi) {
@@ -1031,7 +1029,10 @@ function SCB(i, v) {
     console.log("SCB", arguments)
     var f = Efa;
     var p = f[SidebarPersonId];
-    if ((i == "addparents") || (i == "addparentsstop")) {
+    if (i === "setme") {
+        OwnerPersonId = SidebarPersonId;
+        EUF();
+    } else if ((i == "addparents") || (i == "addparentsstop")) {
         if (i == "addparents") {
             ECS();
         }
@@ -1676,23 +1677,13 @@ function SCB(i, v) {
     } else if (i == "morelactions") {
         SRP(true);
     } else if (i == "startbranch") {
-        var md = (GetElementValue("personid") == SidebarPersonId);
+        var md = (OwnerPersonId == SidebarPersonId);
         if (confirm((md ? _t("This will create a new family for your relatives.") : _t("This will create a new family for $'s relatives.", p.h)) + " " + _t("Are you sure you want to proceed?"))) {
             GetElement("startbranch").value = _t("Please wait a few moments...");
             EFB(SidebarPersonId);
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 function NSN(a, b) {
@@ -1722,15 +1713,14 @@ function SSD(i, d) {
     for (var n = 1; n <= 2; n++) {
         var v = GetElement(i + "dom" + n);
         v.options.length = 0;
-        v.options[v.options.length] = new Option("", 0);
+        v.options[v.options.length] = new Option("日", 0);
         for (var j = 1; j <= 31; j++) {
-            v.options[v.options.length] = new Option(j, j);
+            v.options[v.options.length] = new Option(j+'日', j);
         }
         var v = GetElement(i + "month" + n);
-        v.options.length = 0;
-        v.options[v.options.length] = new Option("", 0);
-        for (var j = 1; j <= 12; j++) {
-            v.options[v.options.length] = new Option(MonthNames[j], j);
+        v.options[0] = new Option('月', 0)
+        for (let j = 1; j <= 12; j++) {
+            v.options[j] = new Option(j+'月', j);
         }
     }
     var p = DateDetailStrToObj(d ? d.toString() : "");
@@ -1775,7 +1765,7 @@ function SIU(u) {
     u = u && pw;
     if (u) {
         var v = GetElement("uploadiframe");
-        v.src = "imageupload.php?f=" + escape(GetElementValue("familyid")) + "&p=" + escape(GetElementValue("personid")) + "&c=" + escape(GetElementValue("checksum")) + "&i=" + escape(SidebarPersonId) + (r ? "&r=" + escape(r) : "") + (IsDarkMode() ? "&d=1" : "");
+        v.src = "imageupload.php"
     } else {
         if (r) {
             var v = GetElement("personimage");
@@ -1783,7 +1773,7 @@ function SIU(u) {
             v.title = pw ? _t("Click to change photo") : "";
         }
     }
-    SetElementValue("uploadbutton", (SidebarPersonId == GetElementValue("personid")) ? _t("Add my photo") : _t("Add photo for $", p.h));
+    SetElementValue("uploadbutton", (SidebarPersonId == OwnerPersonId) ? _t("Add my photo") : _t("Add photo for $", p.h));
     SetElementShow("uploadbutton", pw && (!r) && (!u));
     SetElementShow("uploadiframe", u);
     SetElementShow("personimage", r && (!u));
@@ -1833,7 +1823,7 @@ function ShowClearAndRestartConfirm() {
 function CalculateRelationPath(personId) {
     if (personId) {
         SetElementInnerText("pathtitle", SPN(Efa[personId]));
-        Sps = GetElementValue("personid");
+        Sps = OwnerPersonId;
         if (!(Sps && Efa[Sps])) {
             Sps = OwnerPersonId;
         }

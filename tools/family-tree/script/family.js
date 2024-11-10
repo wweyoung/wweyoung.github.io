@@ -1,5 +1,4 @@
 // Fmn 月份枚举
-var MonthNames = ["", _t("Mth_1"), _t("Mth_2"), _t("Mth_3"), _t("Mth_4"), _t("Mth_5"), _t("Mth_6"), _t("Mth_7"), _t("Mth_8"), _t("Mth_9"), _t("Mth_10"), _t("Mth_11"), _t("Mth_12")];
 // Fgn 性别枚举
 var GenderNames = {"": "", "f": _t("Female"), "m": _t("Male"), "o": _t("Other")};
 // Fvn 日期修饰
@@ -497,7 +496,7 @@ function DateToString(date, month, year) {
     } else {
         f = year ? "Y" : "";
     }
-    return f.replaceAll("j", String(date)).replaceAll("M", MonthNames[month]).replaceAll("Y", DateYearToString(year));
+    return f.replaceAll("j", String(date)).replaceAll("M", month+'月').replaceAll("Y", DateYearToString(year));
 }
 
 /**
@@ -655,56 +654,56 @@ function BuildDateDetailStr(decorate, d1, m1, y1, d2, m2, y2) {
     return s;
 }
 
-function FDN(p, mn, sn, sf, bn, ah, ni, ti, su) {
+function FDN(p, mn, sn, isFamilyNameFirst, bn, ah, ni, ti, su) {
     console.log(">FDN", arguments);
     if (!p) {
         return _t("Unknown");
     }
     var fn = p.p || "";
-    var n = fn;
+    var personName = fn;
     if (!mn) {
         var fns = fn.trim().split(" ");
-        n = fns[0] || "";
+        personName = fns[0] || "";
     }
     if (ni && p.N) {
-        n += (n ? " " : "") + "\"" + p.N + "\"";
+        personName += (personName ? " " : "") + "\"" + p.N + "\"";
     }
-    if (n && sn) {
-        var an = bn ? p.q : p.l;
-        if (!an) {
-            an = bn ? p.l : p.q;
+    if (personName && sn) {
+        var familyName = bn ? p.q : p.l;
+        if (!familyName) {
+            familyName = bn ? p.l : p.q;
         } else {
             if (sn >= 2) {
                 var cn = bn ? p.l : p.q;
-                if (cn && (cn != an)) {
-                    an += "/" + cn;
+                if (cn && (cn != familyName)) {
+                    familyName += "/" + cn;
                 }
             }
         }
-        if (an) {
-            if (n) {
-                if (sf) {
-                    n = an + " " + n;
+        if (familyName) {
+            if (personName) {
+                if (isFamilyNameFirst) {
+                    personName = familyName + personName;
                 } else {
-                    n += " " + an;
+                    personName += " " + familyName;
                 }
             } else {
-                n = an;
+                personName = familyName;
             }
         }
     }
-    if (n && ti && p.T) {
-        n = p.T + " " + n;
+    if (personName && ti && p.T) {
+        personName = p.T + " " + personName;
     }
-    if (n && su && p.J) {
-        n += " " + p.J;
+    if (personName && su && p.J) {
+        personName += " " + p.J;
     }
-    if ((!n) && ah) {
-        n = p.h;
+    if ((!personName) && ah) {
+        personName = p.h;
     }
-    console.log("<FDN", n);
+    console.log("<FDN", personName);
 
-    return n;
+    return personName;
 }
 
 // FIT 获取子女称号

@@ -516,11 +516,9 @@ function TreeElementAddEventListener(element) {
         }
     };
     element.onwheel = function (e) {
-        var d = e.deltaY;
-        if (e.deltaMode == 1) {
-            d /= 12;
-        }
-        ZoomInOutScale(1 - d / 120);
+        var d = e.wheelDelta;
+        console.log("wheel",e)
+        ZoomInOutScale(d / 120 / 2);
         e.preventDefault();
     };
     document.ontouchmove = function (e) {

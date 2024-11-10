@@ -14,8 +14,8 @@
         var defaultZoom = 1.25;
         var defaultDetail = null;
         var defaultBirthName = 0;
-        var defaultSurnameFirst = 0;
-        var defaultMaleLeft = 0;
+        var defaultSurnameFirst = 1;
+        var defaultMaleLeft = 1;
         var defaultCousins = 2;
         var defaultChildren = 8;
         var defaultParents = 5;
@@ -52,11 +52,10 @@
 <table width="100%" height="100%" cellspacing=0 CELLPADDING=0>
     <tr height="8">
         <td style="border-bottom:solid #666666 1px; padding:8px;" VALIGN="middle">
-            <FORM NAME="topform" ACTION="./" METHOD="POST">
-                <table width="100%" height="100%" cellspacing=0 CELLPADDING=0>
-                    <tr VALIGN="middle">
-                        <td NOWRAP width="5%">
-                            <span style="font-size:28px;">
+            <table width="100%" height="100%" cellspacing=0 CELLPADDING=0>
+                <tr VALIGN="middle">
+                    <td NOWRAP width="5%">
+                            <span style="font-size:26px;">
                             <span id="lfamilyname">
                                 <IMG SRC="image/logo.png" class="felogo" width="F160" height="32"
                                      BORDER="0" ALIGN="ABSMIDDLE"></span><span id="lfamilyinfo"></span>
@@ -64,43 +63,37 @@
 
                             <IFRAME id="backframe" width="1" height="1" FRAMEBORDER="0" SCROLLING="no"></IFRAME>
                         </span>
-                        </td>
-                        <td width="*" ALIGN="center" NOWRAP></td>
+                    </td>
+                    <td width="*" ALIGN="center" NOWRAP></td>
 
-                        <td NOWRAP style="text-align:right;" width="5%">
-
-                            <input type="hidden" id="newscript" NAME="newscript" VALUE="">
-                            <input type="hidden" id="personid" NAME="personid" VALUE="START">
-                            <input type="hidden" id="viewpersonid" NAME="viewpersonid" VALUE="START">
-                            <input type="hidden" id="viewmode" NAME="viewstate" VALUE="view">
-                            <input type="hidden" id="name" NAME="name" VALUE="Me1">
-                            <input type="hidden" id="email" NAME="email" VALUE="">
+                    <td NOWRAP style="text-align:right;" width="5%">
+                        <input type="hidden" id="newscript" NAME="newscript" VALUE="">
+                        <input type="hidden" id="viewpersonid" NAME="viewpersonid" VALUE="START">
+                        <input type="hidden" id="viewmode" NAME="viewstate" VALUE="view">
+                        <input type="hidden" id="name" NAME="name" VALUE="Me1">
+                        <input type="hidden" id="email" NAME="email" VALUE="">
 
 
-                            <input type="hidden" NAME="affiliate" VALUE="">
-                            <input type="hidden" id="sessionid" VALUE="886140306151210118">
-                            <input type="hidden" id="familyid" NAME="familyid" VALUE="">
-                            <input type="hidden" id="importcacheid" NAME="importcacheid" VALUE="">
-                            <input type="hidden" id="checksum" NAME="checksum" VALUE="w1ao15t6vz">
+                        <input type="hidden" NAME="affiliate" VALUE="">
+                        <input type="hidden" id="sessionid" VALUE="886140306151210118">
+                        <input type="hidden" id="familyid" NAME="familyid" VALUE="">
+                        <input type="hidden" id="importcacheid" NAME="importcacheid" VALUE="">
+                        <input type="hidden" id="checksum" NAME="checksum" VALUE="w1ao15t6vz">
 
-                            <input type="hidden" NAME="do_startbranch" id="do_startbranch">
+                        <input type="hidden" NAME="do_startbranch" id="do_startbranch">
 
-                            <span>
-                                <span id="lsave" style="display:none;"><FONT COLOR="red"><B>家谱未保存。</B></FONT></span>
-                                <span id="linitial" style="display:none;"></span>
-                                <span id="lsaving" style="display:none;">正在保存更改... </span>
-                                <span id="lsaved" style="display:none;">所有更改已保存。 </span>
-                            </span>
-
-                            <br/><br/>
-
-                            <span id="savefamily">
-                                <input type="button" VALUE="保存" class="ibutton" onClick="SaveFamily(true); ">
-                            </span>
-                        </td>
-                    </tr>
-                </table>
-            </FORM>
+                        <span>
+                            <span id="lsave" style="display:none;"><FONT COLOR="red"><B>家谱未保存。</B></FONT></span>
+                            <span id="linitial" style="display:none;"></span>
+                            <span id="lsaving" style="display:none;">正在保存更改... </span>
+                            <span id="lsaved" style="display:none;">所有更改已保存。 </span>
+                        </span>
+                        <span id="savefamily">
+                            <input type="button" VALUE="保存" class="ibutton" onClick="SaveFamily(true); ">
+                        </span>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
     <tr height="*">
@@ -207,20 +200,19 @@
                                 <input id="findfield" style="width:8em;" onFocus="ShowFindList();"
                                        onInput="ShowFindList();" onClick="ShowFindList();" autocomplete="off">
                             </div>
-
                             <div style="position: absolute; bottom:0; left:0;">
-                                <IMG id="sidehide"
-                                     SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACCgAwAEAAAAAQAAACAAAAAAg0Hy/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAAAZVJREFUWAntl01OAzEMhcv/7xXYcxpULtEdEis4AwdiyY4FLBA/l+gtABu9b5QG7E5F6EhoKkXOZN6znxNP0kwmq/92RDkye2ftydqJxjZlI7OrF2dm59ZuImA0vq0XB2ZfrX2ozTSOOD0uGIKfiwN3AZQ94LwO/mikQxE3Agd18HfDuYDLAP9tuMz8TWR38GxtX+ho+qPg1+ItNVHmHnxPbATWzpYFj3idHwA+7XXmLYJHS/YloE/mYDrF6vTJPA0+Zj6uObtUq08tLTgqud7hyuBgmlc7DrPgfBFgsYyzt7O9ssP5+zRzHB1b58Ua0+59Npko8y2RpwXP+SsHdz+3hZN76+OcDB1T/nh/aoOIdnshkIvulbnjowNEvtZjBl8CT3PQIqTQMhFg6jX59aGDQwouEwEGDraZCLIcVARZZiIQygxgx5n43zPhf73Li8haT0qKLitMipdlwEaFeSVAxIPfWYA/ieBiwiHVkdSJRHBy1vjwOZqJB2P8+dUMVdFMzARAJPjS1jPBUV5ievUJ0uR6/glUld6hVUitEAAAAABJRU5ErkJggg=="
-                                     class="cornerbtn" TITLE="隐藏侧边栏" onClick="ETI();">
-                                <IMG id="sideshow"
-                                     SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACCgAwAEAAAAAQAAACAAAAAAg0Hy/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAAAW1JREFUWAntV0luAjEQnCyEbF/gzmsi+ERukXJK3pAH5cgtBzggCJ/gF5Aq0iVZ1rixGdAgMZZMD3ZXd7nsscdVVVVfqGvUF1SWu3+T/L22ngHsHHWC+mRtPbNFZgtv1bEhPRJK8hrgfvH8YNhbs9nmHZ4ksDG7j8SVRX6EnRmG+JCESJrrfvNpgXJJaBrugVsYliRWqMVKSLJSEsL1IxLFSlBSBTsWiWIlmpDQfHdKdEpgLe9Kp0QrSmgfUXJZtXuvqHxdW7dP6AAbGfImESFcE0v4CMfn5wSmtpkkFOwNzwpEOzREioSUYP9PgP3WoWL48zWtTkFd8vjYlsSxhGo/eBHmJE99PWm9eMnlExPf/W+SPGfk8mkl+clGrsCe7N3IL2fO+cnO4s556PCBP9zX400m9Z4rsLfgtCiZxy2ln+M6dOKLSXgnEEE3MTubXM2mwOtUDJNnj5wEFIB2zAaUlOzsU/CjXU5bvZ7/AajQ3qHL0j71AAAAAElFTkSuQmCC"
-                                     class="cornerbtn" style="display:none;" TITLE="显示侧边栏" onClick="ETI();">
-                            </div>
-
-                            <div style="position: absolute; bottom:0; right:0;">
                                 <IMG id="darkmode"
                                      SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACCgAwAEAAAAAQAAACAAAAAAg0Hy/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAAAvlJREFUWAmtlymMFUEQhpcbgYKEIBDLuQYNEgwgECQES1atJcGCQi14EOAQGywBy5LFEcwSDgECQVAcCsO1wP/11P9SO/uGd0xX8k9V91TX1dX95s3MdNO29Oq45CVhVZiL+c3Bq7NNsrg1rM6KPxD+JlyUDFmnGVV64tyZzUv+JeDc/Ivk3QKEblXKzhdl2Vn/lPw7xk/Do4OMYR3mkt4IZzheC9kVuBOurBvD/swNtxAOcf4nZCrBGH5dgKzfjHo8KeUWgQzp7rsCxNywPUavKhEAmUG3G1aC6drjXaHjNTHsz87IBEa918gZnr8frqr3wKMRAfgUvIwAhm1PvJqc7deS7wIZ58bLFfA8/IgAdW1T83bMJ0ZOCjsEsuzKjHm2AX5BgGjUKnRLVsjWRy1nnmXfCe+la+ddAY8dGBU4GtqjjKFLFQ4Il2NNlfuAXzgydaPlrNuye+GH9AkE6hUEWbH/4xJVItDtwkPBVZk6CBuQrbGJO4CtOCasCLZBUKO2USobaVlTlNqXTbvsXWM37Sut9XZgnWoQ1P+IQEmk6PELN00ArHEQ9MQVwadDYqkGTgBBgYFTyYVYsFc4L9BgoyKXyjpiPT2B8bPCJWGn8En4KmCzDQLno+acsEYpDglvBYzxcpp9ZJ0DkVjsvBF/LXwQvgn0yD5hTqB/COKFUOiJnhiZtA9Yk8Fl5W3J813ykvQLcb2i1DcAO6LsVAR7BGQw9jy6fG0PSv5ccs0gHEybu0J8bRdi7yGiQZkykkF7YY0xtrFDJWaFAdHF0DUBBY5VDYfZBkk5+3nJkP2WgY/gPY0cRK1K5OZcLN6G/LHJx89BsJBy5UwmlZ01626Gc5LN/mJ6/UV0VbN2hhECGbci6KGfg1/QGOp03rxuIvN20Jg+HQ7GhjlOgCr5aPmddeGPBS4fiKt4aOblbeuRG4R7YlnAUTbeJfONyYfuacGU7XluZDQcUZedRQeFU8IJ4bCwR+CK5dR8Ft4Jz4QV4aMAueRUagP9A5HvmdN8kRfkAAAAAElFTkSuQmCC"
                                      class="cornerbtn" TITLE="切换暗模式" onClick="SwapDayNightMode();">
+                            </div>
+
+                            <div style="position: absolute; bottom:0; right:0;">
+                                <IMG id="sidehide"
+                                     SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACCgAwAEAAAAAQAAACAAAAAAg0Hy/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAAAW1JREFUWAntV0luAjEQnCyEbF/gzmsi+ERukXJK3pAH5cgtBzggCJ/gF5Aq0iVZ1rixGdAgMZZMD3ZXd7nsscdVVVVfqGvUF1SWu3+T/L22ngHsHHWC+mRtPbNFZgtv1bEhPRJK8hrgfvH8YNhbs9nmHZ4ksDG7j8SVRX6EnRmG+JCESJrrfvNpgXJJaBrugVsYliRWqMVKSLJSEsL1IxLFSlBSBTsWiWIlmpDQfHdKdEpgLe9Kp0QrSmgfUXJZtXuvqHxdW7dP6AAbGfImESFcE0v4CMfn5wSmtpkkFOwNzwpEOzREioSUYP9PgP3WoWL48zWtTkFd8vjYlsSxhGo/eBHmJE99PWm9eMnlExPf/W+SPGfk8mkl+clGrsCe7N3IL2fO+cnO4s556PCBP9zX400m9Z4rsLfgtCiZxy2ln+M6dOKLSXgnEEE3MTubXM2mwOtUDJNnj5wEFIB2zAaUlOzsU/CjXU5bvZ7/AajQ3qHL0j71AAAAAElFTkSuQmCC"
+                                     class="cornerbtn" TITLE="隐藏侧边栏" onClick="ETI();">
+                                <IMG id="sideshow"
+                                     SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACCgAwAEAAAAAQAAACAAAAAAg0Hy/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAAAZVJREFUWAntl01OAzEMhcv/7xXYcxpULtEdEis4AwdiyY4FLBA/l+gtABu9b5QG7E5F6EhoKkXOZN6znxNP0kwmq/92RDkye2ftydqJxjZlI7OrF2dm59ZuImA0vq0XB2ZfrX2ozTSOOD0uGIKfiwN3AZQ94LwO/mikQxE3Agd18HfDuYDLAP9tuMz8TWR38GxtX+ho+qPg1+ItNVHmHnxPbATWzpYFj3idHwA+7XXmLYJHS/YloE/mYDrF6vTJPA0+Zj6uObtUq08tLTgqud7hyuBgmlc7DrPgfBFgsYyzt7O9ssP5+zRzHB1b58Ua0+59Npko8y2RpwXP+SsHdz+3hZN76+OcDB1T/nh/aoOIdnshkIvulbnjowNEvtZjBl8CT3PQIqTQMhFg6jX59aGDQwouEwEGDraZCLIcVARZZiIQygxgx5n43zPhf73Li8haT0qKLitMipdlwEaFeSVAxIPfWYA/ieBiwiHVkdSJRHBy1vjwOZqJB2P8+dUMVdFMzARAJPjS1jPBUV5ievUJ0uR6/glUld6hVUitEAAAAABJRU5ErkJggg=="
+                                     class="cornerbtn" style="display:none;" TITLE="显示侧边栏" onClick="ETI();">
                             </div>
 
                         </div>
@@ -663,11 +655,20 @@
                                             <Tbody id="personaledit1" class="hiderows">
                                             <tr>
                                                 <td class="sleft">
-                                                    名字:
+                                                    姓:
+                                                </td>
+                                                <td class="sright">
+                                                    <input id="familyname" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('familyname');">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="sleft">
+                                                    名:
                                                 </td>
                                                 <td class="sright">
                                                     <input id="personalname" class="sfieldexpand"
-                                                           onChange="SCV('personalname');">
+                                                           onChange="OnPersonFieldValueChanged('personalname');">
                                                     <span id="nameexpand"> <A HREF="#" class="sdatelink" onClick="SEN()"
                                                                               TITLE="显示更多名称选项">&#x25BA;</A></span>
                                                 </td>
@@ -676,42 +677,33 @@
                                             <Tbody id="nameexpandedit" class="hiderows">
                                             <tr>
                                                 <td class="sleft">
-                                                    昵称:
+                                                    字:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="nickname" class="sfield" onChange="SCV('nickname');">
+                                                    <input id="nickname" class="sfield" style="width:70px;"
+                                                           onChange="OnPersonFieldValueChanged('nickname');">
+                                                    <span style="margin-left: 12px;">
+                                                        号:
+										                 <input id="title" class="sfield" style="width:70px;"
+                                                                onChange="OnPersonFieldValueChanged('title');">
+                                                    </span>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td class="sleft">
-                                                    称谓:
+                                                    曾用名:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="title" class="sfield" style="width:64px;"
-                                                           onChange="SCV('title');">
-                                                    <span style="float:end;">后缀:
-										<input id="suffix" class="sfield" style="width:64px;" onChange="SCV('suffix');"></span>
+                                                    <input id="formername" class="sfield" style="width:70px;"
+                                                           onChange="OnPersonFieldValueChanged('formername');">
+                                                    <span style="float:end;">
+                                                        字辈:
+										                 <input id="suffix" class="sfield" style="width:70px;"
+                                                                onChange="OnPersonFieldValueChanged('suffix');"></span>
                                                 </td>
                                             </tr>
                                             </Tbody>
                                             <Tbody id="personaledit2" class="hiderows">
-                                            <tr>
-                                                <td class="sleft">
-                                                    现姓:
-                                                </td>
-                                                <td class="sright">
-                                                    <input id="familyname" class="sfield" onChange="SCV('familyname');">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sleft">
-                                                    出生时姓氏:
-                                                </td>
-                                                <td class="sright">
-                                                    <input id="familybirth" class="sfield"
-                                                           onChange="SCV('familybirth');" onFocus="SFV('familybirth');">
-                                                </td>
-                                            </tr>
                                             <tr>
                                                 <td class="sleft" VALIGN="baseline">
                                                     性别:
@@ -725,13 +717,13 @@
                                                                onClick="SSG('m');" style="margin-right:4px;">
                                                         <LABEL FOR="gender_m">男性</LABEL>
                                                         <input type="radio" NAME="gender" id="gender_o"
-                                                               onClick="SCV('othergender'); FS('othergender');"
+                                                               onClick="OnPersonFieldValueChanged('othergender'); FocusSelectElement('othergender');"
                                                                style="margin-right:4px;">
                                                         <LABEL FOR="gender_o">其他:</LABEL>
                                                     </div>
                                                     <div id="othergenderdiv" style="margin-top:4px; display:none;">
                                                         <input id="othergender" class="sfield"
-                                                               onChange="SCV('othergender');">
+                                                               onChange="OnPersonFieldValueChanged('othergender');">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -747,7 +739,8 @@
                                                 </td>
                                                 <td class="sright">
                                                     <div style="margin:2px 0px;">
-                                                        <input type="checkbox" id="alive" onClick="SCV('alive');">
+                                                        <input type="checkbox" id="alive"
+                                                               onClick="OnPersonFieldValueChanged('alive');">
                                                         <LABEL FOR="alive">此人尚在世</LABEL>
                                                     </div>
                                                 </td>
@@ -775,7 +768,8 @@
                                                     电子邮件:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="c_email" class="sfield" onChange="SCV('c_email');"
+                                                    <input id="c_email" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('c_email');"
                                                            DIR="ltr">
                                                 </td>
                                             </tr>
@@ -784,7 +778,8 @@
                                                     网站:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="website" class="sfield" onChange="SCV('website');"
+                                                    <input id="website" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('website');"
                                                            DIR="ltr">
                                                 </td>
                                             </tr>
@@ -793,7 +788,8 @@
                                                     博客:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="blog" class="sfield" onChange="SCV('blog');" DIR="ltr">
+                                                    <input id="blog" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('blog');" DIR="ltr">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -801,7 +797,8 @@
                                                     照片网站:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="photosite" class="sfield" onChange="SCV('photosite');"
+                                                    <input id="photosite" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('photosite');"
                                                            DIR="ltr">
                                                 </td>
                                             </tr>
@@ -810,7 +807,8 @@
                                                     家庭电话:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="hometel" class="sfield" onChange="SCV('hometel');"
+                                                    <input id="hometel" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('hometel');"
                                                            DIR="ltr">
                                                 </td>
                                             </tr>
@@ -819,7 +817,8 @@
                                                     工作电话:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="worktel" class="sfield" onChange="SCV('worktel');"
+                                                    <input id="worktel" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('worktel');"
                                                            DIR="ltr">
                                                 </td>
                                             </tr>
@@ -828,7 +827,8 @@
                                                     手机:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="mobile" class="sfield" onChange="SCV('mobile');"
+                                                    <input id="mobile" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('mobile');"
                                                            DIR="ltr">
                                                 </td>
                                             </tr>
@@ -838,7 +838,7 @@
                                                 </td>
                                                 <td class="sright">
                                                     <TEXTAREA id="address" class="sfield" ROWS=3
-                                                              onChange="SCV('address');"></TEXTAREA>
+                                                              onChange="OnPersonFieldValueChanged('address');"></TEXTAREA>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -847,7 +847,7 @@
                                                 </td>
                                                 <td class="sright">
                                                     <input id="othercontact" class="sfield"
-                                                           onChange="SCV('othercontact');">
+                                                           onChange="OnPersonFieldValueChanged('othercontact');">
                                                 </td>
                                             </tr>
                                             </Tbody>
@@ -858,7 +858,8 @@
                                                     Skype:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="skype" class="sfield" onChange="SCV('skype');">
+                                                    <input id="skype" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('skype');">
                                                 </td>
                                             </tr>
                                             </Tbody>
@@ -872,7 +873,8 @@
                                                     出生地:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="birthplace" class="sfield" onChange="SCV('birthplace');">
+                                                    <input id="birthplace" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('birthplace');">
                                                 </td>
                                             </tr>
                                             </Tbody>
@@ -883,7 +885,8 @@
                                                     去世地点:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="deathplace" class="sfield" onChange="SCV('deathplace');">
+                                                    <input id="deathplace" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('deathplace');">
                                                 </td>
                                             </tr>
 
@@ -892,7 +895,8 @@
                                                     死亡原因:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="deathcause" class="sfield" onChange="SCV('deathcause');">
+                                                    <input id="deathcause" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('deathcause');">
                                                 </td>
                                             </tr>
 
@@ -902,7 +906,7 @@
                                                 </td>
                                                 <td class="sright">
                                                     <input id="burialplace" class="sfield"
-                                                           onChange="SCV('burialplace');">
+                                                           onChange="OnPersonFieldValueChanged('burialplace');">
                                                 </td>
                                             </tr>
 
@@ -921,7 +925,8 @@
                                                     职业:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="profession" class="sfield" onChange="SCV('profession');">
+                                                    <input id="profession" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('profession');">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -929,7 +934,8 @@
                                                     公司:
                                                 </td>
                                                 <td class="sright">
-                                                    <input id="employer" class="sfield" onChange="SCV('employer');">
+                                                    <input id="employer" class="sfield"
+                                                           onChange="OnPersonFieldValueChanged('employer');">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -938,7 +944,7 @@
                                                 </td>
                                                 <td class="sright">
                                                     <TEXTAREA id="interests" class="sfield" ROWS=3
-                                                              onChange="SCV('interests');"></TEXTAREA>
+                                                              onChange="OnPersonFieldValueChanged('interests');"></TEXTAREA>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -947,7 +953,7 @@
                                                 </td>
                                                 <td class="sright">
                                                     <TEXTAREA id="activities" class="sfield" ROWS=3
-                                                              onChange="SCV('activities');"></TEXTAREA>
+                                                              onChange="OnPersonFieldValueChanged('activities');"></TEXTAREA>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -956,7 +962,7 @@
                                                 </td>
                                                 <td class="sright">
                                                     <TEXTAREA id="bionotes" class="sfield" ROWS=4
-                                                              onChange="SCV('bionotes');"></TEXTAREA>
+                                                              onChange="OnPersonFieldValueChanged('bionotes');"></TEXTAREA>
                                                 </td>
                                             </tr>
                                             </Tbody>
@@ -972,7 +978,7 @@
                                                 <td class="sboth" COLspan="2">
 										<span id="sideuploadfile">
                                             <input type="button" VALUE="上传文件" class="sbutton2"
-                                                                         onClick="DTU(Spe, true); ">
+                                                   onClick="DTU(Spe, true); ">
 										</span>
                                                     <input type="button" VALUE="显示所有文件" class="sbutton2"
                                                            onClick="ETF(); ">

@@ -6,7 +6,7 @@ var Dec = 0;
 function DGU(i, d) {
     var f = Eff[i];
     if (f) {
-        var u = "file.php?f=" + escape(GetElementValue("familyid")) + "&p=" + escape(GetElementValue("personid")) + "&c=" + escape(GetElementValue("checksum")) + "&r=" + escape(i) + "&t=" + escape(f.t);
+        var u = "file.php"
         if (d) {
             u += "&n=" + escape(f.n + (f.t ? ("." + f.t) : ""));
         }
@@ -520,7 +520,7 @@ function DCD(i) {
         if (confirm(_t("Are you sure you want to permanently delete the file $?", f.n))) {
             HttpPost("file_delete", {
                 f: GetElementValue("familyid"),
-                p: GetElementValue("personid"),
+                p: OwnerPersonId,
                 c: GetElementValue("checksum"),
                 r: i,
                 t: f.t
@@ -642,7 +642,7 @@ function DCU() {
     if (fnt.f) {
         HttpPost("file_upload", {
             f: GetElementValue("familyid"),
-            p: GetElementValue("personid"),
+            p: OwnerPersonId,
             c: GetElementValue("checksum"),
             t: fnt.t
         }, fnt.f, DUR, {n: GetElementValue("uploadname") || fnt.n, t: fnt.t, d: GetElementValue("uploaddesc"), ii: ii});
