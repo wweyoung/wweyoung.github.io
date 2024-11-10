@@ -1,6 +1,6 @@
 body {margin:0;}
 body.dark {background:#282828;}
-body,td,select {font-family:arial; font-size:12px; color:black;}
+body,td,select {font-family:arial; font-size:14px; color:black;}
 body.dark,.dark td,.dark th,.dark select {color:#ccc;}
 a:link, a:active, a:visited {text-decoration:none; color:#009;}
 .dark a:link, .dark a:active, .dark a:visited {text-decoration:none; color:#99c;}
@@ -84,7 +84,7 @@ input, select, textarea {padding:1px;}
 .sfieldexpand {width:160px; font-family:arial; font-size:12px;}
 .syear {width: 4em;}
 .sselect {font-family:arial; font-size:12px; max-width:240px;}
-.ibutton, .sbutton, .sbutton2, .sbutton4 {font-family:arial; font-size:12px; padding:1px 2px; text-overflow:ellipsis;}
+.ibutton, .sbutton, .sbutton2, .sbutton4 {font-family:arial; font-size:14px; padding:4px 2px; text-overflow:ellipsis;}
 .sbutton {width:240px;}
 .sbutton2 {width:112px;}
 .sbutton4 {width:52px;}

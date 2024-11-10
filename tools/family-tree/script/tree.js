@@ -518,7 +518,7 @@ function TreeElementAddEventListener(element) {
     element.onwheel = function (e) {
         var d = e.wheelDelta;
         console.log("wheel",e)
-        ZoomInOutScale(d / 120 / 2);
+        ZoomInOutScale  (d > 0 ? 1.2 : 0.9);
         e.preventDefault();
     };
     document.ontouchmove = function (e) {

@@ -65,483 +65,1441 @@ var locale_names = {
     "uz": "O\u2018zbek (Uzbek)"
 };
 var locale_phrases = {
-    "^": {"str": "\u7b2c^\u5c4a"},
-    "Save": {"str": "\u4fdd\u5b58"},
-    "Options": {"str": "\u9009\u9879"},
-    "Birth date": {"str": "\u51fa\u751f\u65e5\u671f"},
-    "Birth place": {"str": "\u51fa\u751f\u5730"},
-    "Marriage date": {"str": "\u7ed3\u5a5a\u65e5\u671f"},
-    "Divorce date": {"str": "\u79bb\u5a5a\u65e5\u671f"},
-    "Death date": {"str": "\u53bb\u4e16\u65e5\u671f"},
-    "Death place": {"str": "\u53bb\u4e16\u5730\u70b9"},
-    "Burial date": {"str": "\u5b89\u846c\u65e5\u671f"},
-    "Burial place": {"str": "\u5b89\u846c\u5730\u70b9"},
-    "Email": {"str": "\u7535\u5b50\u90ae\u4ef6"},
-    "Address": {"str": "\u5730\u5740"},
-    "Profession": {"str": "\u804c\u4e1a"},
-    "Company": {"str": "\u516c\u53f8"},
-    "Interests": {"str": "\u5174\u8da3"},
-    "Activities": {"str": "\u6d3b\u52a8"},
-    "Before": {"str": "\u524d"},
-    "After": {"str": "\u540e"},
-    "Female": {"str": "\u5973\u6027"},
-    "Male": {"str": "\u7537\u6027"},
-    "Surname now": {"str": "\u73b0\u59d3"},
-    "Surname at birth": {"str": "\u51fa\u751f\u65f6\u59d3\u6c0f"},
-    "Gender": {"str": "\u6027\u522b"},
-    "Other": {"str": "\u5176\u4ed6"},
-    "Website": {"str": "\u7f51\u7ad9"},
-    "Blog": {"str": "\u535a\u5ba2"},
-    "Photo site": {"str": "\u7167\u7247\u7f51\u7ad9"},
-    "Home tel": {"str": "\u5bb6\u5ead\u7535\u8bdd"},
-    "Work tel": {"str": "\u5de5\u4f5c\u7535\u8bdd"},
-    "Mobile": {"str": "\u624b\u673a"},
-    "Cause of death": {"str": "\u6b7b\u4ea1\u539f\u56e0"},
-    "Bio notes": {"str": "\u751f\u5e73\u7b14\u8bb0"},
-    "OK": {"str": "\u786e\u5b9a"},
-    "Cancel": {"str": "\u53d6\u6d88"},
-    "Edit": {"str": "\u7f16\u8f91"},
-    "approx $": {"str": "\u5927\u7ea6 $"},
-    "before $": {"str": "\u5728 $ \u4e4b\u524d"},
-    "after $": {"str": "\u5728 $ \u4e4b\u540e"},
-    "$ BCE": {"str": "\u516c\u5143\u524d $"},
-    "Full name": {"str": "\u5168\u540d"},
-    "Mother": {"str": "\u6bcd\u4eb2"},
-    "Father": {"str": "\u7236\u4eb2"},
-    "mother": {"str": "\u6bcd\u4eb2"},
-    "father": {"str": "\u7236\u4eb2"},
-    "Partner": {"str": "\u4f34\u4fa3"},
-    "Ex-partner": {"str": "\u524d\u4f34\u4fa3"},
-    "Late wife": {"str": "\u5df2\u6545\u59bb\u5b50"},
-    "Late husband": {"str": "\u5df2\u6545\u4e08\u592b"},
-    "Late spouse": {"str": "\u5df2\u6545\u914d\u5076"},
-    "Widow": {"str": "\u5be1\u5987"},
-    "Widower": {"str": "\u9ccf\u592b"},
-    "Widowed spouse": {"str": "\u4e27\u5076\u914d\u5076"},
-    "Wife": {"str": "\u59bb\u5b50"},
-    "Husband": {"str": "\u4e08\u592b"},
-    "Spouse": {"str": "\u914d\u5076"},
-    "Ex-wife": {"str": "\u524d\u59bb"},
-    "Ex-husband": {"str": "\u524d\u592b"},
-    "Ex-spouse": {"str": "\u524d\u914d\u5076"},
-    "Late partner": {"str": "\u5df2\u6545\u4f34\u4fa3"},
-    "Late fiancee": {"str": "\u5df2\u6545\u672a\u5a5a\u59bb"},
-    "Late fiance": {"str": "\u5df2\u6545\u672a\u5a5a\u592b"},
-    "Fiancee": {"str": "\u672a\u5a5a\u59bb"},
-    "Fiance": {"str": "\u672a\u5a5a\u592b"},
-    "Ex-fiancee": {"str": "\u524d\u672a\u5a5a\u59bb"},
-    "Ex-fiance": {"str": "\u524d\u672a\u5a5a\u592b"},
-    "Biological mother": {"str": "\u751f\u6bcd"},
-    "Biological father": {"str": "\u751f\u7236"},
-    "Biological parent": {"str": "\u4eb2\u751f\u7236\u6bcd"},
-    "Adopted mother": {"str": "\u517b\u6bcd"},
-    "Adopted father": {"str": "\u517b\u7236"},
-    "Adopted parent": {"str": "\u517b\u7236\u6bcd"},
-    "Foster mother": {"str": "\u5bc4\u517b\u6bcd\u4eb2"},
-    "Foster father": {"str": "\u5bc4\u517b\u7236\u4eb2"},
-    "Foster parent": {"str": "\u5bc4\u517b\u7236\u6bcd"},
-    "Stepmother": {"str": "\u7ee7\u6bcd"},
-    "Stepfather": {"str": "\u7ee7\u7236"},
-    "Stepparent": {"str": "\u7ee7\u7236\u6bcd"},
-    "Godmother": {"str": "\u6559\u6bcd"},
-    "Godfather": {"str": "\u6559\u7236"},
-    "Godparent": {"str": "\u6559\u7236\u6bcd"},
-    "Second mother": {"str": "\u7b2c\u4e8c\u6bcd\u4eb2"},
-    "Second father": {"str": "\u7b2c\u4e8c\u7236\u4eb2"},
-    "Second parent": {"str": "\u7b2c\u4e8c\u7236\u6bcd"},
-    "Third mother": {"str": "\u7b2c\u4e09\u6bcd\u4eb2"},
-    "Third father": {"str": "\u7b2c\u4e09\u7236\u4eb2"},
-    "Third parent": {"str": "\u7b2c\u4e09\u7236\u6bcd"},
-    "Parent": {"str": "\u7236\u6bcd"},
-    "Done": {"str": "\u5b8c\u6210"},
-    "More actions...": {"str": "\u66f4\u591a\u64cd\u4f5c..."},
-    "Set parents": {"str": "\u8bbe\u7f6e\u7236\u6bcd"},
-    "Add partner/ex": {"str": "\u6dfb\u52a0\u4f34\u4fa3/\u524d\u4f34\u4fa3"},
-    "Partner with person already on tree": {"str": "\u4e0e\u5bb6\u8c31\u4e0a\u5df2\u6709\u7684\u4eba\u5efa\u7acb\u4f34\u4fa3\u5173\u7cfb"},
-    "Are you sure you want to remove this family from your account?": {"str": "\u60a8\u786e\u5b9a\u8981\u4ece\u60a8\u7684\u8d26\u6237\u4e2d\u79fb\u9664\u6b64\u5bb6\u5ead\u5417\uff1f"},
-    "If you have shared this family it will still be available to others.": {"str": "\u5982\u679c\u60a8\u5df2\u5171\u4eab\u6b64\u5bb6\u5ead\uff0c\u5b83\u4ecd\u5c06\u5bf9\u5176\u4ed6\u4eba\u53ef\u7528\u3002"},
-    "The new passwords do not match - please reenter.": {"str": "\u65b0\u5bc6\u7801\u4e0d\u5339\u914d - \u8bf7\u91cd\u65b0\u8f93\u5165\u3002"},
-    "The new password was set successfully.": {"str": "\u65b0\u5bc6\u7801\u8bbe\u7f6e\u6210\u529f\u3002"},
-    "The new password could not be set - please try again.": {"str": "\u65e0\u6cd5\u8bbe\u7f6e\u65b0\u5bc6\u7801 - \u8bf7\u91cd\u8bd5\u3002"},
-    "The name could not be changed - please try again.": {"str": "\u65e0\u6cd5\u66f4\u6539\u540d\u79f0 - \u8bf7\u91cd\u8bd5\u3002"},
-    "The email could not be changed - please try again.": {"str": "\u65e0\u6cd5\u66f4\u6539\u7535\u5b50\u90ae\u4ef6 - \u8bf7\u91cd\u8bd5\u3002"},
-    "Your Family Echo account was permanently closed. Thank you for using Family Echo.": {"str": "\u60a8\u7684Family Echo\u8d26\u6237\u5df2\u88ab\u6c38\u4e45\u5173\u95ed\u3002\u611f\u8c22\u60a8\u4f7f\u7528Family Echo\u3002"},
-    "Your account could not be closed - please try again.": {"str": "\u65e0\u6cd5\u5173\u95ed\u60a8\u7684\u8d26\u6237 - \u8bf7\u91cd\u8bd5\u3002"},
-    "The family could not be removed - please try again.": {"str": "\u65e0\u6cd5\u79fb\u9664\u5bb6\u5ead - \u8bf7\u91cd\u8bd5\u3002"},
-    "Are you sure you want to restore this family to your account?": {"str": "\u60a8\u786e\u5b9a\u8981\u5c06\u6b64\u5bb6\u5ead\u6062\u590d\u5230\u60a8\u7684\u8d26\u6237\u5417\uff1f"},
-    "The family could not be added - please try again.": {"str": "\u65e0\u6cd5\u6dfb\u52a0\u5bb6\u5ead - \u8bf7\u91cd\u8bd5\u3002"},
-    "The family could not be renamed - please try again.": {"str": "\u65e0\u6cd5\u91cd\u547d\u540d\u5bb6\u5ead - \u8bf7\u91cd\u8bd5\u3002"},
-    "If you leave this page before saving, your changes to this family will be lost.": {"str": "\u5982\u679c\u60a8\u5728\u4fdd\u5b58\u4e4b\u524d\u79bb\u5f00\u6b64\u9875\u9762\uff0c\u60a8\u5bf9\u8be5\u5bb6\u5ead\u7684\u66f4\u6539\u5c06\u4f1a\u4e22\u5931\u3002"},
-    "You do not have permission to view this family.": {"str": "\u60a8\u6ca1\u6709\u6743\u9650\u67e5\u770b\u6b64\u5bb6\u65cf\u3002"},
-    "This family could not currently be loaded.": {"str": "\u76ee\u524d\u65e0\u6cd5\u52a0\u8f7d\u6b64\u5bb6\u65cf\u3002"},
-    "This may be due to occasional system maintenance, so please try again in a few hours.": {"str": "\u8fd9\u53ef\u80fd\u662f\u7531\u4e8e\u7cfb\u7edf\u7ef4\u62a4\uff0c\u8bf7\u5728\u51e0\u4e2a\u5c0f\u65f6\u540e\u91cd\u8bd5\u3002"},
-    "Founded by $": {"str": "\u7531$\u521b\u5efa"},
-    "The family could not be saved - please try again.": {"str": "\u65e0\u6cd5\u4fdd\u5b58\u5bb6\u65cf - \u8bf7\u91cd\u8bd5\u3002"},
-    "The family could not be added to your account - please try again.": {"str": "\u65e0\u6cd5\u5c06\u5bb6\u65cf\u6dfb\u52a0\u5230\u60a8\u7684\u8d26\u6237 - \u8bf7\u91cd\u8bd5\u3002"},
-    "Show ages on which date? Please enter the date in YYYY-MM-DD format and add \"B\" for BCE.": {"str": "\u663e\u793a\u54ea\u4e2a\u65e5\u671f\u7684\u5e74\u9f84\uff1f\u8bf7\u4ee5YYYY-MM-DD\u683c\u5f0f\u8f93\u5165\u65e5\u671f\uff0c\u5e76\u5728\u516c\u5143\u524d\u52a0\u4e0a\u201cB\u201d\u3002"},
-    "Hide options": {"str": "\u9690\u85cf\u9009\u9879"},
-    "Known date": {"str": "\u5df2\u77e5\u65e5\u671f"},
-    "Approximate": {"str": "\u5927\u7ea6"},
-    "Date range": {"str": "\u65e5\u671f\u8303\u56f4"},
-    "Anon #": {"str": "\u533f\u540d#"},
-    "$1 of $2": {"str": "$2\u7684$1"},
-    "Me": {"str": "\u6211"},
-    "Founder": {"str": "\u521b\u59cb\u4eba"},
-    "Biological daughter": {"str": "\u4eb2\u751f\u5973\u513f"},
-    "Biological son": {"str": "\u4eb2\u751f\u513f\u5b50"},
-    "Biological child": {"str": "\u4eb2\u751f\u5b50\u5973"},
-    "Adopted daughter": {"str": "\u517b\u5973"},
-    "Adopted son": {"str": "\u517b\u5b50"},
-    "Adopted child": {"str": "\u517b\u5b50\u5973"},
-    "Foster daughter": {"str": "\u5bc4\u517b\u5973\u513f"},
-    "Foster son": {"str": "\u5bc4\u517b\u513f\u5b50"},
-    "Foster child": {"str": "\u5bc4\u517b\u5b50\u5973"},
-    "Stepdaughter": {"str": "\u7ee7\u5973"},
-    "Stepson": {"str": "\u7ee7\u5b50"},
-    "Stepchild": {"str": "\u7ee7\u5b50\u5973"},
-    "Goddaughter": {"str": "\u6559\u5973"},
-    "Godson": {"str": "\u6559\u5b50"},
-    "Godchild": {"str": "\u6559\u5b50\u5973"},
-    "Daughter": {"str": "\u5973\u513f"},
-    "Son": {"str": "\u513f\u5b50"},
-    "Child": {"str": "\u5b50\u5973"},
-    "Sister": {"str": "\u59d0\u59b9"},
-    "Brother": {"str": "\u5144\u5f1f"},
-    "Sibling": {"str": "\u5144\u5f1f\u59d0\u59b9"},
-    "Half sister": {"str": "\u540c\u7236\u5f02\u6bcd\u6216\u540c\u6bcd\u5f02\u7236\u59d0\u59b9"},
-    "Half brother": {"str": "\u540c\u7236\u5f02\u6bcd\u6216\u540c\u6bcd\u5f02\u7236\u5144\u5f1f"},
-    "Half sibling": {"str": "\u540c\u7236\u5f02\u6bcd\u6216\u540c\u6bcd\u5f02\u7236\u5144\u5f1f\u59d0\u59b9"},
-    "Unknown": {"str": "\u672a\u77e5"},
-    "# ancestor/s": {"str": "#\u4f4d\u7956\u5148"},
-    "# descendant/s": {"str": "#\u4f4d\u540e\u4ee3"},
-    "No ancestors": {"str": "\u65e0\u7956\u5148"},
-    "No descendants": {"str": "\u65e0\u540e\u4ee3"},
-    "Approx $": {"str": "\u5927\u7ea6$"},
-    "Before $": {"str": "$\u4e4b\u524d"},
-    "After $": {"str": "$\u4e4b\u540e"},
-    "$ (separated)": {"str": "$\uff08\u5206\u5f00\uff09"},
-    "# day/s old": {"str": "#\u5929\u5927"},
-    "# day/s": {"str": "#\u5929"},
-    "# month/s old": {"str": "#\u4e2a\u6708\u5927"},
-    "# month/s": {"str": "#\u4e2a\u6708"},
-    "# year/s old": {"str": "#\u5c81"},
-    "# year/s": {"str": "#\u5e74"},
-    "at least $": {"str": "\u81f3\u5c11 $"},
-    "at most $": {"str": "\u6700\u591a $"},
-    "Download file": {"str": "\u4e0b\u8f7d\u6587\u4ef6"},
-    "Uploaded $": {"str": "\u5df2\u4e0a\u4f20 $"},
-    "$ image": {"str": "$ \u56fe\u50cf"},
-    "Image": {"str": "\u56fe\u50cf"},
-    "Text": {"str": "\u6587\u672c"},
-    "$ audio": {"str": "$ \u97f3\u9891"},
-    "Audio": {"str": "\u97f3\u9891"},
-    "$ video": {"str": "$ \u89c6\u9891"},
-    "Video": {"str": "\u89c6\u9891"},
-    "$ archive": {"str": "$ \u538b\u7f29\u5305"},
-    "Archive": {"str": "\u538b\u7f29\u5305"},
-    "Delete": {"str": "\u5220\u9664"},
-    "No files match the current search.": {"str": "\u6ca1\u6709\u6587\u4ef6\u7b26\u5408\u5f53\u524d\u641c\u7d22\u6761\u4ef6\u3002"},
-    "There are currently no files in this family.": {"str": "\u6b64\u5bb6\u5ead\u76ee\u524d\u6ca1\u6709\u6587\u4ef6\u3002"},
-    "# file/s": {"str": "#\u4e2a\u6587\u4ef6"},
-    "$1 used (plus $2 in other families) of $3 available": {"str": "\u5df2\u4f7f\u7528 $1\uff08\u52a0\u4e0a\u5176\u4ed6\u5bb6\u5ead\u4e2d\u7684 $2\uff09\uff0c\u5171 $3 \u53ef\u7528"},
-    "$1 used of $2 available": {"str": "\u5df2\u4f7f\u7528 $1\uff0c\u5171 $2 \u53ef\u7528"},
-    "You do not currently have permission to $ files.": {"str": "\u60a8\u76ee\u524d\u6ca1\u6709\u6743\u9650 $ \u6587\u4ef6\u3002"},
-    "download": {"str": "\u4e0b\u8f7d"},
-    "upload": {"str": "\u4e0a\u4f20"},
-    "edit": {"str": "\u7f16\u8f91"},
-    "delete": {"str": "\u5220\u9664"},
-    "View file": {"str": "\u67e5\u770b\u6587\u4ef6"},
-    "Untitled": {"str": "\u65e0\u6807\u9898"},
-    "Are you sure you want to permanently delete the file $?": {"str": "\u60a8\u786e\u5b9a\u8981\u6c38\u4e45\u5220\u9664\u6587\u4ef6 $ \u5417\uff1f"},
-    "The file could not be deleted - please try again.": {"str": "\u65e0\u6cd5\u5220\u9664\u6587\u4ef6 - \u8bf7\u91cd\u8bd5\u3002"},
-    "Detach this person": {"str": "\u89e3\u9664\u6b64\u4eba\u7684\u5173\u8054"},
-    "Attach another person": {"str": "\u5173\u8054\u5176\u4ed6\u4eba"},
-    "This file is $1 in size, which is larger than the maximum of $2.": {"str": "\u6b64\u6587\u4ef6\u5927\u5c0f\u4e3a $1\uff0c\u8d85\u8fc7\u4e86\u6700\u5927\u9650\u5236 $2\u3002"},
-    "Please select a file to upload it.": {"str": "\u8bf7\u9009\u62e9\u4e00\u4e2a\u6587\u4ef6\u8fdb\u884c\u4e0a\u4f20\u3002"},
-    "The file could not be uploaded - please try again.": {"str": "\u65e0\u6cd5\u4e0a\u4f20\u6587\u4ef6 - \u8bf7\u91cd\u8bd5\u3002"},
-    "Please wait while uploading...": {"str": "\u4e0a\u4f20\u4e2d\uff0c\u8bf7\u7a0d\u5019..."},
-    "Are you sure you want to permanently remove the picture for this person?": {"str": "\u60a8\u786e\u5b9a\u8981\u6c38\u4e45\u5220\u9664\u6b64\u4eba\u7684\u7167\u7247\u5417\uff1f"},
-    "Back to me": {"str": "\u8fd4\u56de\u6211\u7684\u9875\u9762"},
-    "Back to start": {"str": "\u8fd4\u56de\u5f00\u59cb"},
-    "Back to $": {"str": "\u8fd4\u56de $"},
-    "# people": {"str": "#\u4e2a\u4eba"},
-    "(none)": {"str": "\uff08\u65e0\uff09"},
-    "No matches found": {"str": "\u672a\u627e\u5230\u5339\u914d\u9879"},
-    "The email will include a link allowing <> to view and download this family, but not make changes.": {"str": "\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u548c\u4e0b\u8f7d\u6b64\u5bb6\u5ead\uff0c\u4f46\u4e0d\u80fd\u8fdb\u884c\u66f4\u6539\u3002"},
-    "The email will include a link allowing <> to view and download this family and its files, but not make changes.": {"str": "\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u548c\u4e0b\u8f7d\u6b64\u5bb6\u5ead\u53ca\u5176\u6587\u4ef6\uff0c\u4f46\u4e0d\u80fd\u8fdb\u884c\u66f4\u6539\u3002"},
-    "The email will include a link allowing <> to view, download, modify and share this family.": {"str": "\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u3001\u4e0b\u8f7d\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u5ead\u3002"},
-    "The email will include a link allowing <> to view, download, modify and share this family, but only view and download files.": {"str": "\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u3001\u4e0b\u8f7d\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u5ead\uff0c\u4f46\u53ea\u80fd\u67e5\u770b\u548c\u4e0b\u8f7d\u6587\u4ef6\u3002"},
-    "The email will include a link allowing <> to view, modify and share this family, and upload, edit and delete files.": {"str": "\u7535\u5b50\u90ae\u4ef6\u5c06\u5305\u542b\u4e00\u4e2a\u94fe\u63a5\uff0c\u5141\u8bb8 <> \u67e5\u770b\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u5ead\uff0c\u5e76\u4e0a\u4f20\u3001\u7f16\u8f91\u548c\u5220\u9664\u6587\u4ef6\u3002"},
-    "Married": {"str": "\u5df2\u5a5a"},
-    "Engaged": {"str": "\u8ba2\u5a5a"},
-    "Relationship": {"str": "\u5173\u7cfb"},
-    "Separated": {"str": "\u5206\u5c45"},
-    "Divorced": {"str": "\u79bb\u5a5a"},
-    "Annulled": {"str": "\u5a5a\u59fb\u65e0\u6548"},
-    "Biological": {"str": "\u4eb2\u751f"},
-    "Adopted": {"str": "\u9886\u517b"},
-    "Foster": {"str": "\u5bc4\u517b"},
-    "Step": {"str": "\u7ee7"},
-    "Invite $ to share family": {"str": "\u9080\u8bf7 $ \u5206\u4eab\u5bb6\u5ead"},
-    "Show relationship to $": {"str": "\u663e\u793a\u4e0e $ \u7684\u5173\u7cfb"},
-    "Show $1's $2": {"str": "\u663e\u793a $1 \u7684 $2"},
-    "Edit partnership details": {"str": "\u7f16\u8f91\u5408\u4f5c\u5173\u7cfb\u8be6\u60c5"},
-    "Edit my details": {"str": "\u7f16\u8f91\u6211\u7684\u8be6\u60c5"},
-    "Edit $'s details": {"str": "\u7f16\u8f91 $ \u7684\u8be6\u60c5"},
-    "parent": {"str": "\u7236\u6bcd"},
-    "Change multiple birth order": {"str": "\u66f4\u6539\u591a\u80de\u80ce\u51fa\u751f\u987a\u5e8f"},
-    "Change sibling order": {"str": "\u66f4\u6539\u5144\u5f1f\u59d0\u59b9\u987a\u5e8f"},
-    "Change partners": {"str": "\u66f4\u6362\u4f34\u4fa3"},
-    "Change partner": {"str": "\u66f4\u6362\u4f34\u4fa3"},
-    "Delete $": {"str": "\u5220\u9664 $"},
-    "This person cannot be deleted because that would split the tree. Try deleting outer people on the tree first.": {"str": "\u6b64\u4eba\u65e0\u6cd5\u5220\u9664\uff0c\u56e0\u4e3a\u8fd9\u4f1a\u5206\u88c2\u5bb6\u8c31\u3002\u8bf7\u5148\u5c1d\u8bd5\u5220\u9664\u5bb6\u8c31\u5916\u90e8\u7684\u4eba\u3002"},
-    "This person started the tree and cannot be deleted.": {"str": "\u6b64\u4eba\u662f\u5bb6\u8c31\u7684\u8d77\u59cb\uff0c\u65e0\u6cd5\u5220\u9664\u3002"},
-    "You do not have permission to delete people.": {"str": "\u60a8\u6ca1\u6709\u6743\u9650\u5220\u9664\u4eba\u5458\u3002"},
-    "Click to add your relatives:": {"str": "\u70b9\u51fb\u4ee5\u6dfb\u52a0\u60a8\u7684\u4eb2\u5c5e\uff1a"},
-    "Click to add relatives of $:": {"str": "\u70b9\u51fb\u4ee5\u6dfb\u52a0 $ \u7684\u4eb2\u5c5e\uff1a"},
-    "Add primary mother": {"str": "\u6dfb\u52a0\u4e3b\u8981\u6bcd\u4eb2"},
-    "Add mother": {"str": "\u6dfb\u52a0\u6bcd\u4eb2"},
-    "Add primary father": {"str": "\u6dfb\u52a0\u4e3b\u8981\u7236\u4eb2"},
-    "Add father": {"str": "\u6dfb\u52a0\u7236\u4eb2"},
-    "Add primary parents": {"str": "\u6dfb\u52a0\u4e3b\u8981\u7236\u6bcd"},
-    "Add new parents": {"str": "\u6dfb\u52a0\u65b0\u7236\u6bcd"},
-    "Add brother/sister": {"str": "\u6dfb\u52a0\u5144\u5f1f/\u59d0\u59b9"},
-    "Add child": {"str": "\u6dfb\u52a0\u5b69\u5b50"},
-    "Add second mother": {"str": "\u6dfb\u52a0\u7b2c\u4e8c\u6bcd\u4eb2"},
-    "Add second father": {"str": "\u6dfb\u52a0\u7b2c\u4e8c\u7236\u4eb2"},
-    "Add second parents": {"str": "\u6dfb\u52a0\u7b2c\u4e8c\u7236\u6bcd"},
-    "Add third mother": {"str": "\u6dfb\u52a0\u7b2c\u4e09\u6bcd\u4eb2"},
-    "Add third father": {"str": "\u6dfb\u52a0\u7b2c\u4e09\u7236\u4eb2"},
-    "Add third parents": {"str": "\u6dfb\u52a0\u7b2c\u4e09\u7236\u6bcd"},
-    "To add your parents, brothers or sisters, please sign in then create a new family branch.": {"str": "\u8981\u6dfb\u52a0\u60a8\u7684\u7236\u6bcd\u3001\u5144\u5f1f\u6216\u59d0\u59b9\uff0c\u8bf7\u767b\u5f55\u7136\u540e\u521b\u5efa\u4e00\u4e2a\u65b0\u7684\u5bb6\u5ead\u5206\u652f\u3002"},
-    "To add your parents, brothers or sisters, please create a new family branch.": {"str": "\u8981\u6dfb\u52a0\u60a8\u7684\u7236\u6bcd\u3001\u5144\u5f1f\u6216\u59d0\u59b9\uff0c\u8bf7\u521b\u5efa\u4e00\u4e2a\u65b0\u7684\u5bb6\u5ead\u5206\u652f\u3002"},
-    "Create new family for me": {"str": "\u4e3a\u6211\u521b\u5efa\u65b0\u5bb6\u5ead"},
-    "To add $'s parents, brothers or sisters, a new family branch can be created after signing in.": {"str": "\u8981\u6dfb\u52a0 $ \u7684\u7236\u6bcd\u3001\u5144\u5f1f\u6216\u59d0\u59b9\uff0c\u767b\u5f55\u540e\u53ef\u4ee5\u521b\u5efa\u4e00\u4e2a\u65b0\u7684\u5bb6\u5ead\u5206\u652f\u3002"},
-    "To add $'s parents, brothers or sisters, a new family branch can be created.": {"str": "\u8981\u6dfb\u52a0 $ \u7684\u7236\u6bcd\u3001\u5144\u5f1f\u6216\u59d0\u59b9\uff0c\u53ef\u4ee5\u521b\u5efa\u4e00\u4e2a\u65b0\u7684\u5bb6\u5ead\u5206\u652f\u3002"},
-    "Create new family for $": {"str": "\u4e3a$\u521b\u5efa\u65b0\u5bb6\u5ead"},
-    "You do not have permission to add new people.": {"str": "\u60a8\u6ca1\u6709\u6743\u9650\u6dfb\u52a0\u65b0\u6210\u5458\u3002"},
-    "To protect your privacy, phone numbers, addresses and emails have been removed.": {"str": "\u4e3a\u4fdd\u62a4\u60a8\u7684\u9690\u79c1\uff0c\u7535\u8bdd\u53f7\u7801\u3001\u5730\u5740\u548c\u7535\u5b50\u90ae\u4ef6\u5df2\u88ab\u79fb\u9664\u3002"},
-    "Location": {"str": "\u4f4d\u7f6e"},
-    "End date": {"str": "\u7ed3\u675f\u65e5\u671f"},
-    "Engagement date": {"str": "\u8ba2\u5a5a\u65e5\u671f"},
-    "Separation date": {"str": "\u5206\u5c45\u65e5\u671f"},
-    "Annulment date": {"str": "\u5a5a\u59fb\u65e0\u6548\u65e5\u671f"},
-    "Start date": {"str": "\u5f00\u59cb\u65e5\u671f"},
-    "Before the Common Era (BC)": {"str": "\u516c\u5143\u524d (BC)"},
-    "BCE": {"str": "\u516c\u5143\u524d (BCE)"},
-    "Day": {"str": "\u65e5"},
-    "Month": {"str": "\u6708"},
-    "Year": {"str": "\u5e74"},
-    "Show more date options": {"str": "\u663e\u793a\u66f4\u591a\u65e5\u671f\u9009\u9879"},
-    "Swap two dates": {"str": "\u4ea4\u6362\u4e24\u4e2a\u65e5\u671f"},
-    "View $1 $2": {"str": "\u67e5\u770b$1 $2"},
-    "Download $1 $2": {"str": "\u4e0b\u8f7d$1 $2"},
-    "This person has no files attached.": {"str": "\u6b64\u4eba\u6ca1\u6709\u9644\u52a0\u6587\u4ef6\u3002"},
-    "Set mother to $": {"str": "\u5c06\u6bcd\u4eb2\u8bbe\u4e3a$"},
-    "Set father to $": {"str": "\u5c06\u7236\u4eb2\u8bbe\u4e3a$"},
-    "Set second mother to $": {"str": "\u5c06\u7b2c\u4e8c\u6bcd\u4eb2\u8bbe\u4e3a$"},
-    "Set second father to $": {"str": "\u5c06\u7b2c\u4e8c\u7236\u4eb2\u8bbe\u4e3a$"},
-    "Set third mother to $": {"str": "\u5c06\u7b2c\u4e09\u6bcd\u4eb2\u8bbe\u4e3a$"},
-    "Set third father to $": {"str": "\u5c06\u7b2c\u4e09\u7236\u4eb2\u8bbe\u4e3a$"},
-    "Set stepmother to $": {"str": "\u5c06\u7ee7\u6bcd\u8bbe\u4e3a$"},
-    "Set stepfather to $": {"str": "\u5c06\u7ee7\u7236\u8bbe\u4e3a$"},
-    "Add new mother": {"str": "\u6dfb\u52a0\u65b0\u6bcd\u4eb2"},
-    "Add new father": {"str": "\u6dfb\u52a0\u65b0\u7236\u4eb2"},
-    "Add new second mother": {"str": "\u6dfb\u52a0\u65b0\u7b2c\u4e8c\u6bcd\u4eb2"},
-    "Add new second father": {"str": "\u6dfb\u52a0\u65b0\u7b2c\u4e8c\u7236\u4eb2"},
-    "Add new third mother": {"str": "\u6dfb\u52a0\u65b0\u7b2c\u4e09\u6bcd\u4eb2"},
-    "Add new third father": {"str": "\u6dfb\u52a0\u65b0\u7b2c\u4e09\u7236\u4eb2"},
-    "Move left (born earlier)": {"str": "\u5411\u5de6\u79fb\u52a8\uff08\u51fa\u751f\u8f83\u65e9\uff09"},
-    "Move right (born later)": {"str": "\u5411\u53f3\u79fb\u52a8\uff08\u51fa\u751f\u8f83\u665a\uff09"},
-    "Set partner to $": {"str": "\u5c06\u4f34\u4fa3\u8bbe\u4e3a$"},
-    "Add new primary partner": {"str": "\u6dfb\u52a0\u65b0\u4e3b\u8981\u4f34\u4fa3"},
-    "Add new extra partner": {"str": "\u6dfb\u52a0\u65b0\u989d\u5916\u4f34\u4fa3"},
-    "Add new partner": {"str": "\u6dfb\u52a0\u65b0\u4f34\u4fa3"},
-    "Add new ex-partner": {"str": "\u6dfb\u52a0\u65b0\u524d\u4f34\u4fa3"},
-    "Set primary partner to $": {"str": "\u5c06\u4e3b\u8981\u4f34\u4fa3\u8bbe\u4e3a$"},
-    "Change $ to ex-partner": {"str": "\u5c06$\u66f4\u6539\u4e3a\u524d\u4f34\u4fa3"},
-    "Change $ to extra partner": {"str": "\u5c06$\u66f4\u6539\u4e3a\u989d\u5916\u4f34\u4fa3"},
-    "Remove partner $": {"str": "\u79fb\u9664\u4f34\u4fa3$"},
-    "Remove ex-partner $": {"str": "\u79fb\u9664\u524d\u4f34\u4fa3$"},
-    "Add adopted child with $": {"str": "\u4e0e$\u6dfb\u52a0\u9886\u517b\u5b50\u5973"},
-    "Add adopted child with new partner": {"str": "\u4e0e\u65b0\u4f34\u4fa3\u6dfb\u52a0\u9886\u517b\u5b50\u5973"},
-    "Add adopted child without partner": {"str": "\u65e0\u4f34\u4fa3\u6dfb\u52a0\u9886\u517b\u5b50\u5973"},
-    "Add foster child with $": {"str": "\u4e0e$\u6dfb\u52a0\u5bc4\u517b\u5b50\u5973"},
-    "Add foster child with new partner": {"str": "\u4e0e\u65b0\u4f34\u4fa3\u6dfb\u52a0\u5bc4\u517b\u5b50\u5973"},
-    "Add foster child without partner": {"str": "\u6dfb\u52a0\u6ca1\u6709\u4f34\u4fa3\u7684\u5bc4\u517b\u5b50\u5973"},
-    "Add godchild with $": {"str": "\u6dfb\u52a0\u4e0e$\u7684\u6559\u5b50"},
-    "Add godchild with new partner": {"str": "\u6dfb\u52a0\u4e0e\u65b0\u4f34\u4fa3\u7684\u6559\u5b50"},
-    "Add godchild without partner": {"str": "\u6dfb\u52a0\u6ca1\u6709\u4f34\u4fa3\u7684\u6559\u5b50"},
-    "Add child with $": {"str": "\u6dfb\u52a0\u4e0e$\u7684\u5b50\u5973"},
-    "Add child with new partner": {"str": "\u6dfb\u52a0\u4e0e\u65b0\u4f34\u4fa3\u7684\u5b50\u5973"},
-    "Add child without partner": {"str": "\u6dfb\u52a0\u6ca1\u6709\u4f34\u4fa3\u7684\u5b50\u5973"},
-    "Add adopted child": {"str": "\u6dfb\u52a0\u9886\u517b\u5b50\u5973"},
-    "Add foster child": {"str": "\u6dfb\u52a0\u5bc4\u517b\u5b50\u5973"},
-    "Add godchild": {"str": "\u6dfb\u52a0\u6559\u5b50"},
-    "To add a child who is already on the tree, select that child and set their parent to this person.": {"str": "\u8981\u6dfb\u52a0\u5df2\u7ecf\u5728\u5bb6\u8c31\u4e0a\u7684\u5b50\u5973\uff0c\u8bf7\u9009\u62e9\u8be5\u5b50\u5973\u5e76\u5c06\u5176\u7236\u6bcd\u8bbe\u7f6e\u4e3a\u6b64\u4eba\u3002"},
-    "Choose the person to partner with:": {"str": "\u9009\u62e9\u8981\u4e0e\u4e4b\u6210\u4e3a\u4f34\u4fa3\u7684\u4eba\uff1a"},
-    "Add as primary partner": {"str": "\u6dfb\u52a0\u4e3a\u4e3b\u8981\u4f34\u4fa3"},
-    "Add as extra partner": {"str": "\u6dfb\u52a0\u4e3a\u989d\u5916\u4f34\u4fa3"},
-    "Add as partner": {"str": "\u6dfb\u52a0\u4e3a\u4f34\u4fa3"},
-    "Add as ex-partner": {"str": "\u6dfb\u52a0\u4e3a\u524d\u4f34\u4fa3"},
-    "Second parents": {"str": "\u7b2c\u4e8c\u7236\u6bcd"},
-    "Type of second parents": {"str": "\u7b2c\u4e8c\u7236\u6bcd\u7684\u7c7b\u578b"},
-    "Third parents": {"str": "\u7b2c\u4e09\u7236\u6bcd"},
-    "Type of third parents": {"str": "\u7b2c\u4e09\u7236\u6bcd\u7684\u7c7b\u578b"},
-    "Primary parents": {"str": "\u4e3b\u8981\u7236\u6bcd"},
-    "Type of primary parents": {"str": "\u4e3b\u8981\u7236\u6bcd\u7684\u7c7b\u578b"},
-    "Switch primary and second parents": {"str": "\u5207\u6362\u4e3b\u8981\u7236\u6bcd\u548c\u7b2c\u4e8c\u7236\u6bcd"},
-    "This choice of parents is not allowed because it would split the tree. Please try deleting the parents and their relatives instead, or deleting this person.": {"str": "\u4e0d\u5141\u8bb8\u9009\u62e9\u8fd9\u4e9b\u7236\u6bcd\uff0c\u56e0\u4e3a\u8fd9\u4f1a\u5206\u88c2\u5bb6\u8c31\u3002\u8bf7\u5c1d\u8bd5\u5220\u9664\u8fd9\u4e9b\u7236\u6bcd\u53ca\u5176\u4eb2\u5c5e\uff0c\u6216\u5220\u9664\u6b64\u4eba\u3002"},
-    "Add adopted parents": {"str": "\u6dfb\u52a0\u9886\u517b\u7236\u6bcd"},
-    "Add foster parents": {"str": "\u6dfb\u52a0\u5bc4\u517b\u7236\u6bcd"},
-    "Add godmother": {"str": "\u6dfb\u52a0\u6559\u6bcd"},
-    "Add godfather": {"str": "\u6dfb\u52a0\u6559\u7236"},
-    "Add biological parents": {"str": "\u6dfb\u52a0\u751f\u7236\u6bcd"},
-    "Add biological parents (was adopted)": {"str": "\u6dfb\u52a0\u751f\u7236\u6bcd\uff08\u5df2\u88ab\u9886\u517b\uff09"},
-    "Add biological parents (was fostered)": {"str": "\u6dfb\u52a0\u751f\u7236\u6bcd\uff08\u5df2\u88ab\u5bc4\u517b\uff09"},
-    "Choose parents from tree": {"str": "\u4ece\u5bb6\u8c31\u4e2d\u9009\u62e9\u7236\u6bcd"},
-    "Are you sure you want to permanently delete $?": {"str": "\u60a8\u786e\u5b9a\u8981\u6c38\u4e45\u5220\u9664$\u5417\uff1f"},
-    "This will create a new family for your relatives.": {"str": "\u8fd9\u5c06\u4e3a\u60a8\u7684\u4eb2\u5c5e\u521b\u5efa\u4e00\u4e2a\u65b0\u5bb6\u5ead\u3002"},
-    "This will create a new family for $'s relatives.": {"str": "\u8fd9\u5c06\u4e3a$\u7684\u4eb2\u5c5e\u521b\u5efa\u4e00\u4e2a\u65b0\u5bb6\u5ead\u3002"},
-    "Are you sure you want to proceed?": {"str": "\u60a8\u786e\u5b9a\u8981\u7ee7\u7eed\u5417\uff1f"},
-    "Please wait a few moments...": {"str": "\u8bf7\u7a0d\u7b49\u7247\u523b..."},
-    "Click to change photo": {"str": "\u70b9\u51fb\u66f4\u6362\u7167\u7247"},
-    "Add my photo": {"str": "\u6dfb\u52a0\u6211\u7684\u7167\u7247"},
-    "Add photo for $": {"str": "\u4e3a$\u6dfb\u52a0\u7167\u7247"},
-    "Are you sure you want to clear this entire family and start again?": {"str": "\u60a8\u786e\u5b9a\u8981\u6e05\u9664\u6574\u4e2a\u5bb6\u5ead\u5e76\u91cd\u65b0\u5f00\u59cb\u5417\uff1f"},
-    "None of your work will be saved!": {"str": "\u60a8\u7684\u5de5\u4f5c\u5c06\u4e0d\u4f1a\u88ab\u4fdd\u5b58\uff01"},
-    "^ birthday": {"str": "\u7b2c^\u4e2a\u751f\u65e5"},
-    "^ anniversary": {"str": "\u7b2c^\u4e2a\u5468\u5e74\u7eaa\u5ff5"},
-    "There are no birthdays or anniversaries to display.": {"str": "\u6ca1\u6709\u751f\u65e5\u6216\u5468\u5e74\u7eaa\u5ff5\u53ef\u663e\u793a\u3002"},
-    "<$> born": {"str": "<$> \u51fa\u751f"},
-    "<$> died": {"str": "<$> \u53bb\u4e16"},
-    "<$1> and <$2> married": {"str": "<$1> \u548c <$2> \u7ed3\u5a5a"},
-    "There are no birth dates, death dates or marriages to display.": {"str": "\u6ca1\u6709\u51fa\u751f\u65e5\u671f\u3001\u53bb\u4e16\u65e5\u671f\u6216\u5a5a\u59fb\u53ef\u663e\u793a\u3002"},
-    "Create account": {"str": "\u521b\u5efa\u8d26\u6237"},
-    "Log in": {"str": "\u767b\u5f55"},
-    "Duplicate:": {"str": "\u91cd\u590d\uff1a"},
-    "Not yet born": {"str": "\u5c1a\u672a\u51fa\u751f"},
-    "Born": {"str": "\u51fa\u751f"},
-    "Died": {"str": "\u53bb\u4e16"},
-    "Buried": {"str": "\u5b89\u846c"},
-    "(h)": {"str": "\uff08\u592b\uff09"},
-    "(w)": {"str": "\uff08\u59bb\uff09"},
-    "(m)": {"str": "\uff08\u5a5a\uff09"},
-    "m.": {"str": "\u7ed3\u5a5a"},
-    "d.": {"str": "\u53bb\u4e16"},
-    "Daughter-in-law": {"str": "\u513f\u5ab3"},
-    "Son-in-law": {"str": "\u5973\u5a7f"},
-    "Child-in-law": {"str": "\u5b50\u5973\u7684\u914d\u5076"},
-    "Mother-in-law": {"str": "\u5cb3\u6bcd/\u5a46\u5a46"},
-    "Father-in-law": {"str": "\u5cb3\u7236/\u516c\u516c"},
-    "Parent-in-law": {"str": "\u5cb3\u7236\u6bcd/\u516c\u5a46"},
-    "Sister-in-law": {"str": "\u5ac2\u5b50/\u5f1f\u5ab3/\u5c0f\u59d1/\u5927\u59d1"},
-    "Brother-in-law": {"str": "\u59d0\u592b/\u59b9\u592b/\u5c0f\u53d4/\u5927\u4f2f"},
-    "Sibling-in-law": {"str": "\u914d\u5076\u7684\u5144\u5f1f\u59d0\u59b9"},
-    "Unrelated": {"str": "\u65e0\u5173"},
-    "Grandmother": {"str": "\u7956\u6bcd"},
-    "Grandfather": {"str": "\u7956\u7236"},
-    "Grandparent": {"str": "\u7956\u7236\u6bcd"},
-    "Granddaughter": {"str": "\u5b59\u5973"},
-    "Grandson": {"str": "\u5b59\u5b50"},
-    "Grandchild": {"str": "\u5b59\u8f88"},
-    "Great-grandmother": {"str": "\u66fe\u7956\u6bcd"},
-    "Great-grandfather": {"str": "\u66fe\u7956\u7236"},
-    "Great-grandparent": {"str": "\u66fe\u7956\u7236\u6bcd"},
-    "Great-granddaughter": {"str": "\u66fe\u5b59\u5973"},
-    "Great-grandson": {"str": "\u66fe\u5b59\u5b50"},
-    "Great-grandchild": {"str": "\u66fe\u5b59\u8f88"},
-    "Great-great-grandmother": {"str": "\u9ad8\u7956\u6bcd"},
-    "Great-great-grandfather": {"str": "\u9ad8\u7956\u7236"},
-    "Great-great-grandparent": {"str": "\u9ad8\u7956\u7236\u6bcd"},
-    "Great-great-granddaughter": {"str": "\u9ad8\u66fe\u5b59\u5973"},
-    "Great-great-grandson": {"str": "\u9ad8\u66fe\u5b59\u5b50"},
-    "Great-great-grandchild": {"str": "\u9ad8\u66fe\u5b59\u8f88"},
-    "Aunt": {"str": "\u59d1\u59d1/\u59e8"},
-    "Uncle": {"str": "\u53d4\u53d4/\u8205"},
-    "Auncle": {"str": "\u53d4\u8205"},
-    "Great-aunt": {"str": "\u59d1\u5a46/\u59e8\u5a46"},
-    "Great-uncle": {"str": "\u53d4\u516c/\u8205\u516c"},
-    "Great-auncle": {"str": "\u53d4\u8205\u516c"},
-    "Great-great-aunt": {"str": "\u66fe\u59d1\u5a46/\u66fe\u59e8\u5a46"},
-    "Great-great-uncle": {"str": "\u66fe\u53d4\u516c/\u66fe\u8205\u516c"},
-    "Great-great-auncle": {"str": "\u66fe\u53d4\u8205\u516c"},
-    "Niece": {"str": "\u4f84\u5973/\u5916\u7525\u5973"},
-    "Nephew": {"str": "\u4f84\u5b50/\u5916\u7525"},
-    "Nibling": {"str": "\u4f84\u5b50/\u4f84\u5973"},
-    "Great-niece": {"str": "\u4f84\u5b59\u5973"},
-    "Great-nephew": {"str": "\u4f84\u5b59"},
-    "Great-nibling": {"str": "\u4f84\u5b59/\u4f84\u5b59\u5973"},
-    "Great-great-niece": {"str": "\u4f84\u66fe\u5b59\u5973"},
-    "Great-great-nephew": {"str": "\u4f84\u66fe\u5b59"},
-    "Great-great-nibling": {"str": "\u4f84\u66fe\u5b59/\u4f84\u66fe\u5b59\u5973"},
-    "Expand this relationship": {"str": "\u5c55\u5f00\u6b64\u5173\u7cfb"},
-    "Contract this relationship": {"str": "\u6536\u7f29\u6b64\u5173\u7cfb"},
-    "Are you sure you want to stop $ from accessing this family tree?": {"str": "\u60a8\u786e\u5b9a\u8981\u963b\u6b62$\u8bbf\u95ee\u6b64\u5bb6\u8c31\u5417\uff1f"},
-    "This will also disable the invitation links created for this person.": {"str": "\u8fd9\u4e5f\u5c06\u7981\u7528\u4e3a\u6b64\u4eba\u521b\u5efa\u7684\u9080\u8bf7\u94fe\u63a5\u3002"},
-    "Are you sure you want to disable this invitation for $?": {"str": "\u60a8\u786e\u5b9a\u8981\u7981\u7528$\u7684\u6b64\u9080\u8bf7\u5417\uff1f"},
-    "Stepsister": {"str": "\u7ee7\u59d0\u59b9"},
-    "Stepbrother": {"str": "\u7ee7\u5144\u5f1f"},
-    "Stepsibling": {"str": "\u7ee7\u5144\u5f1f\u59d0\u59b9"},
-    "Female cousin": {"str": "\u5973\u6027\u5802/\u8868\u4eb2"},
-    "Male cousin": {"str": "\u7537\u6027\u5802/\u8868\u4eb2"},
-    "Cousin": {"str": "\u5802/\u8868\u4eb2"},
-    "Female second cousin": {"str": "\u5973\u6027\u4e8c\u7b49\u5802/\u8868\u4eb2"},
-    "Second cousin": {"str": "\u4e8c\u7b49\u5802/\u8868\u4eb2"},
-    "Female third cousin": {"str": "\u5973\u6027\u4e09\u7b49\u5802/\u8868\u4eb2"},
-    "Third cousin": {"str": "\u4e09\u7b49\u5802/\u8868\u4eb2"},
-    "Female fourth cousin": {"str": "\u5973\u6027\u56db\u7b49\u5802/\u8868\u4eb2"},
-    "Male fourth cousin": {"str": "\u7537\u6027\u56db\u7b49\u5802/\u8868\u4eb2"},
-    "Fourth cousin": {"str": "\u56db\u7b49\u5802/\u8868\u4eb2"},
-    "Tree stats": {"str": "\u5bb6\u8c31\u7edf\u8ba1"},
-    "Great-...-grandmother (# gens)": {"str": "\u9ad8\u7956\u6bcd\uff08#\u4ee3\uff09"},
-    "Great-...-grandfather (# gens)": {"str": "\u9ad8\u7956\u7236\uff08#\u4ee3\uff09"},
-    "Great-...-grandparent (# gens)": {"str": "\u9ad8\u7956\u7236\u6bcd\uff08#\u4ee3\uff09"},
-    "Great-...-granddaughter (# gens)": {"str": "\u9ad8\u5b59\u5973\uff08#\u4ee3\uff09"},
-    "Great-...-grandson (# gens)": {"str": "\u9ad8\u5b59\uff08#\u4ee3\uff09"},
-    "Great-...-grandchild (# gens)": {"str": "\u9ad8\u5b59\u5b50\u5973\uff08#\u4ee3\uff09"},
-    "Great-...-aunt (# gens)": {"str": "\u9ad8\u59d1/\u59e8\uff08#\u4ee3\uff09"},
-    "Great-...-uncle (# gens)": {"str": "\u9ad8\u53d4/\u8205\uff08#\u4ee3\uff09"},
-    "Great-...-auncle (# gens)": {"str": "\u9ad8\u53d4/\u8205/\u59d1/\u59e8\uff08#\u4ee3\uff09"},
-    "Great-...-niece (# gens)": {"str": "\u9ad8\u4f84\u5973\uff08#\u4ee3\uff09"},
-    "Great-...-nephew (# gens)": {"str": "\u9ad8\u4f84\uff08#\u4ee3\uff09"},
-    "Great-...-nibling (# gens)": {"str": "\u9ad8\u4f84\u5b50\u5973\uff08#\u4ee3\uff09"},
-    "Distant female cousin (# degrees)": {"str": "\u8fdc\u623f\u5973\u6027\u5802/\u8868\u4eb2\uff08#\u5ea6\uff09"},
-    "Distant male cousin (# degrees)": {"str": "\u8fdc\u623f\u7537\u6027\u5802/\u8868\u4eb2\uff08#\u5ea6\uff09"},
-    "Distant cousin (# degrees)": {"str": "\u8fdc\u623f\u5802/\u8868\u4eb2\uff08#\u5ea6\uff09"},
-    "birthday": {"str": "\u751f\u65e5"},
-    "anniversary": {"str": "\u5468\u5e74\u7eaa\u5ff5"},
-    "Male second cousin": {"str": "\u7537\u6027\u4e8c\u7b49\u5802/\u8868\u4eb2"},
-    "Male third cousin": {"str": "\u7537\u6027\u4e09\u7b49\u5802/\u8868\u4eb2"},
-    "Some of the $ translation is AI-generated, so it may not be perfect.": {"str": "\u90e8\u5206$\u7ffb\u8bd1\u662f\u7531AI\u751f\u6210\u7684\uff0c\u56e0\u6b64\u53ef\u80fd\u4e0d\u5b8c\u7f8e\u3002"},
-    "Please contact us if you would like to help improve the $ translation.": {"str": "\u5982\u679c\u60a8\u60f3\u5e2e\u52a9\u6539\u8fdb$\u7ffb\u8bd1\uff0c\u8bf7\u8054\u7cfb\u6211\u4eec\u3002"},
-    "Mth_1": {"str": "1\u6708"},
-    "Month_1": {"str": "\u4e00\u6708"},
-    "Mth_2": {"str": "2\u6708"},
-    "Month_2": {"str": "\u4e8c\u6708"},
-    "Mth_3": {"str": "3\u6708"},
-    "Month_3": {"str": "\u4e09\u6708"},
-    "Mth_4": {"str": "4\u6708"},
-    "Month_4": {"str": "\u56db\u6708"},
-    "Mth_5": {"str": "5\u6708"},
-    "Month_5": {"str": "\u4e94\u6708"},
-    "Mth_6": {"str": "6\u6708"},
-    "Month_6": {"str": "\u516d\u6708"},
-    "Mth_7": {"str": "7\u6708"},
-    "Month_7": {"str": "\u4e03\u6708"},
-    "Mth_8": {"str": "8\u6708"},
-    "Month_8": {"str": "\u516b\u6708"},
-    "Mth_9": {"str": "9\u6708"},
-    "Month_9": {"str": "\u4e5d\u6708"},
-    "Mth_10": {"str": "10\u6708"},
-    "Month_10": {"str": "\u5341\u6708"},
-    "Mth_11": {"str": "11\u6708"},
-    "Month_11": {"str": "\u5341\u4e00\u6708"},
-    "Mth_12": {"str": "12\u6708"},
-    "Month_12": {"str": "\u5341\u4e8c\u6708"},
-    "This link will allow <> to view and download this family, but not make changes.": {"str": "\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u548c\u4e0b\u8f7d\u6b64\u5bb6\u65cf\uff0c\u4f46\u4e0d\u80fd\u8fdb\u884c\u66f4\u6539\u3002"},
-    "This link will allow <> to view and download this family and its files, but not make changes.": {"str": "\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u548c\u4e0b\u8f7d\u6b64\u5bb6\u65cf\u53ca\u5176\u6587\u4ef6\uff0c\u4f46\u4e0d\u80fd\u8fdb\u884c\u66f4\u6539\u3002"},
-    "This link will allow <> to view, download, modify and share this family.": {"str": "\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u3001\u4e0b\u8f7d\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u65cf\u3002"},
-    "This link will allow <> to view, download, modify and share this family, but only view and download files.": {"str": "\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u3001\u4e0b\u8f7d\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u65cf\uff0c\u4f46\u53ea\u80fd\u67e5\u770b\u548c\u4e0b\u8f7d\u6587\u4ef6\u3002"},
-    "This link will allow <> to view, modify and share this family, and upload, edit and delete files.": {"str": "\u6b64\u94fe\u63a5\u5c06\u5141\u8bb8 <> \u67e5\u770b\u3001\u4fee\u6539\u548c\u5206\u4eab\u6b64\u5bb6\u65cf\uff0c\u5e76\u4e0a\u4f20\u3001\u7f16\u8f91\u548c\u5220\u9664\u6587\u4ef6\u3002"}
+    "^": {
+        "str": "第^届"
+    },
+    "Save": {
+        "str": "保存"
+    },
+    "Options": {
+        "str": "选项"
+    },
+    "Birth date": {
+        "str": "出生日期"
+    },
+    "Birth place": {
+        "str": "出生地"
+    },
+    "Marriage date": {
+        "str": "结婚日期"
+    },
+    "Divorce date": {
+        "str": "离婚日期"
+    },
+    "Death date": {
+        "str": "去世日期"
+    },
+    "Death place": {
+        "str": "去世地点"
+    },
+    "Burial date": {
+        "str": "安葬日期"
+    },
+    "Burial place": {
+        "str": "安葬地点"
+    },
+    "Email": {
+        "str": "电子邮件"
+    },
+    "Address": {
+        "str": "地址"
+    },
+    "Profession": {
+        "str": "职业"
+    },
+    "Company": {
+        "str": "公司"
+    },
+    "Interests": {
+        "str": "兴趣"
+    },
+    "Activities": {
+        "str": "活动"
+    },
+    "Before": {
+        "str": "前"
+    },
+    "After": {
+        "str": "后"
+    },
+    "Female": {
+        "str": "女性"
+    },
+    "Male": {
+        "str": "男性"
+    },
+    "Surname now": {
+        "str": "现姓"
+    },
+    "Surname at birth": {
+        "str": "出生时姓氏"
+    },
+    "Gender": {
+        "str": "性别"
+    },
+    "Other": {
+        "str": "其他"
+    },
+    "Website": {
+        "str": "网站"
+    },
+    "Blog": {
+        "str": "博客"
+    },
+    "Photo site": {
+        "str": "照片网站"
+    },
+    "Home tel": {
+        "str": "家庭电话"
+    },
+    "Work tel": {
+        "str": "工作电话"
+    },
+    "Mobile": {
+        "str": "手机"
+    },
+    "Cause of death": {
+        "str": "死亡原因"
+    },
+    "Bio notes": {
+        "str": "生平笔记"
+    },
+    "OK": {
+        "str": "确定"
+    },
+    "Cancel": {
+        "str": "取消"
+    },
+    "Edit": {
+        "str": "编辑"
+    },
+    "approx $": {
+        "str": "大约 $"
+    },
+    "before $": {
+        "str": "在 $ 之前"
+    },
+    "after $": {
+        "str": "在 $ 之后"
+    },
+    "$ BCE": {
+        "str": "公元前 $"
+    },
+    "Full name": {
+        "str": "全名"
+    },
+    "Mother": {
+        "str": "母亲"
+    },
+    "Father": {
+        "str": "父亲"
+    },
+    "mother": {
+        "str": "母亲"
+    },
+    "father": {
+        "str": "父亲"
+    },
+    "Partner": {
+        "str": "伴侣"
+    },
+    "Ex-partner": {
+        "str": "前伴侣"
+    },
+    "Late wife": {
+        "str": "已故妻子"
+    },
+    "Late husband": {
+        "str": "已故丈夫"
+    },
+    "Late spouse": {
+        "str": "已故配偶"
+    },
+    "Widow": {
+        "str": "寡妇"
+    },
+    "Widower": {
+        "str": "鳏夫"
+    },
+    "Widowed spouse": {
+        "str": "丧偶配偶"
+    },
+    "Wife": {
+        "str": "妻子"
+    },
+    "Husband": {
+        "str": "丈夫"
+    },
+    "Spouse": {
+        "str": "配偶"
+    },
+    "Ex-wife": {
+        "str": "前妻"
+    },
+    "Ex-husband": {
+        "str": "前夫"
+    },
+    "Ex-spouse": {
+        "str": "前配偶"
+    },
+    "Late partner": {
+        "str": "已故伴侣"
+    },
+    "Late fiancee": {
+        "str": "已故未婚妻"
+    },
+    "Late fiance": {
+        "str": "已故未婚夫"
+    },
+    "Fiancee": {
+        "str": "未婚妻"
+    },
+    "Fiance": {
+        "str": "未婚夫"
+    },
+    "Ex-fiancee": {
+        "str": "前未婚妻"
+    },
+    "Ex-fiance": {
+        "str": "前未婚夫"
+    },
+    "Biological mother": {
+        "str": "生母"
+    },
+    "Biological father": {
+        "str": "生父"
+    },
+    "Biological parent": {
+        "str": "亲生父母"
+    },
+    "Adopted mother": {
+        "str": "养母"
+    },
+    "Adopted father": {
+        "str": "养父"
+    },
+    "Adopted parent": {
+        "str": "养父母"
+    },
+    "Foster mother": {
+        "str": "寄养母亲"
+    },
+    "Foster father": {
+        "str": "寄养父亲"
+    },
+    "Foster parent": {
+        "str": "寄养父母"
+    },
+    "Stepmother": {
+        "str": "继母"
+    },
+    "Stepfather": {
+        "str": "继父"
+    },
+    "Stepparent": {
+        "str": "继父母"
+    },
+    "Godmother": {
+        "str": "教母"
+    },
+    "Godfather": {
+        "str": "教父"
+    },
+    "Godparent": {
+        "str": "教父母"
+    },
+    "Second mother": {
+        "str": "第二母亲"
+    },
+    "Second father": {
+        "str": "第二父亲"
+    },
+    "Second parent": {
+        "str": "第二父母"
+    },
+    "Third mother": {
+        "str": "第三母亲"
+    },
+    "Third father": {
+        "str": "第三父亲"
+    },
+    "Third parent": {
+        "str": "第三父母"
+    },
+    "Parent": {
+        "str": "父母"
+    },
+    "Done": {
+        "str": "完成"
+    },
+    "More actions...": {
+        "str": "更多操作..."
+    },
+    "Set parents": {
+        "str": "设置父母"
+    },
+    "Add partner/ex": {
+        "str": "添加伴侣/前伴侣"
+    },
+    "Partner with person already on tree": {
+        "str": "与家谱上已有的人建立伴侣关系"
+    },
+    "Are you sure you want to remove this family from your account?": {
+        "str": "您确定要从您的账户中移除此家庭吗？"
+    },
+    "If you have shared this family it will still be available to others.": {
+        "str": "如果您已共享此家庭，它仍将对其他人可用。"
+    },
+    "The new passwords do not match - please reenter.": {
+        "str": "新密码不匹配 - 请重新输入。"
+    },
+    "The new password was set successfully.": {
+        "str": "新密码设置成功。"
+    },
+    "The new password could not be set - please try again.": {
+        "str": "无法设置新密码 - 请重试。"
+    },
+    "The name could not be changed - please try again.": {
+        "str": "无法更改名称 - 请重试。"
+    },
+    "The email could not be changed - please try again.": {
+        "str": "无法更改电子邮件 - 请重试。"
+    },
+    "Your Family Echo account was permanently closed. Thank you for using Family Echo.": {
+        "str": "您的Family Echo账户已被永久关闭。感谢您使用Family Echo。"
+    },
+    "Your account could not be closed - please try again.": {
+        "str": "无法关闭您的账户 - 请重试。"
+    },
+    "The family could not be removed - please try again.": {
+        "str": "无法移除家庭 - 请重试。"
+    },
+    "Are you sure you want to restore this family to your account?": {
+        "str": "您确定要将此家庭恢复到您的账户吗？"
+    },
+    "The family could not be added - please try again.": {
+        "str": "无法添加家庭 - 请重试。"
+    },
+    "The family could not be renamed - please try again.": {
+        "str": "无法重命名家庭 - 请重试。"
+    },
+    "If you leave this page before saving, your changes to this family will be lost.": {
+        "str": "如果您在保存之前离开此页面，您对该家庭的更改将会丢失。"
+    },
+    "You do not have permission to view this family.": {
+        "str": "您没有权限查看此家族。"
+    },
+    "This family could not currently be loaded.": {
+        "str": "目前无法加载此家族。"
+    },
+    "This may be due to occasional system maintenance, so please try again in a few hours.": {
+        "str": "这可能是由于系统维护，请在几个小时后重试。"
+    },
+    "Founded by $": {
+        "str": "由$创建"
+    },
+    "The family could not be saved - please try again.": {
+        "str": "无法保存家族 - 请重试。"
+    },
+    "The family could not be added to your account - please try again.": {
+        "str": "无法将家族添加到您的账户 - 请重试。"
+    },
+    "Show ages on which date? Please enter the date in YYYY-MM-DD format and add \"B\" for BCE.": {
+        "str": "显示哪个日期的年龄？请以YYYY-MM-DD格式输入日期，并在公元前加上“B”。"
+    },
+    "Hide options": {
+        "str": "隐藏选项"
+    },
+    "Known date": {
+        "str": "已知日期"
+    },
+    "Approximate": {
+        "str": "大约"
+    },
+    "Date range": {
+        "str": "日期范围"
+    },
+    "Anon #": {
+        "str": "匿名#"
+    },
+    "$1 of $2": {
+        "str": "$2的$1"
+    },
+    "Me": {
+        "str": "我"
+    },
+    "Founder": {
+        "str": "创始人"
+    },
+    "Biological daughter": {
+        "str": "亲生女儿"
+    },
+    "Biological son": {
+        "str": "亲生儿子"
+    },
+    "Biological child": {
+        "str": "亲生子女"
+    },
+    "Adopted daughter": {
+        "str": "养女"
+    },
+    "Adopted son": {
+        "str": "养子"
+    },
+    "Adopted child": {
+        "str": "养子女"
+    },
+    "Foster daughter": {
+        "str": "寄养女儿"
+    },
+    "Foster son": {
+        "str": "寄养儿子"
+    },
+    "Foster child": {
+        "str": "寄养子女"
+    },
+    "Stepdaughter": {
+        "str": "继女"
+    },
+    "Stepson": {
+        "str": "继子"
+    },
+    "Stepchild": {
+        "str": "继子女"
+    },
+    "Goddaughter": {
+        "str": "教女"
+    },
+    "Godson": {
+        "str": "教子"
+    },
+    "Godchild": {
+        "str": "教子女"
+    },
+    "Daughter": {
+        "str": "女儿"
+    },
+    "Son": {
+        "str": "儿子"
+    },
+    "Child": {
+        "str": "子女"
+    },
+    "Sister": {
+        "str": "姐妹"
+    },
+    "Brother": {
+        "str": "兄弟"
+    },
+    "Sibling": {
+        "str": "兄弟姐妹"
+    },
+    "Half sister": {
+        "str": "同父异母或同母异父姐妹"
+    },
+    "Half brother": {
+        "str": "同父异母或同母异父兄弟"
+    },
+    "Half sibling": {
+        "str": "同父异母或同母异父兄弟姐妹"
+    },
+    "Unknown": {
+        "str": "未知"
+    },
+    "# ancestor/s": {
+        "str": "#位祖先"
+    },
+    "# descendant/s": {
+        "str": "#位后代"
+    },
+    "No ancestors": {
+        "str": "无祖先"
+    },
+    "No descendants": {
+        "str": "无后代"
+    },
+    "Approx $": {
+        "str": "大约$"
+    },
+    "Before $": {
+        "str": "$之前"
+    },
+    "After $": {
+        "str": "$之后"
+    },
+    "$ (separated)": {
+        "str": "$（分开）"
+    },
+    "# day/s old": {
+        "str": "#天大"
+    },
+    "# day/s": {
+        "str": "#天"
+    },
+    "# month/s old": {
+        "str": "#个月大"
+    },
+    "# month/s": {
+        "str": "#个月"
+    },
+    "# year/s old": {
+        "str": "#岁"
+    },
+    "# year/s": {
+        "str": "#年"
+    },
+    "at least $": {
+        "str": "至少 $"
+    },
+    "at most $": {
+        "str": "最多 $"
+    },
+    "Download file": {
+        "str": "下载文件"
+    },
+    "Uploaded $": {
+        "str": "已上传 $"
+    },
+    "$ image": {
+        "str": "$ 图像"
+    },
+    "Image": {
+        "str": "图像"
+    },
+    "Text": {
+        "str": "文本"
+    },
+    "$ audio": {
+        "str": "$ 音频"
+    },
+    "Audio": {
+        "str": "音频"
+    },
+    "$ video": {
+        "str": "$ 视频"
+    },
+    "Video": {
+        "str": "视频"
+    },
+    "$ archive": {
+        "str": "$ 压缩包"
+    },
+    "Archive": {
+        "str": "压缩包"
+    },
+    "Delete": {
+        "str": "删除"
+    },
+    "No files match the current search.": {
+        "str": "没有文件符合当前搜索条件。"
+    },
+    "There are currently no files in this family.": {
+        "str": "此家庭目前没有文件。"
+    },
+    "# file/s": {
+        "str": "#个文件"
+    },
+    "$1 used (plus $2 in other families) of $3 available": {
+        "str": "已使用 $1（加上其他家庭中的 $2），共 $3 可用"
+    },
+    "$1 used of $2 available": {
+        "str": "已使用 $1，共 $2 可用"
+    },
+    "You do not currently have permission to $ files.": {
+        "str": "您目前没有权限 $ 文件。"
+    },
+    "download": {
+        "str": "下载"
+    },
+    "upload": {
+        "str": "上传"
+    },
+    "edit": {
+        "str": "编辑"
+    },
+    "delete": {
+        "str": "删除"
+    },
+    "View file": {
+        "str": "查看文件"
+    },
+    "Untitled": {
+        "str": "无标题"
+    },
+    "Are you sure you want to permanently delete the file $?": {
+        "str": "您确定要永久删除文件 $ 吗？"
+    },
+    "The file could not be deleted - please try again.": {
+        "str": "无法删除文件 - 请重试。"
+    },
+    "Detach this person": {
+        "str": "解除此人的关联"
+    },
+    "Attach another person": {
+        "str": "关联其他人"
+    },
+    "This file is $1 in size, which is larger than the maximum of $2.": {
+        "str": "此文件大小为 $1，超过了最大限制 $2。"
+    },
+    "Please select a file to upload it.": {
+        "str": "请选择一个文件进行上传。"
+    },
+    "The file could not be uploaded - please try again.": {
+        "str": "无法上传文件 - 请重试。"
+    },
+    "Please wait while uploading...": {
+        "str": "上传中，请稍候..."
+    },
+    "Are you sure you want to permanently remove the picture for this person?": {
+        "str": "您确定要永久删除此人的照片吗？"
+    },
+    "Back to me": {
+        "str": "返回到我"
+    },
+    "Back to start": {
+        "str": "返回开始"
+    },
+    "Back to $": {
+        "str": "返回 $"
+    },
+    "# people": {
+        "str": "#个人"
+    },
+    "(none)": {
+        "str": "（无）"
+    },
+    "No matches found": {
+        "str": "未找到匹配项"
+    },
+    "The email will include a link allowing <> to view and download this family, but not make changes.": {
+        "str": "电子邮件将包含一个链接，允许 <> 查看和下载此家庭，但不能进行更改。"
+    },
+    "The email will include a link allowing <> to view and download this family and its files, but not make changes.": {
+        "str": "电子邮件将包含一个链接，允许 <> 查看和下载此家庭及其文件，但不能进行更改。"
+    },
+    "The email will include a link allowing <> to view, download, modify and share this family.": {
+        "str": "电子邮件将包含一个链接，允许 <> 查看、下载、修改和分享此家庭。"
+    },
+    "The email will include a link allowing <> to view, download, modify and share this family, but only view and download files.": {
+        "str": "电子邮件将包含一个链接，允许 <> 查看、下载、修改和分享此家庭，但只能查看和下载文件。"
+    },
+    "The email will include a link allowing <> to view, modify and share this family, and upload, edit and delete files.": {
+        "str": "电子邮件将包含一个链接，允许 <> 查看、修改和分享此家庭，并上传、编辑和删除文件。"
+    },
+    "Married": {
+        "str": "已婚"
+    },
+    "Engaged": {
+        "str": "订婚"
+    },
+    "Relationship": {
+        "str": "关系"
+    },
+    "Separated": {
+        "str": "分居"
+    },
+    "Divorced": {
+        "str": "离婚"
+    },
+    "Annulled": {
+        "str": "婚姻无效"
+    },
+    "Biological": {
+        "str": "亲生"
+    },
+    "Adopted": {
+        "str": "领养"
+    },
+    "Foster": {
+        "str": "寄养"
+    },
+    "Step": {
+        "str": "继"
+    },
+    "Invite $ to share family": {
+        "str": "邀请 $ 分享家庭"
+    },
+    "Show relationship to $": {
+        "str": "显示与 $ 的关系"
+    },
+    "Show $1's $2": {
+        "str": "显示 $1 的 $2"
+    },
+    "Edit partnership details": {
+        "str": "编辑合作关系详情"
+    },
+    "Edit my details": {
+        "str": "编辑我的详情"
+    },
+    "Edit $'s details": {
+        "str": "编辑 $ 的详情"
+    },
+    "parent": {
+        "str": "父母"
+    },
+    "Change multiple birth order": {
+        "str": "更改多胞胎出生顺序"
+    },
+    "Change sibling order": {
+        "str": "更改兄弟姐妹顺序"
+    },
+    "Change partners": {
+        "str": "更换伴侣"
+    },
+    "Change partner": {
+        "str": "更换伴侣"
+    },
+    "Delete $": {
+        "str": "删除 $"
+    },
+    "This person cannot be deleted because that would split the tree. Try deleting outer people on the tree first.": {
+        "str": "此人无法删除，因为这会分裂家谱。请先尝试删除家谱外部的人。"
+    },
+    "This person started the tree and cannot be deleted.": {
+        "str": "此人是家谱的起始，无法删除。"
+    },
+    "You do not have permission to delete people.": {
+        "str": "您没有权限删除人员。"
+    },
+    "Click to add your relatives:": {
+        "str": "点击以添加您的亲属："
+    },
+    "Click to add relatives of $:": {
+        "str": "点击以添加 $ 的亲属："
+    },
+    "Add primary mother": {
+        "str": "添加主要母亲"
+    },
+    "Add mother": {
+        "str": "添加母亲"
+    },
+    "Add primary father": {
+        "str": "添加主要父亲"
+    },
+    "Add father": {
+        "str": "添加父亲"
+    },
+    "Add primary parents": {
+        "str": "添加主要父母"
+    },
+    "Add new parents": {
+        "str": "添加新父母"
+    },
+    "Add brother/sister": {
+        "str": "添加兄弟/姐妹"
+    },
+    "Add child": {
+        "str": "添加孩子"
+    },
+    "Add second mother": {
+        "str": "添加第二母亲"
+    },
+    "Add second father": {
+        "str": "添加第二父亲"
+    },
+    "Add second parents": {
+        "str": "添加第二父母"
+    },
+    "Add third mother": {
+        "str": "添加第三母亲"
+    },
+    "Add third father": {
+        "str": "添加第三父亲"
+    },
+    "Add third parents": {
+        "str": "添加第三父母"
+    },
+    "To add your parents, brothers or sisters, please sign in then create a new family branch.": {
+        "str": "要添加您的父母、兄弟或姐妹，请登录然后创建一个新的家庭分支。"
+    },
+    "To add your parents, brothers or sisters, please create a new family branch.": {
+        "str": "要添加您的父母、兄弟或姐妹，请创建一个新的家庭分支。"
+    },
+    "Create new family for me": {
+        "str": "为我创建新家庭"
+    },
+    "To add $'s parents, brothers or sisters, a new family branch can be created after signing in.": {
+        "str": "要添加 $ 的父母、兄弟或姐妹，登录后可以创建一个新的家庭分支。"
+    },
+    "To add $'s parents, brothers or sisters, a new family branch can be created.": {
+        "str": "要添加 $ 的父母、兄弟或姐妹，可以创建一个新的家庭分支。"
+    },
+    "Create new family for $": {
+        "str": "为$创建新家庭"
+    },
+    "You do not have permission to add new people.": {
+        "str": "您没有权限添加新成员。"
+    },
+    "To protect your privacy, phone numbers, addresses and emails have been removed.": {
+        "str": "为保护您的隐私，电话号码、地址和电子邮件已被移除。"
+    },
+    "Location": {
+        "str": "位置"
+    },
+    "End date": {
+        "str": "结束日期"
+    },
+    "Engagement date": {
+        "str": "订婚日期"
+    },
+    "Separation date": {
+        "str": "分居日期"
+    },
+    "Annulment date": {
+        "str": "婚姻无效日期"
+    },
+    "Start date": {
+        "str": "开始日期"
+    },
+    "Before the Common Era (BC)": {
+        "str": "公元前 (BC)"
+    },
+    "BCE": {
+        "str": "公元前 (BCE)"
+    },
+    "Day": {
+        "str": "日"
+    },
+    "Month": {
+        "str": "月"
+    },
+    "Year": {
+        "str": "年"
+    },
+    "Show more date options": {
+        "str": "显示更多日期选项"
+    },
+    "Swap two dates": {
+        "str": "交换两个日期"
+    },
+    "View $1 $2": {
+        "str": "查看$1 $2"
+    },
+    "Download $1 $2": {
+        "str": "下载$1 $2"
+    },
+    "This person has no files attached.": {
+        "str": "此人没有附加文件。"
+    },
+    "Set mother to $": {
+        "str": "将母亲设为$"
+    },
+    "Set father to $": {
+        "str": "将父亲设为$"
+    },
+    "Set second mother to $": {
+        "str": "将第二母亲设为$"
+    },
+    "Set second father to $": {
+        "str": "将第二父亲设为$"
+    },
+    "Set third mother to $": {
+        "str": "将第三母亲设为$"
+    },
+    "Set third father to $": {
+        "str": "将第三父亲设为$"
+    },
+    "Set stepmother to $": {
+        "str": "将继母设为$"
+    },
+    "Set stepfather to $": {
+        "str": "将继父设为$"
+    },
+    "Add new mother": {
+        "str": "添加新母亲"
+    },
+    "Add new father": {
+        "str": "添加新父亲"
+    },
+    "Add new second mother": {
+        "str": "添加新第二母亲"
+    },
+    "Add new second father": {
+        "str": "添加新第二父亲"
+    },
+    "Add new third mother": {
+        "str": "添加新第三母亲"
+    },
+    "Add new third father": {
+        "str": "添加新第三父亲"
+    },
+    "Move left (born earlier)": {
+        "str": "向左移动（出生较早）"
+    },
+    "Move right (born later)": {
+        "str": "向右移动（出生较晚）"
+    },
+    "Set partner to $": {
+        "str": "将伴侣设为$"
+    },
+    "Add new primary partner": {
+        "str": "添加新主要伴侣"
+    },
+    "Add new extra partner": {
+        "str": "添加新额外伴侣"
+    },
+    "Add new partner": {
+        "str": "添加新伴侣"
+    },
+    "Add new ex-partner": {
+        "str": "添加新前伴侣"
+    },
+    "Set primary partner to $": {
+        "str": "将主要伴侣设为$"
+    },
+    "Change $ to ex-partner": {
+        "str": "将$更改为前伴侣"
+    },
+    "Change $ to extra partner": {
+        "str": "将$更改为额外伴侣"
+    },
+    "Remove partner $": {
+        "str": "移除伴侣$"
+    },
+    "Remove ex-partner $": {
+        "str": "移除前伴侣$"
+    },
+    "Add adopted child with $": {
+        "str": "与$添加领养子女"
+    },
+    "Add adopted child with new partner": {
+        "str": "与新伴侣添加领养子女"
+    },
+    "Add adopted child without partner": {
+        "str": "无伴侣添加领养子女"
+    },
+    "Add foster child with $": {
+        "str": "与$添加寄养子女"
+    },
+    "Add foster child with new partner": {
+        "str": "与新伴侣添加寄养子女"
+    },
+    "Add foster child without partner": {
+        "str": "添加没有伴侣的寄养子女"
+    },
+    "Add godchild with $": {
+        "str": "添加与$的教子"
+    },
+    "Add godchild with new partner": {
+        "str": "添加与新伴侣的教子"
+    },
+    "Add godchild without partner": {
+        "str": "添加没有伴侣的教子"
+    },
+    "Add child with $": {
+        "str": "添加与$的子女"
+    },
+    "Add child with new partner": {
+        "str": "添加与新伴侣的子女"
+    },
+    "Add child without partner": {
+        "str": "添加没有伴侣的子女"
+    },
+    "Add adopted child": {
+        "str": "添加领养子女"
+    },
+    "Add foster child": {
+        "str": "添加寄养子女"
+    },
+    "Add godchild": {
+        "str": "添加教子"
+    },
+    "To add a child who is already on the tree, select that child and set their parent to this person.": {
+        "str": "要添加已经在家谱上的子女，请选择该子女并将其父母设置为此人。"
+    },
+    "Choose the person to partner with:": {
+        "str": "选择要与之成为伴侣的人："
+    },
+    "Add as primary partner": {
+        "str": "添加为主要伴侣"
+    },
+    "Add as extra partner": {
+        "str": "添加为额外伴侣"
+    },
+    "Add as partner": {
+        "str": "添加为伴侣"
+    },
+    "Add as ex-partner": {
+        "str": "添加为前伴侣"
+    },
+    "Second parents": {
+        "str": "第二父母"
+    },
+    "Type of second parents": {
+        "str": "第二父母的类型"
+    },
+    "Third parents": {
+        "str": "第三父母"
+    },
+    "Type of third parents": {
+        "str": "第三父母的类型"
+    },
+    "Primary parents": {
+        "str": "主要父母"
+    },
+    "Type of primary parents": {
+        "str": "主要父母的类型"
+    },
+    "Switch primary and second parents": {
+        "str": "切换主要父母和第二父母"
+    },
+    "This choice of parents is not allowed because it would split the tree. Please try deleting the parents and their relatives instead, or deleting this person.": {
+        "str": "不允许选择这些父母，因为这会分裂家谱。请尝试删除这些父母及其亲属，或删除此人。"
+    },
+    "Add adopted parents": {
+        "str": "添加领养父母"
+    },
+    "Add foster parents": {
+        "str": "添加寄养父母"
+    },
+    "Add godmother": {
+        "str": "添加教母"
+    },
+    "Add godfather": {
+        "str": "添加教父"
+    },
+    "Add biological parents": {
+        "str": "添加生父母"
+    },
+    "Add biological parents (was adopted)": {
+        "str": "添加生父母（已被领养）"
+    },
+    "Add biological parents (was fostered)": {
+        "str": "添加生父母（已被寄养）"
+    },
+    "Choose parents from tree": {
+        "str": "从家谱中选择父母"
+    },
+    "Are you sure you want to permanently delete $?": {
+        "str": "您确定要永久删除$吗？"
+    },
+    "This will create a new family for your relatives.": {
+        "str": "这将为您的亲属创建一个新家庭。"
+    },
+    "This will create a new family for $'s relatives.": {
+        "str": "这将为$的亲属创建一个新家庭。"
+    },
+    "Are you sure you want to proceed?": {
+        "str": "您确定要继续吗？"
+    },
+    "Please wait a few moments...": {
+        "str": "请稍等片刻..."
+    },
+    "Click to change photo": {
+        "str": "点击更换照片"
+    },
+    "Add my photo": {
+        "str": "添加我的照片"
+    },
+    "Add photo for $": {
+        "str": "为$添加照片"
+    },
+    "Are you sure you want to clear this entire family and start again?": {
+        "str": "您确定要清除整个家庭并重新开始吗？"
+    },
+    "None of your work will be saved!": {
+        "str": "您的工作将不会被保存！"
+    },
+    "^ birthday": {
+        "str": "第^个生日"
+    },
+    "^ anniversary": {
+        "str": "第^个周年纪念"
+    },
+    "There are no birthdays or anniversaries to display.": {
+        "str": "没有生日或周年纪念可显示。"
+    },
+    "<$> born": {
+        "str": "<$> 出生"
+    },
+    "<$> died": {
+        "str": "<$> 去世"
+    },
+    "<$1> and <$2> married": {
+        "str": "<$1> 和 <$2> 结婚"
+    },
+    "There are no birth dates, death dates or marriages to display.": {
+        "str": "没有出生日期、去世日期或婚姻可显示。"
+    },
+    "Create account": {
+        "str": "创建账户"
+    },
+    "Log in": {
+        "str": "登录"
+    },
+    "Duplicate:": {
+        "str": "重复："
+    },
+    "Not yet born": {
+        "str": "尚未出生"
+    },
+    "Born": {
+        "str": "出生"
+    },
+    "Died": {
+        "str": "去世"
+    },
+    "Buried": {
+        "str": "安葬"
+    },
+    "(h)": {
+        "str": "（夫）"
+    },
+    "(w)": {
+        "str": "（妻）"
+    },
+    "(m)": {
+        "str": "（婚）"
+    },
+    "m.": {
+        "str": "结婚"
+    },
+    "d.": {
+        "str": "去世"
+    },
+    "Daughter-in-law": {
+        "str": "儿媳"
+    },
+    "Son-in-law": {
+        "str": "女婿"
+    },
+    "Child-in-law": {
+        "str": "子女的配偶"
+    },
+    "Mother-in-law": {
+        "str": "岳母/婆婆"
+    },
+    "Father-in-law": {
+        "str": "岳父/公公"
+    },
+    "Parent-in-law": {
+        "str": "岳父母/公婆"
+    },
+    "Sister-in-law": {
+        "str": "嫂子/弟媳/小姑/大姑"
+    },
+    "Brother-in-law": {
+        "str": "姐夫/妹夫/小叔/大伯"
+    },
+    "Sibling-in-law": {
+        "str": "配偶的兄弟姐妹"
+    },
+    "Unrelated": {
+        "str": "无关"
+    },
+    "Grandmother": {
+        "str": "祖母"
+    },
+    "Grandfather": {
+        "str": "祖父"
+    },
+    "Grandparent": {
+        "str": "祖父母"
+    },
+    "Granddaughter": {
+        "str": "孙女"
+    },
+    "Grandson": {
+        "str": "孙子"
+    },
+    "Grandchild": {
+        "str": "孙辈"
+    },
+    "Great-grandmother": {
+        "str": "曾祖母"
+    },
+    "Great-grandfather": {
+        "str": "曾祖父"
+    },
+    "Great-grandparent": {
+        "str": "曾祖父母"
+    },
+    "Great-granddaughter": {
+        "str": "曾孙女"
+    },
+    "Great-grandson": {
+        "str": "曾孙子"
+    },
+    "Great-grandchild": {
+        "str": "曾孙辈"
+    },
+    "Great-great-grandmother": {
+        "str": "高祖母"
+    },
+    "Great-great-grandfather": {
+        "str": "高祖父"
+    },
+    "Great-great-grandparent": {
+        "str": "高祖父母"
+    },
+    "Great-great-granddaughter": {
+        "str": "高曾孙女"
+    },
+    "Great-great-grandson": {
+        "str": "高曾孙子"
+    },
+    "Great-great-grandchild": {
+        "str": "高曾孙辈"
+    },
+    "Aunt": {
+        "str": "姑姑/姨"
+    },
+    "Uncle": {
+        "str": "叔叔/舅"
+    },
+    "Auncle": {
+        "str": "叔舅"
+    },
+    "Great-aunt": {
+        "str": "姑婆/姨婆"
+    },
+    "Great-uncle": {
+        "str": "叔公/舅公"
+    },
+    "Great-auncle": {
+        "str": "叔舅公"
+    },
+    "Great-great-aunt": {
+        "str": "曾姑婆/曾姨婆"
+    },
+    "Great-great-uncle": {
+        "str": "曾叔公/曾舅公"
+    },
+    "Great-great-auncle": {
+        "str": "曾叔舅公"
+    },
+    "Niece": {
+        "str": "侄女/外甥女"
+    },
+    "Nephew": {
+        "str": "侄子/外甥"
+    },
+    "Nibling": {
+        "str": "侄子/侄女"
+    },
+    "Great-niece": {
+        "str": "侄孙女"
+    },
+    "Great-nephew": {
+        "str": "侄孙"
+    },
+    "Great-nibling": {
+        "str": "侄孙/侄孙女"
+    },
+    "Great-great-niece": {
+        "str": "侄曾孙女"
+    },
+    "Great-great-nephew": {
+        "str": "侄曾孙"
+    },
+    "Great-great-nibling": {
+        "str": "侄曾孙/侄曾孙女"
+    },
+    "Expand this relationship": {
+        "str": "展开此关系"
+    },
+    "Contract this relationship": {
+        "str": "收缩此关系"
+    },
+    "Are you sure you want to stop $ from accessing this family tree?": {
+        "str": "您确定要阻止$访问此家谱吗？"
+    },
+    "This will also disable the invitation links created for this person.": {
+        "str": "这也将禁用为此人创建的邀请链接。"
+    },
+    "Are you sure you want to disable this invitation for $?": {
+        "str": "您确定要禁用$的此邀请吗？"
+    },
+    "Stepsister": {
+        "str": "继姐妹"
+    },
+    "Stepbrother": {
+        "str": "继兄弟"
+    },
+    "Stepsibling": {
+        "str": "继兄弟姐妹"
+    },
+    "Female cousin": {
+        "str": "女性堂/表亲"
+    },
+    "Male cousin": {
+        "str": "男性堂/表亲"
+    },
+    "Cousin": {
+        "str": "堂/表亲"
+    },
+    "Female second cousin": {
+        "str": "女性二等堂/表亲"
+    },
+    "Second cousin": {
+        "str": "二等堂/表亲"
+    },
+    "Female third cousin": {
+        "str": "女性三等堂/表亲"
+    },
+    "Third cousin": {
+        "str": "三等堂/表亲"
+    },
+    "Female fourth cousin": {
+        "str": "女性四等堂/表亲"
+    },
+    "Male fourth cousin": {
+        "str": "男性四等堂/表亲"
+    },
+    "Fourth cousin": {
+        "str": "四等堂/表亲"
+    },
+    "Tree stats": {
+        "str": "家谱统计"
+    },
+    "Great-...-grandmother (# gens)": {
+        "str": "高祖母（#代）"
+    },
+    "Great-...-grandfather (# gens)": {
+        "str": "高祖父（#代）"
+    },
+    "Great-...-grandparent (# gens)": {
+        "str": "高祖父母（#代）"
+    },
+    "Great-...-granddaughter (# gens)": {
+        "str": "高孙女（#代）"
+    },
+    "Great-...-grandson (# gens)": {
+        "str": "高孙（#代）"
+    },
+    "Great-...-grandchild (# gens)": {
+        "str": "高孙子女（#代）"
+    },
+    "Great-...-aunt (# gens)": {
+        "str": "高姑/姨（#代）"
+    },
+    "Great-...-uncle (# gens)": {
+        "str": "高叔/舅（#代）"
+    },
+    "Great-...-auncle (# gens)": {
+        "str": "高叔/舅/姑/姨（#代）"
+    },
+    "Great-...-niece (# gens)": {
+        "str": "高侄女（#代）"
+    },
+    "Great-...-nephew (# gens)": {
+        "str": "高侄（#代）"
+    },
+    "Great-...-nibling (# gens)": {
+        "str": "高侄子女（#代）"
+    },
+    "Distant female cousin (# degrees)": {
+        "str": "远房女性堂/表亲（#度）"
+    },
+    "Distant male cousin (# degrees)": {
+        "str": "远房男性堂/表亲（#度）"
+    },
+    "Distant cousin (# degrees)": {
+        "str": "远房堂/表亲（#度）"
+    },
+    "birthday": {
+        "str": "生日"
+    },
+    "anniversary": {
+        "str": "周年纪念"
+    },
+    "Male second cousin": {
+        "str": "男性二等堂/表亲"
+    },
+    "Male third cousin": {
+        "str": "男性三等堂/表亲"
+    },
+    "Some of the $ translation is AI-generated, so it may not be perfect.": {
+        "str": "部分$翻译是由AI生成的，因此可能不完美。"
+    },
+    "Please contact us if you would like to help improve the $ translation.": {
+        "str": "如果您想帮助改进$翻译，请联系我们。"
+    },
+    "Mth_1": {
+        "str": "1月"
+    },
+    "Month_1": {
+        "str": "一月"
+    },
+    "Mth_2": {
+        "str": "2月"
+    },
+    "Month_2": {
+        "str": "二月"
+    },
+    "Mth_3": {
+        "str": "3月"
+    },
+    "Month_3": {
+        "str": "三月"
+    },
+    "Mth_4": {
+        "str": "4月"
+    },
+    "Month_4": {
+        "str": "四月"
+    },
+    "Mth_5": {
+        "str": "5月"
+    },
+    "Month_5": {
+        "str": "五月"
+    },
+    "Mth_6": {
+        "str": "6月"
+    },
+    "Month_6": {
+        "str": "六月"
+    },
+    "Mth_7": {
+        "str": "7月"
+    },
+    "Month_7": {
+        "str": "七月"
+    },
+    "Mth_8": {
+        "str": "8月"
+    },
+    "Month_8": {
+        "str": "八月"
+    },
+    "Mth_9": {
+        "str": "9月"
+    },
+    "Month_9": {
+        "str": "九月"
+    },
+    "Mth_10": {
+        "str": "10月"
+    },
+    "Month_10": {
+        "str": "十月"
+    },
+    "Mth_11": {
+        "str": "11月"
+    },
+    "Month_11": {
+        "str": "十一月"
+    },
+    "Mth_12": {
+        "str": "12月"
+    },
+    "Month_12": {
+        "str": "十二月"
+    },
+    "This link will allow <> to view and download this family, but not make changes.": {
+        "str": "此链接将允许 <> 查看和下载此家族，但不能进行更改。"
+    },
+    "This link will allow <> to view and download this family and its files, but not make changes.": {
+        "str": "此链接将允许 <> 查看和下载此家族及其文件，但不能进行更改。"
+    },
+    "This link will allow <> to view, download, modify and share this family.": {
+        "str": "此链接将允许 <> 查看、下载、修改和分享此家族。"
+    },
+    "This link will allow <> to view, download, modify and share this family, but only view and download files.": {
+        "str": "此链接将允许 <> 查看、下载、修改和分享此家族，但只能查看和下载文件。"
+    },
+    "This link will allow <> to view, modify and share this family, and upload, edit and delete files.": {
+        "str": "此链接将允许 <> 查看、修改和分享此家族，并上传、编辑和删除文件。"
+    }
 };

@@ -487,16 +487,17 @@ function DateYearToString(y) {
 
 // FSD 日期转文本
 function DateToString(date, month, year) {
-    if (month) {
-        if (date) {
-            var f = year ? "j M Y" : "j M";
-        } else {
-            var f = year ? "M Y" : "M";
-        }
-    } else {
-        f = year ? "Y" : "";
+    let str = '';
+    if (year) {
+        str += DateYearToString(year)+'年';
     }
-    return f.replaceAll("j", String(date)).replaceAll("M", month+'月').replaceAll("Y", DateYearToString(year));
+    if (month) {
+        str += month + '月'
+    }
+    if (date) {
+        str += date + "日";
+    }
+    return str;
 }
 
 /**
@@ -655,7 +656,6 @@ function BuildDateDetailStr(decorate, d1, m1, y1, d2, m2, y2) {
 }
 
 function FDN(p, mn, sn, isFamilyNameFirst, bn, ah, ni, ti, su) {
-    console.log(">FDN", arguments);
     if (!p) {
         return _t("Unknown");
     }
@@ -701,8 +701,6 @@ function FDN(p, mn, sn, isFamilyNameFirst, bn, ah, ni, ti, su) {
     if ((!personName) && ah) {
         personName = p.h;
     }
-    console.log("<FDN", personName);
-
     return personName;
 }
 

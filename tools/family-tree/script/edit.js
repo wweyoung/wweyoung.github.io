@@ -14,6 +14,7 @@ var Edt, Eda, Edc, Edm;
 var ScriptTextLength;
 // Esd 要展示的人员属性
 var PersonShowFields = null;
+// Eeq 人员编辑堆栈?
 var Eeq = [];
 var Esc = false;
 // Ess 家谱脚本
@@ -233,7 +234,6 @@ function LoadScriptText(script = "iSTART", familyId) {
     console.log(arguments)
     ParseScriptText(script);
     ScriptText = script; // t
-    OwnerPersonId = 'START'; // fp
     Edd = true; // al
     AllowDownload = true; // dy
     AllowWrite = true; // aw
@@ -441,7 +441,7 @@ function ESM(m) {
 
 function ImportScriptFile() {
     console.log('import')
-    if (!window.showOpenFilePicker) {
+    if (window.showOpenFilePicker) {
         window.showOpenFilePicker(FileHandler.options).then(async fileHandle => {
             let file = await fileHandle[0].getFile();
             ImportReadScriptFile(file);
@@ -497,6 +497,7 @@ function ECS() {
     Epc = GetElementValue("viewpersonid");
 }
 
+// 人员编辑堆栈入栈?
 function ESE(r, i, b) {
     Eeq = [];
     for (var j = 1; j < i.length; j++) {
@@ -618,6 +619,11 @@ function ParseScriptText(script) {
             UpdatePersonRelationField(ii[0], ii[1], node.p, value);
         } else if (type == "d") {
             EDV(id, node.p, value);
+        } else if (type === "c") {
+            if (node.p === 'm') {
+                OwnerPersonId = ViewPersonId = value;
+                SetElementValue('viewpersonid', value);
+            }
         }
     }
 
@@ -638,11 +644,14 @@ function ScriptToOperateArray(script) {
 }
 
 // EOS 计算操作记录，获取最终保存脚本
-function GetSaveScript(historyScript) {
-    const operations = ScriptToOperateArray(historyScript);
+function GetSaveScript(script) {
+    const operations = ScriptToOperateArray(script);
     let persons = {};
     for (let i = 0; i < operations.length; i++) {
         let operation = operations[i];
+        if (operation.t === 'c') {
+            continue;
+        }
         if (operation.p === 'x') {
             delete persons[operation.t];
             continue;
@@ -653,7 +662,12 @@ function GetSaveScript(historyScript) {
         persons[operation.t][operation.p] = operation.v;
     }
     console.log(persons);
-    let scriptBuilder = [];
+    let scriptBuilder = [
+        '# 该文件为家谱文件，可通过下方地址查看或编辑该家谱文件\n',
+        '# ', window.location.origin, window.location.pathname, '\n\n\n\n\n',
+        'c\tm', OwnerPersonId, '\n'
+    ];
+
     Object.entries(persons).forEach(([type, fields]) => {
         scriptBuilder.push(type);
         Object.entries(fields).forEach(([paramName, value]) => {
@@ -684,7 +698,7 @@ function GetSaveScript(historyScript) {
     // if (type) {
     //     script += type + "\t" + fields.join("\t") + "\n";
     // }
-    return script;
+    // return script;
 }
 
 // EFC 更新人员变更数据
@@ -877,12 +891,12 @@ function BackToPersonId() {
 
 // ECZ 画布单位放大/缩小
 function ZoomInOut(zi) {
-    ZoomInOutScale(zi ? 0.5 : -0.5);
+    ZoomInOutScale(zi ? 1.4 : 0.8);
 }
 
 // EZD 画布放大/缩小
 function ZoomInOutScale(scale) {
-    var zf = Math.max(0.5, Math.min(4, Number(GetElementValue("showzoom")) + scale));
+    var zf = Math.max(0.2, Math.min(4, Number(GetElementValue("showzoom")) * scale));
     SetCookie("zoomfactor", zf);
     SetElementValue("showzoom", zf);
     ERF();

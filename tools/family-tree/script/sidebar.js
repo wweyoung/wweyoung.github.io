@@ -2,10 +2,10 @@
 var PersonColumnFields = [{
     l: "familyname", // 姓
     p: "personalname", // 名
-    N: "nickname", // 字
-    T: "title", // 号
+    N: "nickname", // 号
+    T: "title", // 字
     J: "suffix",
-    q: "formername" // 生日
+    q: "formername" // 曾用名
 }, {
     e: "c_email",
     w: "website",
@@ -286,7 +286,7 @@ function TableAppendFieldContent(tableId, fieldName, content, isHtml, a) {
 function TableAppendButton(tableId, content, option, subOption, s) {
     TableAppendContent(tableId, "<INPUT TYPE=\"submit\" VALUE=\"" + EncodeHTML(content)
         + "\" ID=\"" + EncodeHTML(option + subOption)
-        + "\" CLASS=\"sbutton\" onClick=\"SCB('" + EncodeHTML(option) + "','" + EncodeHTML(subOption) + "'); return false;\">", true, s);
+        + "\" CLASS=\"sbutton\" onClick=\"PersonOperate('" + EncodeHTML(option) + "','" + EncodeHTML(subOption) + "'); return false;\">", true, s);
 }
 
 function SPP(i, ra, s, no, o) {
@@ -585,10 +585,12 @@ function SP0(e) {
         RemoveElementAllChild("personalview");
         var bn = GetConfigBirthNameValue();
         var bn1 = (bn == 1);
-        TableAppendFieldContent("personalview", _t("Full name"), FDN(p, true, 1, GetConfigSurnameFirstValue(), bn1, false, true, true, true), false);
-        if (p.q && p.l && (p.q != p.l)) {
-            TableAppendFieldContent("personalview", bn1 ? _t("Surname now") : _t("Surname at birth"), bn1 ? p.l : p.q, false);
-        }
+        TableAppendFieldContent("personalview", "姓", p.l, false);
+        TableAppendFieldContent("personalview", "名", p.p, false);
+        p.N && TableAppendFieldContent("personalview", "字", p.N, false);
+        p.T && TableAppendFieldContent("personalview", "号", p.T, false);
+        p.q && TableAppendFieldContent("personalview", "曾用名", p.q, false);
+        p.J && TableAppendFieldContent("personalview", "字辈", p.J, false);
         TableAppendFieldContent("personalview", _t("Gender"), GenderNames[g] ? GenderNames[g] : ((g.charAt(0) == "o") ? g.substring(1) : GenderNames[""]), false);
         TableAppendFieldContent("personalview", _t("Birth date"), DateDetailStrToString(p.b, true), false);
         if (p.z == 1) {
@@ -983,11 +985,11 @@ function SAP(f, p, oi, spt, spm, apt, apm) {
     if (oi) {
         var op = f[oi];
     }
-    var ps = [p.m1, p.f1, p.m2, p.f2, p.m3, p.f3];
+    var parentIds = [p.m1, p.f1, p.m2, p.f2, p.m3, p.f3];
     var hp = {};
-    for (var j = 0; j < ps.length; j++) {
-        if (ps[j]) {
-            hp[ps[j]] = true;
+    for (var j = 0; j < parentIds.length; j++) {
+        if (parentIds[j]) {
+            hp[parentIds[j]] = true;
         }
     }
     if (oi && (op.es || op.cp)) {
@@ -1004,7 +1006,7 @@ function SAP(f, p, oi, spt, spm, apt, apm) {
         }
     } else {
         if (apm) {
-            SCB(apm, "");
+            PersonOperate(apm, "");
         }
     }
 }
@@ -1018,76 +1020,76 @@ function SPX(f, i1, i2, ap) {
 }
 
 /**
- * 人员操作
+ * SCB 人员操作
  * addparents 添加父母
  *
- * @param i
+ * @param operation
  * @param v
  * @constructor
  */
-function SCB(i, v) {
+function PersonOperate(operation, v) {
     console.log("SCB", arguments)
     var f = Efa;
-    var p = f[SidebarPersonId];
-    if (i === "setme") {
+    var person = f[SidebarPersonId];
+    if (operation === "setme") {
         OwnerPersonId = SidebarPersonId;
         EUF();
-    } else if ((i == "addparents") || (i == "addparentsstop")) {
-        if (i == "addparents") {
+    } else if ((operation == "addparents") || (operation == "addparentsstop")) {
+        if (operation == "addparents") {
             ECS();
         }
-        var pd = (p.z == 1) && (p.c.length > 0);
-        for (var j = 0; j < p.c.length; j++) {
-            if (f[p.c[j]].z != 1) {
-                pd = false;
+        var isParentDeceased = (person.z == 1) && (person.c.length > 0); // 父母是否已故
+        for (var j = 0; j < person.c.length; j++) {
+            if (f[person.c[j]].z != 1) {
+                isParentDeceased = false;
             }
         }
-        var fi = GenerateId();
-        var fo = {"^": SidebarPersonId, g: "m", l: p.q};
-        if (pd) {
-            fo.z = 1;
+        var fatherId = GenerateId();
+        var fatherObject = {"^": SidebarPersonId, g: "m", l: person.l};
+        if (isParentDeceased) {
+            fatherObject.z = 1;
         }
-        UpdatePerson(fi, fo);
-        var mi = GenerateId();
-        var mo = {"^": SidebarPersonId, g: "f", s: fi, l: p.q};
-        if (pd) {
-            mo.z = 1;
+        UpdatePerson(fatherId, fatherObject);
+        var motherId = GenerateId();
+        var motherObject = {"^": SidebarPersonId, g: "f", s: fatherId, l: person.q};
+        if (isParentDeceased) {
+            motherObject.z = 1;
         }
-        UpdatePerson(mi, mo);
-        UpdatePerson(SidebarPersonId, {m: mi, f: fi});
-        if (i == "addparents") {
-            ESE(true, [mi, fi], SidebarPersonId);
+        UpdatePerson(motherId, motherObject);
+        UpdatePerson(SidebarPersonId, {m: motherId, f: fatherId});
+        if (operation == "addparents") {
+            ESE(true, [fatherId, motherId], SidebarPersonId);
         }
-    } else if (i == "choosemother") {
+    } else if (operation == "choosemother") {
         HideRelactions(true);
-        SAP(f, p, p.f, _i("Set mother to $"), "setmother", _t("Add new mother"), "addmother");
+        SAP(f, person, person.f, _i("Set mother to $"), "setmother", _t("Add new mother"), "addmother");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if (i == "choosefather") {
+    } else if (operation == "choosefather") {
         HideRelactions(true);
-        SAP(f, p, p.m, _i("Set father to $"), "setfather", _t("Add new father"), "addfather");
+        SAP(f, person, person.m, _i("Set father to $"), "setfather", _t("Add new father"), "addfather");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if (i == "choosemother2") {
+    } else if (operation == "choosemother2") {
         HideRelactions(true);
-        SAP(f, p, p.Y, _i("Set second mother to $"), "setmother2", _t("Add new second mother"), "addmother2");
+        SAP(f, person, person.Y, _i("Set second mother to $"), "setmother2", _t("Add new second mother"), "addmother2");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if (i == "choosefather2") {
+    } else if (operation == "choosefather2") {
         HideRelactions(true);
-        SAP(f, p, p.X, _i("Set second father to $"), "setfather2", _t("Add new second father"), "addfather2");
+        SAP(f, person, person.X, _i("Set second father to $"), "setfather2", _t("Add new second father"), "addfather2");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if (i == "choosemother3") {
+    } else if (operation == "choosemother3") {
         HideRelactions(true);
-        SAP(f, p, p.L, _i("Set third mother to $"), "setmother3", _t("Add new third mother"), "addmother3");
+        SAP(f, person, person.L, _i("Set third mother to $"), "setmother3", _t("Add new third mother"), "addmother3");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if (i == "choosefather3") {
+    } else if (operation == "choosefather3") {
         HideRelactions(true);
-        SAP(f, p, p.K, _i("Set third father to $"), "setfather3", _t("Add new third father"), "addfather3");
+        SAP(f, person, person.K, _i("Set third father to $"), "setfather3", _t("Add new third father"), "addfather3");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if (i == "changeorder") {
+    } else if (operation == "changeorder") {
         HideRelactions(true);
-        var ot = p.b && DateStrToObj(p.b).y;
+        var ot = person.b && DateStrToObj(person.b).y;
         var bs = FLS(f, SidebarPersonId, 1, ot);
         for (var j = 0; j < bs.length; j++) {
-            if (FCC(f[bs[j]], p) >= 0) {
+            if (FCC(f[bs[j]], person) >= 0) {
                 break;
             }
         }
@@ -1096,11 +1098,11 @@ function SCB(i, v) {
         RelactionAppendButton(_t("Done"), "movedone", "");
         SetElementDisabled("moveleft", j <= 0);
         SetElementDisabled("moveright", j >= bs.length);
-    } else if ((i == "moveleft") || (i == "moveright")) {
-        var ot = p.b && DateStrToObj(p.b).y;
+    } else if ((operation == "moveleft") || (operation == "moveright")) {
+        var ot = person.b && DateStrToObj(person.b).y;
         var bs = FLS(f, SidebarPersonId, 1, ot);
         for (var si = 0; si < bs.length; si++) {
-            if (FCC(f[bs[si]], p) >= 0) {
+            if (FCC(f[bs[si]], person) >= 0) {
                 break;
             }
         }
@@ -1109,7 +1111,7 @@ function SCB(i, v) {
                 UpdatePerson(bs[j], {O: FBO(f, bs.slice(0, j), bs.slice(j + 1), ot)});
             }
         }
-        var d = (i == "moveleft") ? -1 : 1;
+        var d = (operation == "moveleft") ? -1 : 1;
         while (true) {
             si += d;
             if ((si < 0) || (si > bs.length)) {
@@ -1121,20 +1123,20 @@ function SCB(i, v) {
             }
         }
         EUF();
-        SCB("changeorder", "");
-    } else if (i == "movedone") {
+        PersonOperate("changeorder", "");
+    } else if (operation == "movedone") {
         SaveFamily();
         SSA(Spa, false);
-    } else if (i == "choosespouse") {
+    } else if (operation == "choosespouse") {
         HideRelactions(true);
-        if (!p.s) {
-            for (var pi in p.pc) {
-                if (pi != p.s) {
+        if (!person.s) {
+            for (var pi in person.pc) {
+                if (pi != person.s) {
                     RelactionAppendButton(_t("Set partner to $", SPN(f[pi])), "setspouse", pi);
                 }
             }
         }
-        if (p.s) {
+        if (person.s) {
             RelactionAppendButton(_t("Add new primary partner"), "addspouse", "");
             RelactionAppendButton(_t("Add new extra partner"), "addextraspouse", "");
         } else {
@@ -1146,14 +1148,14 @@ function SCB(i, v) {
             RelactionAppendButton(_t("Partner with person already on tree"), "treespouse", "");
         }
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if (i == "changespouse") {
+    } else if (operation == "changespouse") {
         HideRelactions(true);
         if (!disable_family_tests) {
             var cf = FDF(f, SidebarPersonId, null, null, null);
         }
-        for (var pi in p.pc) {
-            var pp = (pi == p.s);
-            var ep = p.ep && (p.ep[pi] == 2);
+        for (var pi in person.pc) {
+            var pp = (pi == person.s);
+            var ep = person.ep && (person.ep[pi] == 2);
             if (!pp) {
                 RelactionAppendButton(_t("Set primary partner to $", SPN(f[pi])), "setspouse", pi);
             }
@@ -1173,7 +1175,7 @@ function SCB(i, v) {
             }
         }
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if (i == "addchild") {
+    } else if (operation == "addchild") {
         HideRelactions(true);
         var vt = v;
         if (v == "a") {
@@ -1182,35 +1184,32 @@ function SCB(i, v) {
                 np: _i("Add adopted child with new partner"),
                 xp: _i("Add adopted child without partner")
             };
+        } else if (v == "f") {
+            var bt = {
+                ep: _i("Add foster child with $"),
+                np: _i("Add foster child with new partner"),
+                xp: _i("Add foster child without partner")
+            };
+        } else if (v == "g") {
+            var bt = {
+                ep: _i("Add godchild with $"),
+                np: _i("Add godchild with new partner"),
+                xp: _i("Add godchild without partner")
+            };
         } else {
-            if (v == "f") {
-                var bt = {
-                    ep: _i("Add foster child with $"),
-                    np: _i("Add foster child with new partner"),
-                    xp: _i("Add foster child without partner")
-                };
-            } else {
-                if (v == "g") {
-                    var bt = {
-                        ep: _i("Add godchild with $"),
-                        np: _i("Add godchild with new partner"),
-                        xp: _i("Add godchild without partner")
-                    };
-                } else {
-                    var bt = {
-                        ep: _i("Add child with $"),
-                        np: _i("Add child with new partner"),
-                        xp: _i("Add child without partner")
-                    };
-                    vt = " ";
-                }
-            }
+            var bt = {
+                ep: _i("Add child with $"),
+                np: _i("Add child with new partner"),
+                xp: _i("Add child without partner")
+            };
+            vt = " ";
         }
-        if (p.es) {
-            RelactionAppendButton(_t(bt.ep, SPN(f[p.es])), "addchildwith", vt + p.es);
+
+        if (person.es) {
+            RelactionAppendButton(_t(bt.ep, SPN(f[person.es])), "addchildwith", vt + person.es);
         }
-        for (var pi in p.pc) {
-            if (pi != p.es) {
+        for (var pi in person.pc) {
+            if (pi != person.es) {
                 RelactionAppendButton(_t(bt.ep, SPN(f[pi])), "addchildwith", vt + pi);
             }
         }
@@ -1225,97 +1224,97 @@ function SCB(i, v) {
         }
         RelactionAppendButton(_t("Cancel"), "cancel", "");
         TableAppendContent("relactions", "<BR>" + _h("To add a child who is already on the tree, select that child and set their parent to this person."), true, 1);
-    } else if (i == "addchildwith") {
+    } else if (operation == "addchildwith") {
         ECS();
         var ci = GenerateId();
         var vt = v.substring(0, 1);
         var pi = v.substring(1);
-        var mi = FSM(f, SidebarPersonId, pi) ? SidebarPersonId : pi;
-        var fi = FSM(f, SidebarPersonId, pi) ? pi : SidebarPersonId;
-        var c = {"^": SidebarPersonId, m: mi, f: fi};
-        if (FRP(f, mi, fi)) {
-            c.l = p.l;
-            c.q = p.l;
+        var motherId = FSM(f, SidebarPersonId, pi) ? SidebarPersonId : pi;
+        var fatherId = FSM(f, SidebarPersonId, pi) ? pi : SidebarPersonId;
+        var c = {"^": SidebarPersonId, m: motherId, f: fatherId};
+        if (FRP(f, motherId, fatherId)) {
+            c.l = Efa[fatherId].l; // 跟随父姓
         }
         if ((vt == "a") || (vt == "f") || (vt == "g")) {
             c.V = vt;
         }
         UpdatePerson(ci, c);
         ESE(true, [ci], ci);
-    } else if ((i == "addchildwithnew") || (i == "addchildwithout")) {
+    } else if ((operation == "addchildwithnew") || (operation == "addchildwithout")) {
+        // 创建儿子
         ECS();
-        var ci = GenerateId();
-        var c = {"^": SidebarPersonId};
-        if (p.g == "m") {
-            c.f = SidebarPersonId;
+        var childrenId = GenerateId();
+        var childrenObj = {"^": SidebarPersonId};
+        if (person.g == "m") { // 添加的父亲
+            childrenObj.f = SidebarPersonId;
+            childrenObj.l = person.l; // 继承父姓
         } else {
-            c.m = SidebarPersonId;
+            childrenObj.m = SidebarPersonId;
         }
         if (v) {
-            c.V = v;
+            childrenObj.V = v;
         }
-        if (i == "addchildwithnew") {
-            var pi = GenerateId();
-            if (p.g == "m") {
-                c.m = pi;
+        if (operation == "addchildwithnew") {
+            var newParentId = GenerateId();
+            if (person.g == "m") {
+                childrenObj.m = newParentId;
             } else {
-                c.f = pi;
+                childrenObj.f = newParentId;
             }
-            UpdatePerson(ci, c);
-            UpdatePerson(pi, {"^": ci, g: FIG(p.g)});
-            ESE(true, [ci, pi], ci);
+            UpdatePerson(childrenId, childrenObj);
+            UpdatePerson(newParentId, {"^": childrenId, g: FIG(person.g)});
+            ESE(true, [childrenId, newParentId], childrenId);
         } else {
-            c.l = p.l;
-            c.q = p.l;
-            UpdatePerson(ci, c);
-            ESE(true, [ci], ci);
+            childrenObj.l = person.l;
+            childrenObj.q = person.l;
+            UpdatePerson(childrenId, childrenObj);
+            ESE(true, [childrenId], childrenId);
         }
-    } else if (i == "addsibling") {
+    } else if (operation == "addsibling") {
         ECS();
-        var ap = !(p.m || p.f);
+        var ap = !(person.m || person.f);
         if (ap) {
-            SCB("addparentsstop", "");
+            PersonOperate("addparentsstop", "");
         }
         var si = GenerateId();
         UpdatePerson(si, {
             "^": SidebarPersonId,
-            m: p.m,
-            f: p.f,
-            l: p.q,
-            q: p.q
+            m: person.m,
+            f: person.f,
+            l: person.l
         });
-        ESE(true, ap ? [si, p.m, p.f] : [si], si);
-    } else if (i == "addmother") {
+        ESE(true, ap ? [si, person.f, person.m] : [si], si);
+    } else if (operation == "addmother") {
         ECS();
-        SPX(f, p.f, p.m, false);
+        SPX(f, person.f, person.m, false);
         var mi = GenerateId();
         UpdatePerson(SidebarPersonId, {m: mi});
         UpdatePerson(mi, {"^": SidebarPersonId, g: "f"});
         ESE(true, [mi], SidebarPersonId);
-    } else if (i == "addfather") {
+    } else if (operation == "addfather") {
         ECS();
-        SPX(f, p.f, p.m, false);
+        SPX(f, person.f, person.m, false);
         var fi = GenerateId();
         UpdatePerson(SidebarPersonId, {f: fi});
         UpdatePerson(fi, {"^": SidebarPersonId, g: "m"});
         ESE(true, [fi], SidebarPersonId);
-    } else if (i == "addmother2") {
+    } else if (operation == "addmother2") {
         ECS();
-        SPX(f, p.X, p.Y, false);
+        SPX(f, person.X, person.Y, false);
         var mi = GenerateId();
         UpdatePerson(SidebarPersonId, {X: mi});
         UpdatePerson(mi, {"^": SidebarPersonId, g: "f"});
         ESE(true, [mi], SidebarPersonId);
-    } else if (i == "addfather2") {
+    } else if (operation == "addfather2") {
         ECS();
-        SPX(f, p.X, p.Y, false);
+        SPX(f, person.X, person.Y, false);
         var fi = GenerateId();
         UpdatePerson(SidebarPersonId, {Y: fi});
         UpdatePerson(fi, {"^": SidebarPersonId, g: "m"});
         ESE(true, [fi], SidebarPersonId);
-    } else if (i == "addmother3") {
+    } else if (operation == "addmother3") {
         ECS();
-        SPX(f, p.K, p.L, false);
+        SPX(f, person.K, person.L, false);
         var mi = GenerateId();
         UpdatePerson(SidebarPersonId, {K: mi});
         UpdatePerson(mi, {
@@ -1323,9 +1322,9 @@ function SCB(i, v) {
             g: "f"
         });
         ESE(true, [mi], SidebarPersonId);
-    } else if (i == "addfather3") {
+    } else if (operation == "addfather3") {
         ECS();
-        SPX(f, p.K, p.L, false);
+        SPX(f, person.K, person.L, false);
         var fi = GenerateId();
         UpdatePerson(SidebarPersonId, {L: fi});
         UpdatePerson(fi, {
@@ -1333,46 +1332,46 @@ function SCB(i, v) {
             g: "m"
         });
         ESE(true, [fi], SidebarPersonId);
-    } else if (i == "addspouse") {
+    } else if (operation == "addspouse") {
         ECS();
-        SPX(f, SidebarPersonId, p.s, true);
+        SPX(f, SidebarPersonId, person.s, true);
         var si = GenerateId();
         UpdatePerson(si, {
             "^": SidebarPersonId,
             s: SidebarPersonId,
-            l: p.l
+            g: person.g === 'm' ? 'f' : 'm'
         });
         ESE(true, [si], SidebarPersonId);
-    } else if ((i == "addexspouse") || (i == "addextraspouse")) {
+    } else if ((operation == "addexspouse") || (operation == "addextraspouse")) {
         ECS();
         var si = GenerateId();
         UpdatePerson(si, {"^": SidebarPersonId});
-        EPC(SidebarPersonId, si, {e: ((i == "addextraspouse") ? 2 : 1)});
+        EPC(SidebarPersonId, si, {e: ((operation == "addextraspouse") ? 2 : 1)});
         ESE(true, [si], SidebarPersonId);
-    } else if ((i == "toexspouse") || (i == "toextraspouse")) {
-        if (p.s == v) {
+    } else if ((operation == "toexspouse") || (operation == "toextraspouse")) {
+        if (person.s == v) {
             UpdatePerson(SidebarPersonId, {s: ""});
             UpdatePerson(v, {s: ""});
         }
-        EPC(SidebarPersonId, v, {e: (i == "toextraspouse") ? 2 : 1});
+        EPC(SidebarPersonId, v, {e: (operation == "toextraspouse") ? 2 : 1});
         SaveFamily();
         EUF();
-    } else if (i == "notanyspouse") {
-        if (p.s == v) {
+    } else if (operation == "notanyspouse") {
+        if (person.s == v) {
             UpdatePerson(SidebarPersonId, {s: ""});
             UpdatePerson(v, {s: ""});
         }
-        if (p.ep && p.ep[v]) {
+        if (person.ep && person.ep[v]) {
             EPC(SidebarPersonId, v, {e: ""});
         }
         SaveFamily();
         EUF();
-    } else if (i == "treespouse") {
+    } else if (operation == "treespouse") {
         HideRelactions(true);
         TableAppendContent("relactions", _t("Choose the person to partner with:"), false, 1);
         TableAppendContent("relactions", "<SELECT ID=\"treepartner\" CLASS=\"sselect\"></SELECT>", true, 1);
         SLR("relactions", 1);
-        if (p.s) {
+        if (person.s) {
             RelactionAppendButton(_t("Add as primary partner"), "treeaddspouse", "");
             RelactionAppendButton(_t("Add as extra partner"), "treeaddextraspouse", "");
         } else {
@@ -1381,90 +1380,90 @@ function SCB(i, v) {
         RelactionAppendButton(_t("Add as ex-partner"), "treeaddexspouse", "");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
         SPP("treepartner", FPL(f, SidebarPersonId), null, true, true);
-    } else if (i == "treeaddspouse") {
+    } else if (operation == "treeaddspouse") {
         var si = GetSelectElementValue("treepartner");
         if (si) {
-            SCB("setspouse", si);
+            PersonOperate("setspouse", si);
         }
-    } else if ((i == "treeaddexspouse") || (i == "treeaddextraspouse")) {
+    } else if ((operation == "treeaddexspouse") || (operation == "treeaddextraspouse")) {
         var si = GetSelectElementValue("treepartner");
         if (si) {
             ECS();
-            EPC(SidebarPersonId, si, {e: (i == "treeaddextraspouse") ? 2 : 1});
+            EPC(SidebarPersonId, si, {e: (operation == "treeaddextraspouse") ? 2 : 1});
             SaveFamily();
             EUF();
         }
-    } else if (i == "setmother") {
-        SPX(f, p.f, p.m, false);
+    } else if (operation == "setmother") {
+        SPX(f, person.f, person.m, false);
         UpdatePerson(SidebarPersonId, {m: v});
         SaveFamily();
         EUF();
-    } else if (i == "setfather") {
-        SPX(f, p.f, p.m, false);
+    } else if (operation == "setfather") {
+        SPX(f, person.f, person.m, false);
         UpdatePerson(SidebarPersonId, {f: v});
         SaveFamily();
         EUF();
-    } else if (i == "setmother2") {
-        SPX(f, p.X, p.Y, false);
+    } else if (operation == "setmother2") {
+        SPX(f, person.X, person.Y, false);
         UpdatePerson(SidebarPersonId, {X: v});
         SaveFamily();
         EUF();
-    } else if (i == "setfather2") {
-        SPX(f, p.X, p.Y, false);
+    } else if (operation == "setfather2") {
+        SPX(f, person.X, person.Y, false);
         UpdatePerson(SidebarPersonId, {Y: v});
         SaveFamily();
         EUF();
-    } else if (i == "setmother3") {
-        SPX(f, p.K, p.L, false);
+    } else if (operation == "setmother3") {
+        SPX(f, person.K, person.L, false);
         UpdatePerson(SidebarPersonId, {K: v});
         SaveFamily();
         EUF();
-    } else if (i == "setfather3") {
-        SPX(f, p.K, p.L, false);
+    } else if (operation == "setfather3") {
+        SPX(f, person.K, person.L, false);
         UpdatePerson(SidebarPersonId, {L: v});
         SaveFamily();
         EUF();
-    } else if (i == "setstepmother2") {
-        SPX(f, p.X, p.Y, false);
+    } else if (operation == "setstepmother2") {
+        SPX(f, person.X, person.Y, false);
         UpdatePerson(SidebarPersonId, {
             X: v,
             W: "s"
         });
         SaveFamily();
         EUF();
-    } else if (i == "setstepfather2") {
-        SPX(f, p.X, p.Y, false);
+    } else if (operation == "setstepfather2") {
+        SPX(f, person.X, person.Y, false);
         UpdatePerson(SidebarPersonId, {
             Y: v,
             W: "s"
         });
         SaveFamily();
         EUF();
-    } else if (i == "setstepmother3") {
-        SPX(f, p.K, p.L, false);
+    } else if (operation == "setstepmother3") {
+        SPX(f, person.K, person.L, false);
         UpdatePerson(SidebarPersonId, {
             K: v,
             Q: "s"
         });
         SaveFamily();
         EUF();
-    } else if (i == "setstepfather3") {
-        SPX(f, p.K, p.L, false);
+    } else if (operation == "setstepfather3") {
+        SPX(f, person.K, person.L, false);
         UpdatePerson(SidebarPersonId, {
             L: v,
             Q: "s"
         });
         SaveFamily();
         EUF();
-    } else if (i == "setspouse") {
-        SPX(f, SidebarPersonId, p.s, true);
+    } else if (operation == "setspouse") {
+        SPX(f, SidebarPersonId, person.s, true);
         if (v) {
             SPX(f, v, f[v].s, true);
         }
         UpdatePerson(SidebarPersonId, {s: v});
         SaveFamily();
         EUF();
-    } else if (i == "treeparents") {
+    } else if (operation == "treeparents") {
         HideRelactions(true);
         for (var j = 1; j <= 3; j++) {
             if (j == 2) {
@@ -1498,22 +1497,22 @@ function SCB(i, v) {
         RelactionAppendButton(_t("OK"), "treesetparents", "");
         RelactionAppendButton(_t("Switch primary and second parents"), "switchparents", "");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-        SPP("treemother1", FAL(f, SidebarPersonId, null), p.m, true);
-        SPP("treefather1", FAL(f, SidebarPersonId, p.m), p.f, true);
-        SPP("treemother2", FAL(f, SidebarPersonId, null), p.X, true);
-        SPP("treefather2", FAL(f, SidebarPersonId, p.X), p.Y, true);
-        SPP("treemother3", FAL(f, SidebarPersonId, null), p.K, true);
-        SPP("treefather3", FAL(f, SidebarPersonId, p.K), p.L, true);
-        SPT("treeparenttype1", true, p.V);
-        SPT("treeparenttype2", p.V != "b", p.W);
-        SPT("treeparenttype3", (p.V != "b") && (p.W != "b"), p.Q);
+        SPP("treemother1", FAL(f, SidebarPersonId, null), person.m, true);
+        SPP("treefather1", FAL(f, SidebarPersonId, person.m), person.f, true);
+        SPP("treemother2", FAL(f, SidebarPersonId, null), person.X, true);
+        SPP("treefather2", FAL(f, SidebarPersonId, person.X), person.Y, true);
+        SPP("treemother3", FAL(f, SidebarPersonId, null), person.K, true);
+        SPP("treefather3", FAL(f, SidebarPersonId, person.K), person.L, true);
+        SPT("treeparenttype1", true, person.V);
+        SPT("treeparenttype2", person.V != "b", person.W);
+        SPT("treeparenttype3", (person.V != "b") && (person.W != "b"), person.Q);
         SUT("treemother1", true);
         SUT("treefather1", false);
         SUT("treemother2", true);
         SUT("treefather2", false);
         SUT("treemother3", true);
         SUT("treefather3", false);
-    } else if ((i == "switchparents") || (i == "treesetparents")) {
+    } else if ((operation == "switchparents") || (operation == "treesetparents")) {
         var s = {
             m: GetSelectElementValue("treemother1"),
             f: GetSelectElementValue("treefather1"),
@@ -1525,7 +1524,7 @@ function SCB(i, v) {
             L: GetSelectElementValue("treefather3"),
             Q: GetSelectElementValue("treeparenttype3")
         };
-        if (i == "switchparents") {
+        if (operation == "switchparents") {
             s = {
                 m: s.X,
                 f: s.Y,
@@ -1538,17 +1537,17 @@ function SCB(i, v) {
         var n = {};
         var o = {};
         for (var j in s) {
-            if (s[j] != (p[j] || "")) {
+            if (s[j] != (person[j] || "")) {
                 n[j] = s[j];
-                o[j] = p[j];
+                o[j] = person[j];
             }
         }
         if (!disable_family_tests) {
             var cf = FDF(f, SidebarPersonId, null, null, null);
         }
-        SPX(f, p.f, p.m, false);
-        SPX(f, p.X, p.Y, false);
-        SPX(f, p.K, p.L, false);
+        SPX(f, person.f, person.m, false);
+        SPX(f, person.X, person.Y, false);
+        SPX(f, person.K, person.L, false);
         UpdatePerson(SidebarPersonId, n);
         EUS(true, null, null, false, false);
         if (!disable_family_tests) {
@@ -1560,35 +1559,35 @@ function SCB(i, v) {
         }
         SaveFamily();
         EUF();
-    } else if (i == "addparents2") {
+    } else if (operation == "addparents2") {
         HideRelactions(true);
         RelactionAppendButton(_t("Add adopted parents"), "addparents2go", "a");
         RelactionAppendButton(_t("Add foster parents"), "addparents2go", "f");
         RelactionAppendButton(_t("Add godmother"), "addgodparent", "2m");
         RelactionAppendButton(_t("Add godfather"), "addgodparent", "2f");
-        if (p.V) {
-            if (p.V != "b") {
+        if (person.V) {
+            if (person.V != "b") {
                 RelactionAppendButton(_t("Add biological parents"), "addparents2go", "b");
             }
         } else {
             RelactionAppendButton(_t("Add biological parents (was adopted)"), "addparents2go", "ba");
             RelactionAppendButton(_t("Add biological parents (was fostered)"), "addparents2go", "bf");
         }
-        SAP(f, p, p.f, _i("Set stepmother to $"), "setstepmother2", null, null);
-        SAP(f, p, p.m, _i("Set stepfather to $"), "setstepfather2", null, null);
+        SAP(f, person, person.f, _i("Set stepmother to $"), "setstepmother2", null, null);
+        SAP(f, person, person.m, _i("Set stepfather to $"), "setstepfather2", null, null);
         RelactionAppendButton(_t("Choose parents from tree"), "treeparents", "");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if (i == "addparents3") {
+    } else if (operation == "addparents3") {
         HideRelactions(true);
         RelactionAppendButton(_t("Add adopted parents"), "addparents3go", "a");
         RelactionAppendButton(_t("Add foster parents"), "addparents3go", "f");
         RelactionAppendButton(_t("Add godmother"), "addgodparent", "3m");
         RelactionAppendButton(_t("Add godfather"), "addgodparent", "3f");
-        SAP(f, p, p.f, _i("Set stepmother to $"), "setstepmother3", null, null);
-        SAP(f, p, p.m, _i("Set stepfather to $"), "setstepfather3", null, null);
+        SAP(f, person, person.f, _i("Set stepmother to $"), "setstepmother3", null, null);
+        SAP(f, person, person.m, _i("Set stepfather to $"), "setstepfather3", null, null);
         RelactionAppendButton(_t("Choose parents from tree"), "treeparents", "");
         RelactionAppendButton(_t("Cancel"), "cancel", "");
-    } else if ((i == "addparents2go") || (i == "addparents3go")) {
+    } else if ((operation == "addparents2go") || (operation == "addparents3go")) {
         ECS();
         var fi = GenerateId();
         var fo = {
@@ -1603,7 +1602,7 @@ function SCB(i, v) {
             s: fi
         };
         UpdatePerson(mi, mo);
-        if (i == "addparents2go") {
+        if (operation == "addparents2go") {
             var po = {
                 X: mi,
                 Y: fi,
@@ -1621,8 +1620,8 @@ function SCB(i, v) {
             };
         }
         UpdatePerson(SidebarPersonId, po);
-        ESE(true, [mi, fi], SidebarPersonId);
-    } else if (i == "addgodparent") {
+        ESE(true, [fi, mi], SidebarPersonId);
+    } else if (operation == "addgodparent") {
         ECS();
         switch (v) {
             case "2m":
@@ -1657,7 +1656,7 @@ function SCB(i, v) {
         po[t] = "g";
         UpdatePerson(SidebarPersonId, po);
         ESE(true, [fi], SidebarPersonId);
-    } else if (i == "delete") {
+    } else if (operation == "delete") {
         var p = Efa[v];
         if (confirm(_t("Are you sure you want to permanently delete $?", SPN(p)))) {
             var ni = p["^"];
@@ -1672,13 +1671,13 @@ function SCB(i, v) {
             UpdatePerson(v, {x: ""});
             EUF();
         }
-    } else if (i == "cancel") {
+    } else if (operation == "cancel") {
         SSA(Spa, false);
-    } else if (i == "morelactions") {
+    } else if (operation == "morelactions") {
         SRP(true);
-    } else if (i == "startbranch") {
+    } else if (operation == "startbranch") {
         var md = (OwnerPersonId == SidebarPersonId);
-        if (confirm((md ? _t("This will create a new family for your relatives.") : _t("This will create a new family for $'s relatives.", p.h)) + " " + _t("Are you sure you want to proceed?"))) {
+        if (confirm((md ? _t("This will create a new family for your relatives.") : _t("This will create a new family for $'s relatives.", person.h)) + " " + _t("Are you sure you want to proceed?"))) {
             GetElement("startbranch").value = _t("Please wait a few moments...");
             EFB(SidebarPersonId);
         }
