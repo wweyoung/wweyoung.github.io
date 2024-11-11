@@ -257,6 +257,9 @@ function LoadScriptText(script = "iSTART", familyId) {
     var e = GetElement("lfamilylabels");
     e.innerHTML = "";
     var tags = []; // fl
+    if (FileHandler.handler) {
+        tags.push("实时保存");
+    }
     if (tags && tags.length) {
         for (var j = 0; j < tags.length; j++) {
             var s = document.createElement("span");
@@ -444,14 +447,17 @@ function ESM(m) {
 }
 
 function ImportScriptFile() {
-    console.log('import')
-    if (window.showOpenFilePicker) {
+    FileHandler.handler = null;
+    try {
         window.showOpenFilePicker(FileHandler.options).then(async fileHandle => {
             let file = await fileHandle[0].getFile();
             ImportReadScriptFile(file);
             FileHandler.handler = fileHandle[0];
         });
-    } else {
+    } catch (e) {
+        if (e.name === 'AbortError') {
+            throw e;
+        }
         var inputObj = document.createElement('input')
         inputObj.type = 'file';
         inputObj.accept = FileHandler.accept;
@@ -797,7 +803,7 @@ async function SaveScriptToFile(script) {
     exportIframe.getElementById("script-textarea").setAttribute("value", script);
     let exportHtml = exportIframe.documentElement.outerHTML;
 
-    if (window.showSaveFilePicker) {
+    try {
         if (!FileHandler.handler) {
             FileHandler.handler = await window.showSaveFilePicker(FileHandler.options);
             SetElementInnerText("lfamilyname", (await FileHandler.handler.getFile()).name);
@@ -806,7 +812,10 @@ async function SaveScriptToFile(script) {
         let writableStream = await FileHandler.handler.createWritable(FileHandler.options);
         writableStream.write(exportHtml);
         writableStream.close();
-    } else {
+    } catch (e) {
+        if (e.name === 'AbortError') {
+            throw e;
+        }
         let blob = new Blob([exportHtml], {
             type: FileHandler.accept
         });
