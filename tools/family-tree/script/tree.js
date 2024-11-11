@@ -571,9 +571,6 @@ function TSD(x, y) {
 }
 
 function TCT() {
-    if (parent && parent.postMessage) {
-        parent.postMessage("click=" + this.pid, "*");
-    }
     ESP(this.pid, true);
 }
 

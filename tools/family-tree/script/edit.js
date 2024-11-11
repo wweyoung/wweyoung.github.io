@@ -69,6 +69,12 @@ function OnBodyOnload() {
     }
     if (staticMode || (typeof (XMLHttpRequest) != "undefined")) {
         window.onbeforeunload = OnWindowBeforeUnload;
+        if (window !== parent) {
+            addEventListener("message", (e) => {
+                LoadScriptText(e.data);
+                parent.postMessage('ok', '*');
+            })
+        }
         var c = GetCookie("zoomfactor");
         var zf = parseFloat((c === null) ? defaultZoom : c);
         SetElementValue("showzoom", zf);
@@ -272,10 +278,9 @@ function LoadScriptText(script = "iSTART", familyId) {
 }
 
 function ERP(isNeedSaveFamily) {
-    let script = localStorage.getItem("family_script");
-    if (script) {
-        SetElementValue("newscript", script);
-        ParseScriptText(script);
+    if (ScriptText) {
+        // SetElementValue("newscript", script);
+        ParseScriptText(ScriptText);
     }
     if (PersonShowFields === null) {
         PersonShowFields = "";
@@ -418,11 +423,6 @@ function EUS(r, viewPersonId, viewMode, d, s) {
     }
     if ((preViewMode != "calendar") && (preViewMode != "timeline")) {
         SetElementShow("caltimediv", false);
-    }
-    if (r || (ViewPersonId != preViewPersonId)) {
-        if (parent && parent.postMessage) {
-            parent.postMessage("focus=" + ViewPersonId, "*");
-        }
     }
 }
 
@@ -1222,7 +1222,6 @@ function ECI(c, s) {
 
 // ESA 清除数据
 function ClearAndRestart() {
-    localStorage.removeItem("family_script");
     SetElementValue("importcacheid", "");
     SetElementValue("newscript", "");
     Efa = {};
