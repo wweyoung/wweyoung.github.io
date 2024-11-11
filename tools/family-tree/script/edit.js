@@ -42,17 +42,17 @@ let ViewPersonId;
 let FileHandler = {
     handler: undefined,
     writeHandler: undefined,
-    accept: 'text/plain',
+    accept: 'text/html',
     options: {
         types: [
             {
-                description: "Text file",
+                description: "家谱",
                 accept: {
-                    "text/plain": [".txt"],
+                    "text/html": [".html"],
                 },
             },
         ],
-        suggestedName: "我的家谱",
+        suggestedName: "我的家谱.html",
         excludeAcceptAllOption: true,
         multiple: false,
     }
@@ -272,7 +272,11 @@ function LoadScriptText(script = "iSTART", familyId) {
 }
 
 function ERP(isNeedSaveFamily) {
-    ParseScriptText(GetElementValue("newscript"));
+    let script = localStorage.getItem("family_script");
+    if (script) {
+        SetElementValue("newscript", script);
+        ParseScriptText(script);
+    }
     if (PersonShowFields === null) {
         PersonShowFields = "";
         for (var j in Efa) {
@@ -471,7 +475,13 @@ function ImportReadScriptFile(file) {
     // 新建 FileReader 对象
 
     reader.onload = function () {
-        LoadScriptText(this.result, file.name);
+        let script = this.result;
+        if (file.type === 'text/html') {
+            let scriptHtml = document.createElement('div');
+            scriptHtml.innerHTML = script;
+            script = scriptHtml.querySelector("#script-textarea")?.getAttribute('value') || '';
+        }
+        LoadScriptText(script, file.name);
         SetElementInnerText("lfamilyname", file.name);
     };
     reader.readAsText(file);
@@ -662,11 +672,7 @@ function GetSaveScript(script) {
         persons[operation.t][operation.p] = operation.v;
     }
     console.log(persons);
-    let scriptBuilder = [
-        '# 该文件为家谱文件，可通过下方地址查看或编辑该家谱文件\n',
-        '# ', window.location.origin, window.location.pathname, '\n\n\n\n\n',
-        'c\tm', OwnerPersonId, '\n'
-    ];
+    let scriptBuilder = ['c\tm', OwnerPersonId, '\n'];
 
     Object.entries(persons).forEach(([type, fields]) => {
         scriptBuilder.push(type);
@@ -787,29 +793,31 @@ function SaveFamily(saveFile = false) {
 }
 
 async function SaveScriptToFile(script) {
+    let exportIframe = GetElement("export-iframe").contentDocument;
+    exportIframe.getElementById("script-textarea").setAttribute("value", script);
+    let exportHtml = exportIframe.documentElement.outerHTML;
+
     if (window.showSaveFilePicker) {
         if (!FileHandler.handler) {
             FileHandler.handler = await window.showSaveFilePicker(FileHandler.options);
             SetElementInnerText("lfamilyname", (await FileHandler.handler.getFile()).name);
         }
         await FileHandler.handler.requestPermission();
-        let writableStream = await FileHandler.handler.createWritable();
-        writableStream.write(script);
+        let writableStream = await FileHandler.handler.createWritable(FileHandler.options);
+        writableStream.write(exportHtml);
         writableStream.close();
     } else {
-        let blob = new Blob([script], {
+        let blob = new Blob([exportHtml], {
             type: FileHandler.accept
         });
-        let reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onload = function(e) {
-            let a = document.createElement('a');
-            a.download = FileHandler.options.suggestedName;
-            a.href = e.target.result;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
+        let url = URL.createObjectURL(blob)
+        let a = document.createElement('a');
+        a.download = FileHandler.options.suggestedName;
+        a.href = url;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 }
 
@@ -1214,6 +1222,7 @@ function ECI(c, s) {
 
 // ESA 清除数据
 function ClearAndRestart() {
+    localStorage.removeItem("family_script");
     SetElementValue("importcacheid", "");
     SetElementValue("newscript", "");
     Efa = {};

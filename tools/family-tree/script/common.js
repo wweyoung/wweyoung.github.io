@@ -248,7 +248,7 @@ function _h(text) {
 var Pr = null, ordinalRules = null;
 
 function SL(text, _50) {
-    console.log(">SL", arguments);
+    // console.log(">SL", arguments);
     if ((typeof Intl !== "undefined") && (typeof Intl.PluralRules !== undefined)) {
         if (!Pr) {
             Pr = new Intl.PluralRules(locale_value);

@@ -587,8 +587,8 @@ function SP0(e) {
         var bn1 = (bn == 1);
         TableAppendFieldContent("personalview", "姓", p.l, false);
         TableAppendFieldContent("personalview", "名", p.p, false);
-        p.N && TableAppendFieldContent("personalview", "字", p.N, false);
-        p.T && TableAppendFieldContent("personalview", "号", p.T, false);
+        p.T && TableAppendFieldContent("personalview", "字", p.T, false);
+        p.N && TableAppendFieldContent("personalview", "号", p.N, false);
         p.q && TableAppendFieldContent("personalview", "曾用名", p.q, false);
         p.J && TableAppendFieldContent("personalview", "字辈", p.J, false);
         TableAppendFieldContent("personalview", _t("Gender"), GenderNames[g] ? GenderNames[g] : ((g.charAt(0) == "o") ? g.substring(1) : GenderNames[""]), false);

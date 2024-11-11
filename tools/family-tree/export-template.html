@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>家谱</title>
+</head>
+<body>
+<div id="loading">家谱加载中...</div>
+<div id="load-error" style="display: none">
+    <div>抱歉，可能由于您的网络问题，家谱自动加载失败了。不过您无需担心，您还可以
+        <a id="remote-page-url" href="./">点击这里</a>
+        前往家谱页面手动导入该家谱文件。
+    </div>
+    <textarea id="script-textarea" readonly></textarea>
+</div>
+<script>
+    {
+        let scriptDom = document.getElementById("script-textarea");
+        let script = scriptDom.getAttribute("value");
+        let remotePageUrlDom = document.getElementById("remote-page-url");
+        let remotePageUrl = remotePageUrlDom.href;
+        if (script) {
+            scriptDom.value = script;
+            let iframe = document.createElement("iframe");
+            iframe.src = remotePageUrl + '/read/';
+            iframe.onload = () => {
+                iframe.contentWindow.postMessage(script);
+                document.getElementById("load-error").style.display = '';
+                document.getElementById("loading").style.display = 'none';
+            }
+            iframe.style.display = 'none';
+            addEventListener("message", (e) => {
+                console.log("success!", e);
+                location.href = remotePageUrl;
+            })
+
+            document.body.append(iframe);
+        } else {
+            remotePageUrlDom.href = remotePageUrl;
+        }
+    }
+</script>
+</div>
+</body>
+</html>
