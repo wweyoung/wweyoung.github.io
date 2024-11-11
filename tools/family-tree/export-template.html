@@ -24,7 +24,7 @@
             let iframe = document.createElement("iframe");
             iframe.src = remotePageUrl + '/read/';
             iframe.onload = () => {
-                iframe.contentWindow.postMessage(script);
+                iframe.contentWindow.postMessage(script, '*');
                 document.getElementById("load-error").style.display = '';
                 document.getElementById("loading").style.display = 'none';
             }

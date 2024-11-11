@@ -2,6 +2,6 @@
   addEventListener('message', (e)=>{
     console.log("read收到消息", e);
     localStorage.setItem("family_script", e.data);
-    parent.postMessage('success');
+    parent.postMessage('success', '*');
   })
 </script>
