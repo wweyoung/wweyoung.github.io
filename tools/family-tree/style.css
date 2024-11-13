@@ -137,7 +137,8 @@ input[type=color] { height:24px; }
 .pi {margin:0;}
 .ps {font-weight:bold; margin:0;}
 .ps a {text-decoration:none; cursor:pointer; color:black;}
-.pr {font-size:150%; margin:0;}
+.pr {font-size:14px; margin:0;}
+.ptitle {font-size: 20px}
 .pa {font-size:200%; margin:0 0 6px 0;}
 .pl {background:#f4f4f4; border:1px solid #ddd; padding:8px 16px; margin:6px 0;}
 .dark .pl {background:#1c1c1c; border-color:#999}

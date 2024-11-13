@@ -489,7 +489,7 @@ function DateYearToString(y) {
 function DateToString(date, month, year) {
     let str = '';
     if (year) {
-        str += DateYearToString(year)+'年';
+        str += DateYearToString(year) + '年';
     }
     if (month) {
         str += month + '月'
@@ -1061,118 +1061,105 @@ function FTP(f, p, si, sp) {
     return s;
 }
 
-function FCP(f, fi, ti, m, a) {
-    var p = {};
-    var s = {};
-    var i = null;
-    p[fi] = ".";
-    s[fi] = true;
-    while (!p[ti]) {
-        var sn = {};
-        if (a) {
-            for (var si in s) {
-                var pc = f[si].pc;
-                for (var i in pc) {
-                    if (i && f[i] && !p[i]) {
-                        p[i] = "p" + si;
-                        sn[i] = true;
-                    }
+let RelationTitle = {
+    self: {'':'自己', m:'自己男', f:'自己女'},
+    partner: {'':'伴', m:'丈夫', f:'妻子'},
+    children: {'':'子女', m:'子', f:'女'},
+    parent: {'':'父母', m:'父', f:'母'}
+}
+
+function GetRelationTitle(type, person){
+    return type[person.g] || type[0];
+}
+
+// FCP 废弃
+// 获取基础关系路径
+function GetBaseRelationRoutes(family, fromId, targetId) {
+
+    var relations = {};
+    var searchIds = {};
+    relations[fromId] = {id: '', type: GetRelationTitle(RelationTitle.self, family[fromId])};
+    searchIds[fromId] = true;
+    while (!relations[targetId]) {
+        var searchNext = {};
+
+        for (let id in searchIds) {
+            let person = family[id];
+            // 伴侣关系
+            var pc = person.pc;
+            for (var partnerId in pc) {
+                let partner = family[partnerId];
+                if (partner && !relations[partnerId]) {
+                    relations[partnerId] = {id, type: GetRelationTitle(RelationTitle.partner, partner)};
+                    searchNext[partnerId] = true;
                 }
             }
-        }
-        for (var si in s) {
-            var c = f[si].c;
-            for (var j = 0; j < c.length; j++) {
-                i = c[j];
-                if (i && f[i] && !p[i]) {
-                    p[i] = (FPG(f[i], si) ? "g" : "o") + si;
-                    sn[i] = true;
+
+            // 子女关系
+            var childrens = person.c;
+            for (var j = 0; j < childrens.length; j++) {
+                let childId = childrens[j];
+                if (childId && family[childId] && !relations[childId]) {
+                    relations[childId] = {id, type: GetRelationTitle(RelationTitle.children, family[childId])};
+                    searchNext[childId] = true;
                 }
             }
-        }
-        for (var si in s) {
-            var tp = [];
-            var fsi = f[si];
-            var tp = [(fsi.V == "g") ? null : fsi.m, (fsi.V == "g") ? null : fsi.f, (fsi.W == "g") ? null : fsi.X, (fsi.W == "g") ? null : fsi.Y, (fsi.Q == "g") ? null : fsi.K, (fsi.Q == "g") ? null : fsi.L];
-            for (var j = 0; j < tp.length; j++) {
-                var pi = tp[j];
-                if (pi && f[pi]) {
-                    var c = f[pi].c;
-                    for (var k = 0; k < c.length; k++) {
-                        i = c[k];
-                        if (i && f[i] && !p[i]) {
-                            p[i] = "s" + si;
-                            sn[i] = true;
-                        }
-                    }
+
+            // 父母关系
+
+            // 父母属性，[母id, 父id, 类型]
+            let parentAttrs = [['m', 'f', 'V'], ['X', 'Y', 'W'], ['K', 'L', 'Q']];
+            let tp = [];
+            for (let parentAttr of parentAttrs) {
+                if (person[parentAttr[2]] !== 'g') {
+                    tp.push(person[parentAttrs[0]], person[parentAttrs[1]]);
                 }
             }
-        }
-        for (var si in s) {
-            var t = (f[si].V == "g") ? "d" : "a";
-            i = f[si].m;
-            if (i && f[i] && !p[i]) {
-                p[i] = t + si;
-                sn[i] = true;
-            }
-            i = f[si].f;
-            if (i && f[i] && !p[i]) {
-                p[i] = t + si;
-                sn[i] = true;
-            }
-        }
-        for (var si in s) {
-            var t = (f[si].W == "g") ? "d" : "a";
-            i = f[si].X;
-            if (i && f[i] && !p[i]) {
-                p[i] = t + si;
-                sn[i] = true;
-            }
-            i = f[si].Y;
-            if (i && f[i] && !p[i]) {
-                p[i] = t + si;
-                sn[i] = true;
+
+            // 父母关系
+            for (let parentAttr of parentAttrs) {
+                var type = (person[parentAttr[2]] === "g") ? "d" : "a";
+                let motherId = person[parentAttr[0]];
+                if (motherId && family[motherId] && !relations[motherId]) {
+                    relations[motherId] = {id, type: GetRelationTitle(RelationTitle.parent, family[motherId])};
+                    searchNext[motherId] = true;
+                }
+                let fatherId = person[parentAttr[1]];
+                if (fatherId && family[fatherId] && !relations[fatherId]) {
+                    relations[fatherId] = {id, type: GetRelationTitle(RelationTitle.parent, family[fatherId])};
+                    searchNext[fatherId] = true;
+                }
+
             }
         }
-        for (var si in s) {
-            var t = (f[si].Q == "g") ? "d" : "a";
-            i = f[si].K;
-            if (i && f[i] && !p[i]) {
-                p[i] = t + si;
-                sn[i] = true;
-            }
-            i = f[si].L;
-            if (i && f[i] && !p[i]) {
-                p[i] = t + si;
-                sn[i] = true;
-            }
-        }
-        s = sn;
-        sc = 0;
-        for (var j in s) {
+        searchIds = searchNext;
+        let sc = 0;
+        for (var j in searchIds) {
             sc++;
         }
         if (!sc) {
             break;
         }
     }
-    var r = [{"t": ".", "i": ti}];
-    if (p[ti]) {
-        i = ti;
+    let id;
+    let paths = [{type: "END", "id": targetId}];
+    if (relations[targetId]) {
+        id = targetId;
         while (true) {
-            var ni = p[i].substring(1);
+            const ni = relations[id].id;
             if (!ni) {
                 break;
             }
-            r[r.length] = {"t": p[i].substring(0, 1), "i": ni};
-            i = ni;
+            paths[paths.length] = {type: relations[id].type, id: ni};
+            id = ni;
         }
     } else {
-        r[r.length] = {"t": "x", "i": fi};
+        paths[paths.length] = {type: "NO", id: fromId};
     }
-    r = r.reverse();
-    return m ? FMP(f, r) : r;
+    paths = paths.reverse();
+    return paths;
 }
+
 
 function FMP(f, r) {
     for (var j = 0; j < (r.length - 1); j++) {

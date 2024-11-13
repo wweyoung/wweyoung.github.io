@@ -501,6 +501,7 @@ function TreeElementAddEventListener(element) {
         }
     };
     element.ontouchstart = function (e) {
+        // console.log("ontouchstart", e)
         if ((e.target == moveobject) && (e.touches.length == 1)) {
             Tpd = true;
             scrollpos = TGS();
@@ -510,6 +511,8 @@ function TreeElementAddEventListener(element) {
         }
     };
     element.ontouchend = function (e) {
+        // console.log("ontouchend", e)
+
         if (Tpd) {
             Tpd = false;
             e.preventDefault();
@@ -517,11 +520,12 @@ function TreeElementAddEventListener(element) {
     };
     element.onwheel = function (e) {
         var d = e.wheelDelta;
-        console.log("wheel",e)
-        ZoomInOutScale  (d > 0 ? 1.2 : 0.9);
+        ZoomInOutScale(d > 0 ? 1.2 : 0.9);
         e.preventDefault();
     };
     document.ontouchmove = function (e) {
+        // console.log("ontouchmove", e)
+
         if (Tpd) {
             TSS(Tdx - e.touches[0].screenX, Tdy - e.touches[0].screenY, 0, 0, null);
             e.preventDefault();
@@ -612,21 +616,143 @@ function TRT(efa, viewPersonId, personId, y, ad, bn, sf, c, l, fl, ch, ph, co, p
     }
 }
 
-function TPH(f, p, bn, sf, s) {
-    if (p) {
+let AllTitle = {
+    '自己男': {伴: '妻子', is: '自己'},
+    '自己女': {伴: '丈夫', is: '自己'},
+    '伴': {伴: '自己', is: '自己&伴', name: '伴侣'},
+    '丈夫': {父: '公公', 母: '婆婆', is: '伴'},
+    '妻子': {父: '岳父', 母: '岳母', is: '伴'},
+    '兄弟姐妹': {'父': '父', '母': '母'},
+    '兄弟': {'子': '侄子', '女': '侄女', '伴': '兄弟媳妇', is: '兄弟姐妹'},
+    '姐妹': {'子': '外甥', '女': '外甥女', '伴': '姐妹丈夫', is: '兄弟姐妹'},
+    '堂兄弟': {is: '兄弟'},
+    '堂姐妹': {is: '姐妹'},
+    '表兄弟': {is: '兄弟'},
+    '表姐妹': {is: '姐妹'},
+    '兄弟媳妇': {'伴': '兄弟'},
+    '姐妹丈夫': {'伴': '姐妹'},
+    '父母': {'子女': '兄弟姐妹', '子': '兄弟', '女': '姐妹', '伴': '父母'},
+    '父': {'父': '祖父', '母': '祖母', '伴': '母', is: '父母', name: '父亲'},
+    '母': {'父': '外祖父', '母': '外祖母', '伴': '父', is: '父母', name: '母亲'},
+    '父的兄弟姐妹': {'父': '祖父', '母': '祖母', '子': '兄弟', '女': '姐妹'},
+    '伯叔': {'子': '堂兄弟', '女': '堂姐妹', is: '父的兄弟姐妹'},
+    '姑妈': {'子': '表兄弟', '女': '表姐妹', '伴': '姑父', is: '父的兄弟姐妹'},
+    '伯父': {'伴': '伯母', is: '伯叔'},
+    '叔叔': {'伴': '婶婶', is: '伯叔'},
+    '母的兄弟姐妹': {'父': '外祖父', '母': '外祖母', '子': '表兄弟', '女': '表姐妹'},
+    '舅': {'伴': '舅妈', is: '母的兄弟姐妹'},
+    '姨妈': {'伴': '姨父', is: '母的兄弟姐妹'},
+    '岳父母': {'子': '舅子', '女': '姨子'},
+    '岳父': {'父': '祖岳父', '母': '祖岳母', '伴': '岳母', is: '岳父母'},
+    '岳母': {'父': '外祖岳父', '母': '外祖岳母','伴': '岳父', is: '岳父母'},
+    '祖父母': {'子': '伯叔', '女': '姑妈'},
+    '祖父': {'父': '曾祖父', '母': '曾祖母', '伴': '祖母', is: '祖父母'},
+    '祖母': {'父': '曾外祖父', '母': '曾外祖母', '伴': '祖父', is: '祖父母'},
+    '外祖父母': {'子': '舅', '女': '姨妈'},
+    '外祖父': {'父': '外曾祖父', '母': '外曾祖母', '伴': '外祖母', is: '外祖父母'},
+    '外祖母': {'父': '外曾外祖父', '母': '外曾外祖母', '伴': '外祖父', is: '外祖父母'},
+    '祖岳父母': {'子': '伯岳父', '女': '姑岳母'},
+    '祖岳父': {'伴': '祖岳父', is: '祖岳父母'},
+    '祖岳母': {'伴': '祖岳母', is: '祖岳父母'},
+    '曾祖': {'子': '祖父', '女': '姑奶奶'},
+    '曾祖父': {'父': '高祖父', '母': '高祖母', '伴': '曾祖母', is: '曾祖'},
+    '曾祖母': {'父': '高外祖父', '母': '高外祖母', '伴': '曾祖父', is: '曾祖'},
+    '外曾祖': {'子': '祖父', '女': '姑奶奶'},
+    '外曾祖父': {'父': '外高祖父', '母': '外高祖母', '伴': '外曾祖母', is: '外曾祖'},
+    '外曾祖母': {'父': '外高外祖父', '母': '外高外祖母', '伴': '外曾祖父', is: '外曾祖'},
+    '子女': {'父母': '伴'},
+    '子': {'子': '孙子', '女': '孙女', '伴侣': '儿媳', is: '子女', name: '儿子'},
+    '女': {'子': '外孙子', '女': '外孙女', '伴': '女婿', is: '子女', name: '女儿'},
+    '孙子女': {'父': '儿子', '母': '儿媳', '子': '曾孙', '女': '曾孙女'},
+    '孙子': {'伴': '孙媳妇', is: '孙子女'},
+    '孙女': {'伴': '孙女婿', is: '孙子女'},
+    '外孙子女': {'父': '女婿', '母': '女儿', '子': '外曾孙', '女': '外曾孙女'},
+    '外孙': {'伴': '外孙媳妇', is: '外孙子女'},
+    '外孙女': {'伴': '外孙女婿', is: '外孙子女'},
+    '曾孙子女': {'父': '孙子', '母': '孙媳妇', '子': '玄孙', '女': '玄孙女'},
+    '曾孙': {'伴': '曾孙媳妇', is: '曾孙子女'},
+    '曾孙女': {'伴': '曾孙女婿', is: '曾孙子女'},
+}
+
+let TitleChild = {};
+Object.entries(AllTitle).forEach(([key, value]) => {
+    let is = value.is || '';
+    let childTitles = TitleChild[is] || (TitleChild[is] = []);
+    childTitles.push(key);
+});
+
+function GetAppellationOf(title, of) {
+    // 当前没有 而且 有父类
+    let result;
+    while (of) {
+        let titleInfo = AllTitle[title];
+        while (titleInfo && !titleInfo[of] && titleInfo.is) {
+            if (titleInfo.is === '自己') return of;
+            titleInfo = AllTitle[titleInfo.is];
+        }
+        result = titleInfo && titleInfo[of];
+        if (result) {
+            break;
+        }
+        of = AllTitle[of]?.is;
+    }
+    console.log(title + ' 的 ' + of + ' 是' + result);
+    return result;
+}
+
+
+function GetAppellation(nowTitle = '自己男', toFinds = ['子', '女'], logRoutes = [], logI = 0) {
+    if (!toFinds.length) {
+        return [nowTitle];
+    }
+    let toFind = toFinds[0];
+    let title = GetAppellationOf(nowTitle, toFind);
+    let logRoute = logRoutes[logI] || (logRoutes[logI] = new Set());
+    if (title) {
+        logRoute.add(title);
+        let titles = GetAppellation(title, toFinds.slice(1), logRoutes, logI + 1);
+        return titles;
+    }
+    let subFinds = TitleChild[toFind];
+    let titles = [];
+    if (subFinds) {
+        for (const subFind of subFinds) {
+            let subTitles = GetAppellation(nowTitle, [subFind, ...toFinds.slice(1)], logRoutes, logI);
+            if (subTitles.length) {
+                titles = titles.concat(subTitles);
+            }
+        }
+    }
+    let subNowTitles = TitleChild[nowTitle];
+    if (subNowTitles) {
+        for (const subNowTitle of subNowTitles) {
+            let subTitles = GetAppellation(subNowTitle, toFinds, logRoutes, logI);
+            if (subTitles.length) {
+                titles = titles.concat(subTitles);
+            }
+        }
+    }
+    titles = [...new Set(titles)];
+    return titles;
+}
+
+function TPH(family, paths, bn, sf, s) {
+
+
+    if (paths) {
         var h = "";
-        for (var j = 0; j < p.length; j++) {
-            var t = p[j].t;
-            var i = p[j].i;
-            var e = f[i];
+        for (var j = 0; j < paths.length; j++) {
+            var t = paths[j].t;
+            var i = paths[j].i;
+            var e = family[i];
             var fn = FDN(e, true, 1, sf, (bn == 1), true, true, true, true);
-            var nj = p[j + 1] || s;
+            var nj = paths[j + 1] || s;
             var ni = nj ? nj.i : null;
-            var n = ni ? f[ni] : {};
+            var n = ni ? family[ni] : {};
             var rt = "";
             switch (t) {
                 case "p":
-                    rt = FTP(f, e, ni, n);
+                    rt = FTP(family, e, ni, n);
                     if (e.gp && ((e.gp[ni] || "").charAt(0) == "o")) {
                         rt += " (" + e.gp[ni].substring(1) + ")";
                     }
@@ -644,7 +770,7 @@ function TPH(f, p, bn, sf, s) {
                         }
                     }
                     break;
-                case "g":
+                case "g": // 教子
                     rt = GetChildrenName("g", n.g);
                     break;
                 case "s":
@@ -882,12 +1008,12 @@ function TPH(f, p, bn, sf, s) {
                     h += "<p class=\"pa\">&darr;</p>";
                 }
             }
-            if (p[j].p) {
+            if (paths[j].p) {
                 h += "<p id=\"shortpath-" + i + "\" class=\"pr\"><a href=\"#\" onClick=\"SEP('" + i + "', true); return false;\" title=\"" + _h("Expand this relationship") + "\">" + EncodeHTML(rt) + "</a></p>";
                 h += "<div id=\"longpath-" + i + "\" style=\"display:none;\">";
                 h += "<p class=\"pr\"><a href=\"#\" onClick=\"SEP('" + i + "', false); return false;\" title=\"" + _h("Contract this relationship") + "\">" + EncodeHTML(rt) + "</a></p>";
                 h += "<div class=\"pl\">";
-                h += TPH(f, p[j].p, bn, sf, p[j + 1]);
+                h += TPH(family, paths[j].p, bn, sf, paths[j + 1]);
                 h += "</div></div>";
             } else {
                 if (rt) {
@@ -899,4 +1025,47 @@ function TPH(f, p, bn, sf, s) {
     } else {
         return "";
     }
+}
+// TPH 废弃
+// 计算关系路径HTML
+function TPHNew(family, paths, bn, sf, s) {
+    let fromId = paths[0].id;
+    let logRoutes = []
+    let title = GetAppellation(GetRelationTitle(RelationTitle.self, family[fromId]), paths.slice(0, -1).map(obj => obj.type), logRoutes).join('/') || '无关';
+    console.log(paths, logRoutes);
+
+    let fromName = FDN(family[fromId], true, 1, sf, (bn == 1), true, true, true, true);
+    let endId = paths[paths.length - 1].id;
+    let strBuilder = [`<p class="pi" id="path-${fromId}" style="display: none;">\n' +
+    '        <a href="#" onclick="ESP('${fromId}', true); return false;">${EncodeHTML(fromName)}</a>\n' +
+    '    </p>
+        <p class="pa">↓</p>
+    <p id="shortpath-${fromId}" class="ptitle" style="display: none;">
+        <a href="#" onclick="SEP('${fromId}', true); return false;" title="展开此关系">${title}</a>
+    </p>
+     <div id="longpath-${fromId}" style="display: inline-block;">
+         <div class="pl">
+    `];
+    let name;
+    for (let i = 1; i < paths.length; i++) {
+        name = FDN(family[paths[i].id], true, 1, sf, (bn == 1), true, true, true, true);
+        let nextTitle = paths[i - 1].type;
+        nextTitle = AllTitle[nextTitle].name || nextTitle;
+        strBuilder.push(`
+            <p class="pr">${nextTitle}</p>
+            <p class="pi" id="path-${paths[i].id}"><a href="#" onclick="ESP('${paths[i].id}', true); return false;">${EncodeHTML(name)}</a></p>
+        `);
+        if (logRoutes[i - 1]?.size) {
+            let forFromTitle = Array.from(logRoutes[i - 1], (t) => AllTitle[t]?.name || t).join(' / ');
+            strBuilder.push(`<p class="pr">(${forFromTitle})</p>`);
+        }
+        strBuilder.push('<p class="pa">↓</p>');
+    }
+    strBuilder.push(`
+    </div>
+    <p class="ptitle"><a href="#" onclick="SEP('${fromId}', false); return false;" title="收缩此关系">${title}</a></p>
+    </div>
+    <p class="ps" id="path-${endId}"><a href="#" onclick="ESP('${endId}', true); return false;">${EncodeHTML(name)}</a></p>
+    `)
+    return strBuilder.join('');
 }

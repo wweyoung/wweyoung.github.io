@@ -1828,8 +1828,7 @@ function CalculateRelationPath(personId) {
         }
         Spd = personId;
     }
-    SetElementInnerHTML("pathcontent", TPH(Efa,
-        FCP(Efa, Sps, Spd, true, true || GetElement("pathmarried").checked),
+    SetElementInnerHTML("pathcontent", TPHNew(Efa, GetBaseRelationRoutes(Efa, Sps, Spd, 1, 1),
         GetConfigBirthNameValue(), GetConfigSurnameFirstValue(), false));
     SSP(SidebarPersonId);
 }
