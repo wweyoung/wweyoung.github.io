@@ -855,7 +855,7 @@ a.fattachpmlink:hover {
     background-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==);
 }
 
-@media screen and (max-width: 500px) and (min-height: 600px) {
+@media screen and (max-width: 600px) {
     .dleft {
         bottom: 34px;
         width: 100%;
