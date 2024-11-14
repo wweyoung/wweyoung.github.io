@@ -237,7 +237,7 @@ function ESC() {
 
 // EFR
 function LoadScriptText(script = "iSTART", familyId) {
-    console.log(arguments)
+    // console.log(arguments)
     ParseScriptText(script);
     ScriptText = script; // t
     Edd = true; // al
@@ -312,7 +312,7 @@ function EMD(e) {
 }
 
 function EUS(r, viewPersonId, viewMode, d, s) {
-    console.log('>EUS', arguments)
+    // console.log('>EUS', arguments)
     var preViewPersonId = ViewPersonId = GetElementValue("viewpersonid");
     var preViewMode = GetElementValue("viewmode");
     if (r) {
@@ -364,28 +364,28 @@ function EUS(r, viewPersonId, viewMode, d, s) {
     if (preViewMode == "history") {
         SwapHideSideBar(true);
         if ((!IsSafariBrowser && Elh != preViewMode) || (IsSafariBrowser && viewMode)) {
-            GetElement("extraframe").src = "history.php"
+            // GetElement("extraframe").src = "history.php"
         }
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "share") {
         SwapHideSideBar(true);
-        GetElement("extraframe").src = "share.php"
+        // GetElement("extraframe").src = "share.php"
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "download") {
         SwapHideSideBar(true);
-        GetElement("extraframe").src = "download.php"
+        // GetElement("extraframe").src = "download.php"
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "print") {
         SwapHideSideBar(true);
         if (viewMode) {
-            GetElement("extraframe").src = "print.php"
+            // GetElement("extraframe").src = "print.php"
         }
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "import") {
 
     } else if (preViewMode == "importfinish") {
     } else if (IsElementVisibility("extradiv")) {
-        GetElement("extraframe").src = "";
+        // GetElement("extraframe").src = "";
         SetElementVisibility("extradiv", false);
     }
 
@@ -467,7 +467,7 @@ function ImportScriptFile() {
             if (file) {
                 ImportReadScriptFile(file);
             }
-            console.log(e);
+            // console.log(e);
         }
         document.body.appendChild(inputObj);
         inputObj.click();
@@ -476,7 +476,7 @@ function ImportScriptFile() {
 }
 
 function ImportReadScriptFile(file) {
-    console.log(file)
+    // console.log(file)
     let reader = new FileReader();
     // 新建 FileReader 对象
 
@@ -677,7 +677,7 @@ function GetSaveScript(script) {
         }
         persons[operation.t][operation.p] = operation.v;
     }
-    console.log(persons);
+    // console.log(persons);
     let scriptBuilder = ['c\tm', OwnerPersonId, '\n'];
 
     Object.entries(persons).forEach(([type, fields]) => {
@@ -715,7 +715,7 @@ function GetSaveScript(script) {
 
 // EFC 更新人员变更数据
 function UpdatePerson(id, props) {
-    console.log("EFC", arguments)
+    // console.log("EFC", arguments)
     for (const key in props) {
         const value = props[key] ? ReplaceRN2N(new String(props[key])) : "";
         UpdatePersonField(id, key, value);
@@ -726,7 +726,7 @@ function UpdatePerson(id, props) {
 
 // EPC 更新关系?变更数据
 function EPC(i1, i2, c) {
-    console.log("EPC", arguments)
+    // console.log("EPC", arguments)
     for (var p in c) {
         var v = c[p] ? ReplaceRN2N(new String(c[p])) : "";
         UpdatePersonRelationField(i1, i2, p, v);
@@ -779,7 +779,7 @@ function SaveFamily(saveFile = false) {
             if (len && (FileHandler.handler || saveFile)) {
                 IsSaving = true;
                 let script = GetSaveScript(ScriptText + '\n' + newScript);
-                console.log(script);
+                // console.log(script);
                 SaveScriptToFile(script).then(() => {
                     ScriptText = script;
                     SetElementValue("newscript", '')
@@ -1126,7 +1126,7 @@ function ETU() {
         ETF();
     }
     if (s) {
-        GetElement("usersframe").src = "users.php"
+        // GetElement("usersframe").src = "users.php"
     }
     SetElementShow("usersdiv", s);
     SetElementShow("usersbutton", !s);
@@ -1143,20 +1143,21 @@ function ETI() {
     ESM("view");
     SwapHideSideBar(!v);
     JustifyNavrowElement();
-    TSD(s.left + (v ? -w : w), s.top);
+    TSD(s.right + (v ? -w : w), s.top);
     TCD(ViewPersonId, 250);
 }
 
 // ESI 侧边栏展开/收起
 function SwapHideSideBar(isShow) {
-    var c = isShow ? "marginon" : "marginoff";
-    GetElement("treemargin").className = c;
-    GetElement("fileviewmargin").className = c;
-    GetElement("navmargin").className = c;
-    GetElement("welcomemargin").className = c;
-    GetElement("optionsmargin").className = c;
-    GetElement("filesmargin").className = c;
-    GetElement("usersmargin").className = c;
+    let ids = ["treemargin", "fileviewmargin", "navdiv", "welcomemargin", "optionsdiv", "filesmargin", "usersmargin"];
+    ids.forEach(id=>{
+        let element = GetElement(id);
+        if (isShow) {
+            element.classList.replace("marginoff", "marginon")
+        } else {
+            element.classList.replace("marginon", "marginoff")
+        }
+    })
     SetElementVisibility("leftdiv", isShow);
     SwapSideButton(isShow);
 }

@@ -609,7 +609,7 @@ function FCT(y1, y2) {
 }
 
 function FYS(p) {
-    console.log("FYS>", arguments)
+    // console.log("FYS>", arguments)
     if (!p) {
         return "";
     }
@@ -617,7 +617,7 @@ function FYS(p) {
     var dy = (p.z == "1") ? DateDetailStrToYearStr(p.d) : "";
     var y = (by || "") + ((("" + by + dy).indexOf("~") >= 0) ? " - " : "-") + (dy || "");
     return (by || dy) ? (" (" + y.trim() + ")") : "";
-    console.log("FYS<", (by || dy) ? (" (" + y.trim() + ")") : "")
+    // console.log("FYS<", (by || dy) ? (" (" + y.trim() + ")") : "")
 }
 
 // FDE 日期数字前补0
@@ -706,7 +706,7 @@ function FDN(p, mn, sn, isFamilyNameFirst, bn, ah, ni, ti, su) {
 
 // FIT 获取子女称号
 function GetChildrenName(type, gender) {
-    console.log(">FIT", arguments);
+    // console.log(">FIT", arguments);
 
     if (type == "b") {
         var gs = {"f": _t("Biological daughter"), "m": _t("Biological son"), "": _t("Biological child")};
@@ -721,7 +721,7 @@ function GetChildrenName(type, gender) {
     } else {
         var gs = {"f": _t("Daughter"), "m": _t("Son"), "": _t("Child")};
     }
-    console.log("<FIT", gs[gender] || gs[""]);
+    // console.log("<FIT", gs[gender] || gs[""]);
 
     return gs[gender] || gs[""];
 }
@@ -765,7 +765,7 @@ function GetStepSiblingName(gender) {
 }
 
 function FPO(p, o) {
-    console.log(">FPO", arguments)
+    // console.log(">FPO", arguments)
     var d = DateStrToObj(p.b);
     if ((!o) && d.y) {
         return d.y * 10000 + d.m * 100 + d.d;

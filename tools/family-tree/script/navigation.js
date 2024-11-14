@@ -1,7 +1,6 @@
 // NSS 切换侧边栏展开按钮:展开/关闭
 function SwapSideButton(isShow) {
-    SetElementShow("sidehide", isShow);
-    SetElementShow("sideshow", !isShow);
+    GetElement('sidehide').style.rotate = isShow ? '0deg' : '180deg';
 }
 
 function NKS(s) {

@@ -408,7 +408,7 @@ var locale_phrases = {
         "str": "显示哪个日期的年龄？请以YYYY-MM-DD格式输入日期，并在公元前加上“B”。"
     },
     "Hide options": {
-        "str": "隐藏选项"
+        "str": "隐藏"
     },
     "Known date": {
         "str": "已知日期"

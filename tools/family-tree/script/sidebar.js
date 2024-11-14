@@ -92,7 +92,7 @@ function SPN(p) {
 
 // SSE 设置侧边栏展示的人物和
 function SetSidebarPersonAndViewMode(id, viewMode) {
-    console.log("SetSidebarPersonAndViewMode", arguments)
+    // console.log("SetSidebarPersonAndViewMode", arguments)
     var person = Efa[id];
     if (!person) {
         return;
@@ -125,7 +125,7 @@ function SetSidebarPersonAndViewMode(id, viewMode) {
 }
 
 function SSA(_a, _b) {
-    console.log("SSA", arguments)
+    // console.log("SSA", arguments)
     if (Sed && ((_a != Spa) || (_b === false))) {
         try {
             GetElement("switchlink" + _a).focus();
@@ -217,7 +217,7 @@ function SSA(_a, _b) {
 }
 
 function SSF() {
-    console.log("SSF", arguments)
+    // console.log("SSF", arguments)
     var om = !staticMode;
     var sl = ESL();
     SetElementClassShowRow("importfooter", om && (!sl.n) && (!sl.s) && (!sl.i) && Eca);
@@ -225,12 +225,12 @@ function SSF() {
 }
 
 function SWA(p) {
-    console.log("SWA", arguments)
+    // console.log("SWA", arguments)
     SSA(p, Sed);
 }
 
 function SED() {
-    console.log("SED", arguments)
+    // console.log("SED", arguments)
     ECS();
     ESE(false, [SidebarPersonId], SidebarPersonId);
 }
@@ -1028,7 +1028,7 @@ function SPX(f, i1, i2, ap) {
  * @constructor
  */
 function PersonOperate(operation, v) {
-    console.log("SCB", arguments)
+    // console.log("SCB", arguments)
     var f = Efa;
     var person = f[SidebarPersonId];
     if (operation === "setme") {
@@ -1772,8 +1772,9 @@ function SIU(u) {
             v.title = pw ? _t("Click to change photo") : "";
         }
     }
-    SetElementValue("uploadbutton", (SidebarPersonId == OwnerPersonId) ? _t("Add my photo") : _t("Add photo for $", p.h));
-    SetElementShow("uploadbutton", pw && (!r) && (!u));
+    // 关闭添加照片功能
+    // SetElementValue("uploadbutton", (SidebarPersonId == OwnerPersonId) ? _t("Add my photo") : _t("Add photo for $", p.h));
+    // SetElementShow("uploadbutton", pw && (!r) && (!u));
     SetElementShow("uploadiframe", u);
     SetElementShow("personimage", r && (!u));
 }

@@ -455,44 +455,43 @@ function TRB(o, l, t, w, h, k, bg, _8e) {
 }
 
 var Tpd = false;
-var Tdx, Tdy, moveobject;
+var Tdx, Tdy;
 
 function TGS() {
     var e = GetElement("treebg");
     if (self.pageYOffset) {
         scrolltop = self.pageYOffset;
         scrollleft = self.pageXOffset;
-    } else {
-        if (document.documentElement && document.documentElement.scrollTop) {
-            scrolltop = document.documentElement.scrollTop;
-            scrollleft = document.documentElement.scrollLeft;
-        } else {
-            if (document.body) {
-                scrolltop = document.body.scrollTop;
-                scrollleft = document.body.scrollLeft;
-            }
-        }
+    } else if (document.documentElement && document.documentElement.scrollTop) {
+        scrolltop = document.documentElement.scrollTop;
+        scrollleft = document.documentElement.scrollLeft;
+    } else if (document.body) {
+        scrolltop = document.body.scrollTop;
+        scrollleft = document.body.scrollLeft;
     }
-    return {top: -(e.offsetTop - e.parentNode.offsetTop), left: -(e.offsetLeft - e.parentNode.offsetLeft)};
+
+    return {top: -e.offsetTop, left: -e.offsetLeft};
 }
 
 // TIS 给图谱绑定事件
 function TreeElementAddEventListener(element) {
-    moveobject = element;
     element.onmousedown = function (e) {
+        // console.log("onmousedown", e);
         e = e ? e : window.event;
         Tpd = true;
         scrollpos = TGS();
-        Tdx = scrollpos.left + e.screenX;
-        Tdy = scrollpos.top + e.screenY;
+        Tdx = scrollpos.left + e.clientX;
+        Tdy = scrollpos.top + e.clientY;
     };
-    document.onmouseup = function (e) {
+    element.onmouseup = function (e) {
         Tpd = false;
     };
-    document.onmousemove = function (e) {
+    element.onmousemove = function (e) {
+        // console.log("onmousemove", e);
+
         e = e ? e : window.event;
         if (Tpd) {
-            TSS(Tdx - e.screenX, Tdy - e.screenY, 0, 0, null);
+            TSS(Tdx - e.clientX, Tdy - e.clientY, 0, 0, null);
         }
     };
     document.body.onselectstart = function (e) {
@@ -500,37 +499,63 @@ function TreeElementAddEventListener(element) {
             return false;
         }
     };
-    element.ontouchstart = function (e) {
-        // console.log("ontouchstart", e)
-        if ((e.target == moveobject) && (e.touches.length == 1)) {
-            Tpd = true;
-            scrollpos = TGS();
-            Tdx = scrollpos.left + e.touches[0].screenX;
-            Tdy = scrollpos.top + e.touches[0].screenY;
-            e.preventDefault();
-        }
-    };
-    element.ontouchend = function (e) {
-        // console.log("ontouchend", e)
-
-        if (Tpd) {
-            Tpd = false;
-            e.preventDefault();
-        }
-    };
     element.onwheel = function (e) {
         var d = e.wheelDelta;
         ZoomInOutScale(d > 0 ? 1.2 : 0.9);
         e.preventDefault();
     };
-    document.ontouchmove = function (e) {
-        // console.log("ontouchmove", e)
-
-        if (Tpd) {
-            TSS(Tdx - e.touches[0].screenX, Tdy - e.touches[0].screenY, 0, 0, null);
-            e.preventDefault();
+    let lastTouches;
+    element.ontouchstart = function (e) {
+        console.log("ontouchstart", e)
+        Tpd = true;
+        scrollpos = TGS();
+        let {x, y} = GetTouchesAvgXY(e.touches);
+        Tdx = scrollpos.left + x;
+        Tdy = scrollpos.top + y;
+        if (e.touches.length === 2) {
+            lastTouches = e.touches;
         }
     };
+    element.ontouchend = function (e) {
+        console.log("ontouchend", e)
+        lastTouches = null;
+        if (Tpd) {
+            Tpd = false;
+        }
+    };
+    element.ontouchmove = function (e) {
+        console.log("ontouchmove", e.touches, e.type)
+
+        if (Tpd) {
+            let {x, y} = GetTouchesAvgXY(e.touches);
+            TSS(Tdx - x, Tdy - y, 0, 0, null);
+            e.preventDefault();
+        }
+
+        if (lastTouches?.length === 2 && e.touches.length === 2) {
+            let lastTouchDistance = GetTouchDistance(lastTouches);
+            let touchDistance = GetTouchDistance(e.touches);
+            let scale = touchDistance / lastTouchDistance;
+            console.log(scale, lastTouchDistance, touchDistance);
+            ZoomInOutScale(scale)
+        }
+        lastTouches = e.touches;
+    };
+}
+
+function GetTouchesAvgXY(touches) {
+    let x = 0, y = 0;
+    for (let i = 0; i < touches.length; i++) {
+        x += touches[i].clientX;
+        y += touches[i].clientY;
+    }
+    x /= touches.length;
+    y /= touches.length;
+    return {x, y}
+}
+
+function GetTouchDistance(touches) {
+    return Math.sqrt(Math.pow(touches[0].clientX - touches[1].clientX, 2) + Math.pow(touches[0].clientY - touches[1].clientY, 2))
 }
 
 var Tst = null, Tsf, Tsd, Tss, Tse, Tsv;
@@ -583,7 +608,7 @@ function TFE(o, i) {
 }
 
 function TRT(efa, viewPersonId, personId, y, ad, bn, sf, c, l, fl, ch, ph, co, pi, zf, wf, ts, s) {
-    console.log("TRT", arguments)
+    // console.log("TRT", arguments)
     var o = GetElement("treebg");
     var _b9 = null;
     if (TFE(o, viewPersonId)) {
@@ -617,6 +642,7 @@ function TRT(efa, viewPersonId, personId, y, ad, bn, sf, c, l, fl, ch, ph, co, p
 }
 
 let AllTitle = {
+    // 平辈
     '自己男': {伴: '妻子', is: '自己'},
     '自己女': {伴: '丈夫', is: '自己'},
     '伴': {伴: '自己', is: '自己&伴', name: '伴侣'},
@@ -631,23 +657,35 @@ let AllTitle = {
     '表姐妹': {is: '姐妹'},
     '兄弟媳妇': {'伴': '兄弟'},
     '姐妹丈夫': {'伴': '姐妹'},
+    // 父辈
     '父母': {'子女': '兄弟姐妹', '子': '兄弟', '女': '姐妹', '伴': '父母'},
-    '父': {'父': '祖父', '母': '祖母', '伴': '母', is: '父母', name: '父亲'},
+    '父': {'父': '亲祖父', '母': '亲祖母', '伴': '母', is: '父母', name: '父亲'},
     '母': {'父': '外祖父', '母': '外祖母', '伴': '父', is: '父母', name: '母亲'},
-    '父的兄弟姐妹': {'父': '祖父', '母': '祖母', '子': '兄弟', '女': '姐妹'},
-    '伯叔': {'子': '堂兄弟', '女': '堂姐妹', is: '父的兄弟姐妹'},
-    '姑妈': {'子': '表兄弟', '女': '表姐妹', '伴': '姑父', is: '父的兄弟姐妹'},
+    '婆婆': {is: '母'},
+    '公公': {is: '父'},
+    '父系父辈': {'父': '祖父', '母': '祖母', '子': '兄弟', '女': '姐妹'},
+    '伯叔': {is: '父系父辈'},
+    '姑妈': {'伴': '姑父', is: '父系父辈'},
     '伯父': {'伴': '伯母', is: '伯叔'},
     '叔叔': {'伴': '婶婶', is: '伯叔'},
-    '母的兄弟姐妹': {'父': '外祖父', '母': '外祖母', '子': '表兄弟', '女': '表姐妹'},
-    '舅': {'伴': '舅妈', is: '母的兄弟姐妹'},
-    '姨妈': {'伴': '姨父', is: '母的兄弟姐妹'},
+    '父的亲姊妹': {'父': '亲祖父', '母': '亲祖母'},
+    '亲伯叔': {'子': '堂兄弟', '女': '堂姐妹', is: ['父的亲姊妹', '伯叔'], name: '伯叔'},
+    '亲姑妈': {'子': '表兄弟', '女': '表姐妹', is: ['父的亲姊妹', '姑妈']},
+    '亲伯父': {is: ['亲伯叔', '伯父'], name: '伯父'},
+    '亲叔叔': {is: ['亲伯叔', '叔叔'], name: '叔叔'},
+    '母的亲姊妹': {'父': '外祖父', '母': '外祖母', '子': '表兄弟', '女': '表姐妹'},
+    '舅': {'伴': '舅妈', is: '母的亲姊妹'},
+    '姨妈': {'伴': '姨父', is: '母的亲姊妹'},
     '岳父母': {'子': '舅子', '女': '姨子'},
     '岳父': {'父': '祖岳父', '母': '祖岳母', '伴': '岳母', is: '岳父母'},
-    '岳母': {'父': '外祖岳父', '母': '外祖岳母','伴': '岳父', is: '岳父母'},
+    '岳母': {'父': '外祖岳父', '母': '外祖岳母', '伴': '岳父', is: '岳父母'},
+    // 爷辈
     '祖父母': {'子': '伯叔', '女': '姑妈'},
     '祖父': {'父': '曾祖父', '母': '曾祖母', '伴': '祖母', is: '祖父母'},
     '祖母': {'父': '曾外祖父', '母': '曾外祖母', '伴': '祖父', is: '祖父母'},
+    '亲祖父母': {'子': '亲伯叔', is: '祖父母'},
+    '亲祖父': {'伴': '亲祖母', is: ['亲祖父母', '祖父'], name: '祖父'},
+    '亲祖母': {'伴': '亲祖父', is: ['亲祖父母', '祖母'], name: '祖母'},
     '外祖父母': {'子': '舅', '女': '姨妈'},
     '外祖父': {'父': '外曾祖父', '母': '外曾祖母', '伴': '外祖母', is: '外祖父母'},
     '外祖母': {'父': '外曾外祖父', '母': '外曾外祖母', '伴': '外祖父', is: '外祖父母'},
@@ -660,9 +698,24 @@ let AllTitle = {
     '外曾祖': {'子': '祖父', '女': '姑奶奶'},
     '外曾祖父': {'父': '外高祖父', '母': '外高祖母', '伴': '外曾祖母', is: '外曾祖'},
     '外曾祖母': {'父': '外高外祖父', '母': '外高外祖母', '伴': '外曾祖父', is: '外曾祖'},
+    // 高辈
+    '高祖': {'子': '曾祖父', '女': '姑曾祖母'},
+    '高祖父': {'父': '天祖父', '母': '天祖母', '伴': '高祖母', is: '高祖'},
+    '高祖母': {'伴': '高祖父', is: '高祖'},
+    '天祖': {'子': '高祖父', '女': '姑高祖母'},
+    '天祖父': {'父': '烈祖父', '母': '烈祖母', '伴': '天祖母', is: '天祖'},
+    '天祖母': {'伴': '天祖父', is: '天祖'},
+    '烈祖': {'子': '天祖父', '女': '姑天祖母'},
+    '烈祖父': {'父': '太祖父', '母': '太祖母', '伴': '烈祖母', is: '烈祖'},
+    '烈祖母': {'伴': '烈祖父', is: '烈祖'},
+    '太祖': {'子': '烈祖父', '女': '姑烈祖母'},
+    '太祖父': {'父': '远祖父', '母': '远祖母', '伴': '太祖母', is: '太祖'},
+    '太祖母': {'伴': '太祖父', is: '太祖'},
+    // 子辈
     '子女': {'父母': '伴'},
     '子': {'子': '孙子', '女': '孙女', '伴侣': '儿媳', is: '子女', name: '儿子'},
     '女': {'子': '外孙子', '女': '外孙女', '伴': '女婿', is: '子女', name: '女儿'},
+    // 孙辈
     '孙子女': {'父': '儿子', '母': '儿媳', '子': '曾孙', '女': '曾孙女'},
     '孙子': {'伴': '孙媳妇', is: '孙子女'},
     '孙女': {'伴': '孙女婿', is: '孙子女'},
@@ -687,8 +740,17 @@ function GetAppellationOf(title, of) {
     while (of) {
         let titleInfo = AllTitle[title];
         while (titleInfo && !titleInfo[of] && titleInfo.is) {
-            if (titleInfo.is === '自己') return of;
-            titleInfo = AllTitle[titleInfo.is];
+            if (titleInfo.is.constructor === String) {
+                if (titleInfo.is === '自己') return of;
+                titleInfo = AllTitle[titleInfo.is];
+            } else {
+                for (let is of titleInfo.is) {
+                    let subTitle = GetAppellationOf(is, of);
+                    if (subTitle) {
+                        return subTitle;
+                    }
+                }
+            }
         }
         result = titleInfo && titleInfo[of];
         if (result) {
@@ -1026,13 +1088,14 @@ function TPH(family, paths, bn, sf, s) {
         return "";
     }
 }
+
 // TPH 废弃
 // 计算关系路径HTML
 function TPHNew(family, paths, bn, sf, s) {
     let fromId = paths[0].id;
     let logRoutes = []
     let title = GetAppellation(GetRelationTitle(RelationTitle.self, family[fromId]), paths.slice(0, -1).map(obj => obj.type), logRoutes).join('/') || '无关';
-    console.log(paths, logRoutes);
+    // console.log(paths, logRoutes);
 
     let fromName = FDN(family[fromId], true, 1, sf, (bn == 1), true, true, true, true);
     let endId = paths[paths.length - 1].id;
