@@ -58,12 +58,15 @@ let FileHandler = {
     }
 };
 
+let TreeBg;
+
 // PL
 function OnBodyOnload() {
     if (!staticMode) {
         CE();
         // LF("topform");
     }
+    TreeBg = GetElement("treebg")
     if (hideSidebar) {
         SwapHideSideBar(false);
     }

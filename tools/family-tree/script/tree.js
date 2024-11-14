@@ -101,8 +101,8 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zf, wf, ts, _35) {
     } else {
         if (ios) {
             if (!(o.ios_width && o.ios_height)) {
-                o.ios_width = GetElement("treebg").offsetWidth;
-                o.ios_height = GetElement("treebg").offsetHeight;
+                o.ios_width = TreeBg.offsetWidth;
+                o.ios_height = TreeBg.offsetHeight;
             }
             ox = o.ios_width / 2 + _36 / 2;
             oy = o.ios_height / 2 + _37 / 2;
@@ -407,7 +407,7 @@ function TGP(yb, p, si) {
 }
 
 function TCD(i, t) {
-    var o = GetElement("treebg");
+    var o = TreeBg;
     if (i && o && o.ps && o.ps[i]) {
         var dw, dh;
         dw = o.offsetWidth;
@@ -458,7 +458,7 @@ var Tpd = false;
 var Tdx, Tdy;
 
 function TGS() {
-    var e = GetElement("treebg");
+    var e = TreeBg;
     if (self.pageYOffset) {
         scrolltop = self.pageYOffset;
         scrollleft = self.pageXOffset;
@@ -524,7 +524,7 @@ function TreeElementAddEventListener(element) {
         }
     };
     element.ontouchmove = function (e) {
-        console.log("ontouchmove", e.touches, e.type)
+        // console.log("ontouchmove", e.touches, e.type)
 
         if (Tpd) {
             let {x, y} = GetTouchesAvgXY(e.touches);
@@ -536,7 +536,6 @@ function TreeElementAddEventListener(element) {
             let lastTouchDistance = GetTouchDistance(lastTouches);
             let touchDistance = GetTouchDistance(e.touches);
             let scale = touchDistance / lastTouchDistance;
-            console.log(scale, lastTouchDistance, touchDistance);
             ZoomInOutScale(scale)
         }
         lastTouches = e.touches;
@@ -594,8 +593,8 @@ function TST() {
 
 function TSD(x, y) {
     if (true) {
-        GetElement("treebg").style.left = -x;
-        GetElement("treebg").style.top = -y;
+        TreeBg.style.left = -x;
+        TreeBg.style.top = -y;
     }
 }
 
@@ -609,7 +608,7 @@ function TFE(o, i) {
 
 function TRT(efa, viewPersonId, personId, y, ad, bn, sf, c, l, fl, ch, ph, co, pi, zf, wf, ts, s) {
     // console.log("TRT", arguments)
-    var o = GetElement("treebg");
+    var o = TreeBg;
     var _b9 = null;
     if (TFE(o, viewPersonId)) {
         var oi = viewPersonId;
