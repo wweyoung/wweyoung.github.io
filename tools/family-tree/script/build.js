@@ -504,120 +504,115 @@ function BGD(f, i, h, fl, pg, dp) {
     return d;
 }
 
-function BGH(f, i) {
-    var p = f[i];
-    if (p) {
-        var hc = p.es;
-        var ac = FLA(f, i);
-        if (hc && (!p.m1) && (!p.f1) && p.pc[hc] && (p.cp == 1) && (ac.length == 0)) {
+function BGH(family, id) {
+    var person = family[id];
+    if (person) {
+        var hc = person.es;
+        var ac = FLA(family, id);
+        if (hc && (!person.m1) && (!person.f1) && person.pc[hc] && (person.cp == 1) && (ac.length == 0)) {
             return hc;
         }
     }
     return null;
 }
 
-function BFT(f, i, m, ch, ph, oh, fl, pg) {
-    var p = f[i];
-    var hc = BGH(f, i);
-    if (ch && hc && !BGH(f, hc)) {
+function BFT(family, viewPersonId, ownPersonId, childrenLevelConfig, parentLevelConfig, cursionLevelConfig, maleLeftConfig, showMarryAttrs) {
+    var viewPerson = family[viewPersonId];
+    var hc = BGH(family, viewPersonId);
+    if (childrenLevelConfig && hc && !BGH(family, hc)) {
         var d = TND();
-        var od = BFT(f, hc, m, ch, ph, oh, fl, pg);
-        TAD(d, od, -od.e[i].x, -od.e[i].y);
+        var od = BFT(family, hc, ownPersonId, childrenLevelConfig, parentLevelConfig, cursionLevelConfig, maleLeftConfig, showMarryAttrs);
+        TAD(d, od, -od.e[viewPersonId].x, -od.e[viewPersonId].y);
         d.e[hc].k = false;
     } else {
         var dp = {a: {}, p: {}, c: {}};
-        var d = BGD(f, i, ch, fl, pg, dp);
-        if (ph > 0) {
+        var d = BGD(family, viewPersonId, childrenLevelConfig, maleLeftConfig, showMarryAttrs, dp);
+        if (parentLevelConfig > 0) {
             var px = 0;
-            var gs = [FSB(p, 1)];
+            var gs = [FSB(viewPerson, 1)];
             var ax = [0];
-            var bs = FLS(f, i, 1);
+            var bs = FLS(family, viewPersonId, 1);
             if (bs.length) {
-                var aa = BSS(d, f, p, bs, oh, null, 0, fl, pg, dp);
+                var aa = BSS(d, family, viewPerson, bs, cursionLevelConfig, null, 0, maleLeftConfig, showMarryAttrs, dp);
                 px = (aa.al + aa.ar) / 2;
                 if (Math.abs(px) > Btc.pd) {
                     px = 0.5 * (aa.rl - aa.ll);
                 }
                 for (var j = 0; j < bs.length; j++) {
-                    gs[gs.length] = FNB(f[bs[j]], p.m1 || p.f1);
+                    gs[gs.length] = FNB(family[bs[j]], viewPerson.m1 || viewPerson.f1);
                     ax[ax.length] = aa.ap[bs[j]];
                 }
             }
-            if (p.m1 || p.f1) {
+            if (viewPerson.m1 || viewPerson.f1) {
                 var mx = px, fx = px;
-                var p2 = p.m2 || p.f2;
-                var p3 = p.m3 || p.f3;
+                var p2 = viewPerson.m2 || viewPerson.f2;
+                var p3 = viewPerson.m3 || viewPerson.f3;
                 BDL(d, px, ax, -1, 0, gs, 0);
-                if (p.m1 && p.f1) {
-                    dp.p[p.m1 + "-" + p.f1] = true;
-                    dp.p[p.f1 + "-" + p.m1] = true;
-                    var o = BMG(f, p.m1, p.f1, pg) / 2;
-                    mx += (fl ? o : -o);
-                    fx += (fl ? -o : o);
-                    TAL(d, mx, -1, fx, -1, FUP(f, p.m1, p.f1) ? "S" : "P");
-                    TAP(d, p.m1, p.f1, mx, fx, -1, false);
+                if (viewPerson.m1 && viewPerson.f1) {
+                    dp.p[viewPerson.m1 + "-" + viewPerson.f1] = true;
+                    dp.p[viewPerson.f1 + "-" + viewPerson.m1] = true;
+                    var o = BMG(family, viewPerson.m1, viewPerson.f1, showMarryAttrs) / 2;
+                    mx += (maleLeftConfig ? o : -o);
+                    fx += (maleLeftConfig ? -o : o);
+                    TAL(d, mx, -1, fx, -1, FUP(family, viewPerson.m1, viewPerson.f1) ? "S" : "P");
+                    TAP(d, viewPerson.m1, viewPerson.f1, mx, fx, -1, false);
                 }
-                if (p.m1) {
-                    BDD(d, f, p.m1, p.f1, mx, -1, false, p2 ? fl : null, p2);
+                if (viewPerson.m1) {
+                    BDD(d, family, viewPerson.m1, viewPerson.f1, mx, -1, false, p2 ? maleLeftConfig : null, p2);
                 }
-                if (p.f1) {
-                    BDD(d, f, p.f1, p.m1, fx, -1, false, p2 ? (!fl) : null, p2);
+                if (viewPerson.f1) {
+                    BDD(d, family, viewPerson.f1, viewPerson.m1, fx, -1, false, p2 ? (!maleLeftConfig) : null, p2);
                 }
                 if (p2) {
                     var dr2 = (bs.length == 0) || (aa.ll >= aa.rl);
                     var eu = {};
                     for (j = 2; j <= 3; j++) {
                         var drj = dr2;
-                        var mj = p["m" + j];
-                        var fj = p["f" + j];
+                        var mj = viewPerson["m" + j];
+                        var fj = viewPerson["f" + j];
                         if (mj || fj) {
                             var ej = null;
                             var ei = null;
                             var ex = null;
                             var em = false;
-                            if (mj && ((fj == p.m1) || (fj == p.f1)) && !eu[fj]) {
+                            if (mj && ((fj == viewPerson.m1) || (fj == viewPerson.f1)) && !eu[fj]) {
                                 ej = mj;
-                                drj = (fj == p.m1) ? fl : !fl;
+                                drj = (fj == viewPerson.m1) ? maleLeftConfig : !maleLeftConfig;
                                 ei = fj;
                                 ex = fx;
                                 fj = null;
                                 em = true;
-                            } else {
-                                if (fj && (mj == p.m1) || (mj == p.f1) && !eu[mj]) {
-                                    ej = fj;
-                                    drj = (fj == p.m1) ? fl : !fl;
-                                    ei = mj;
+                            } else if (fj && (mj == viewPerson.m1) || (mj == viewPerson.f1) && !eu[mj]) {
+                                ej = fj;
+                                drj = (fj == viewPerson.m1) ? maleLeftConfig : !maleLeftConfig;
+                                ei = mj;
+                                ex = mx;
+                                mj = null;
+                                em = true;
+                            } else if (!(mj && fj)) {
+                                ej = mj || fj;
+                                if (family[ej].pc[viewPerson.m1] && !eu[viewPerson.m1]) {
+                                    drj = maleLeftConfig;
+                                    ei = viewPerson.m1;
                                     ex = mx;
-                                    mj = null;
-                                    em = true;
+                                } else if (family[ej].pc[viewPerson.f1] && !eu[viewPerson.f1]) {
+                                    drj = !maleLeftConfig;
+                                    ei = viewPerson.f1;
+                                    ex = fx;
                                 } else {
-                                    if (!(mj && fj)) {
-                                        ej = mj || fj;
-                                        if (f[ej].pc[p.m1] && !eu[p.m1]) {
-                                            drj = fl;
-                                            ei = p.m1;
-                                            ex = mx;
-                                        } else {
-                                            if (f[ej].pc[p.f1] && !eu[p.f1]) {
-                                                drj = !fl;
-                                                ei = p.f1;
-                                                ex = fx;
-                                            } else {
-                                                ej = null;
-                                            }
-                                        }
-                                    }
+                                    ej = null;
                                 }
                             }
-                            var gr2 = FSB(p, j);
-                            var g = ej ? BMG(f, ej, ei, pg) : 1;
+
+                            var gr2 = FSB(viewPerson, j);
+                            var g = ej ? BMG(family, ej, ei, showMarryAttrs) : 1;
                             var m2x = drj ? (d.yr[-1] + g - 1) : (d.yl[-1] - g);
                             var f2x = m2x;
                             if (mj && fj) {
-                                var g = BMG(f, mj, fj, pg);
-                                m2x += (fl ? (drj ? g : 0) : (drj ? 0 : -g));
-                                f2x = m2x + (fl ? -g : g);
-                                TAL(d, m2x, -1, f2x, -1, FUP(f, mj, fj) ? "S" : "P");
+                                var g = BMG(family, mj, fj, showMarryAttrs);
+                                m2x += (maleLeftConfig ? (drj ? g : 0) : (drj ? 0 : -g));
+                                f2x = m2x + (maleLeftConfig ? -g : g);
+                                TAL(d, m2x, -1, f2x, -1, FUP(family, mj, fj) ? "S" : "P");
                                 TAP(d, mj, fj, m2x, f2x, -1, false);
                             }
                             var p2x = em ? ((m2x + ex) / 2) : ((m2x + f2x) / 2);
@@ -626,58 +621,56 @@ function BFT(f, i, m, ch, ph, oh, fl, pg) {
                             TAL(d, ox, 0, ox, -0.5 + oy, gr2 ? "C" : "B");
                             TAL(d, ox, -0.5 + oy, p2x, -0.5 + oy, gr2 ? "C" : "B");
                             TAL(d, p2x, -0.5 + oy, p2x, -1, gr2 ? "C" : "B");
-                            var bs2 = FLS(f, i, j);
+                            var bs2 = FLS(family, viewPersonId, j);
                             if (bs2.length) {
                                 TAL(d, p2x, -0.5 + oy, p2x + (drj ? 0.1 : -0.1), -0.5 + oy, gr2 ? "c" : "b");
                             }
                             if (mj) {
-                                BDD(d, f, mj, fj, m2x, -1, true, fl, false);
+                                BDD(d, family, mj, fj, m2x, -1, true, maleLeftConfig, false);
                             }
                             if (fj) {
-                                BDD(d, f, fj, mj, f2x, -1, true, !fl, false);
+                                BDD(d, family, fj, mj, f2x, -1, true, !maleLeftConfig, false);
                             }
                             if (ej && ei) {
-                                TAL(d, ex, -1, m2x, -1, FUP(f, ej, ei) ? "S" : "P");
+                                TAL(d, ex, -1, m2x, -1, FUP(family, ej, ei) ? "S" : "P");
                                 TAP(d, ej, ei, ex, m2x, -1, false);
                                 eu[ei] = true;
                             }
                         }
                     }
                 } else {
-                    if (p.m1) {
-                        var ac = FLA(f, p.m1);
-                        if (ac.length && p.f1) {
-                            BDH(d, f, p.m1, null, ac, oh, fl, mx, -1, -1, -1, fl, pg, dp, [], {});
+                    if (viewPerson.m1) {
+                        var ac = FLA(family, viewPerson.m1);
+                        if (ac.length && viewPerson.f1) {
+                            BDH(d, family, viewPerson.m1, null, ac, cursionLevelConfig, maleLeftConfig, mx, -1, -1, -1, maleLeftConfig, showMarryAttrs, dp, [], {});
                         }
-                        BDA(d, f, p.m1, p.f1, oh, fl, mx, -1, fl, pg, dp, [], {});
+                        BDA(d, family, viewPerson.m1, viewPerson.f1, cursionLevelConfig, maleLeftConfig, mx, -1, maleLeftConfig, showMarryAttrs, dp, [], {});
                     }
-                    if (p.f1) {
-                        var ac = FLA(f, p.f1);
-                        if (ac.length && p.m1) {
-                            BDH(d, f, p.f1, null, ac, oh, !fl, fx, -1, -1, -1, fl, pg, dp, [], {});
+                    if (viewPerson.f1) {
+                        var ac = FLA(family, viewPerson.f1);
+                        if (ac.length && viewPerson.m1) {
+                            BDH(d, family, viewPerson.f1, null, ac, cursionLevelConfig, !maleLeftConfig, fx, -1, -1, -1, maleLeftConfig, showMarryAttrs, dp, [], {});
                         }
-                        BDA(d, f, p.f1, p.m1, oh, !fl, fx, -1, fl, pg, dp, [], {});
+                        BDA(d, family, viewPerson.f1, viewPerson.m1, cursionLevelConfig, !maleLeftConfig, fx, -1, maleLeftConfig, showMarryAttrs, dp, [], {});
                     }
                 }
-                if (p.m1) {
-                    BPS(d, f, p.m1, p.f1, ph, oh, fl, mx, fl, pg, dp);
+                if (viewPerson.m1) {
+                    BPS(d, family, viewPerson.m1, viewPerson.f1, parentLevelConfig, cursionLevelConfig, maleLeftConfig, mx, maleLeftConfig, showMarryAttrs, dp);
                 }
-                if (p.f1) {
-                    BPS(d, f, p.f1, p.m1, ph, oh, !fl, fx, fl, pg, dp);
+                if (viewPerson.f1) {
+                    BPS(d, family, viewPerson.f1, viewPerson.m1, parentLevelConfig, cursionLevelConfig, !maleLeftConfig, fx, maleLeftConfig, showMarryAttrs, dp);
                 }
             }
-        } else {
-            if (p.m1 || p.f1) {
-                TAL(d, 0, 0, 0, -0.425, FSB(p, 1) ? "c" : "b");
-                if (p.m2 || p.f2) {
-                    TAL(d, 0.05, 0, 0.05, -0.45, FSB(p, 2) ? "c" : "b");
-                }
+        } else if (viewPerson.m1 || viewPerson.f1) {
+            TAL(d, 0, 0, 0, -0.425, FSB(viewPerson, 1) ? "c" : "b");
+            if (viewPerson.m2 || viewPerson.f2) {
+                TAL(d, 0.05, 0, 0.05, -0.45, FSB(viewPerson, 2) ? "c" : "b");
             }
         }
     }
-    d.e[i].k = true;
-    if (m && d.e[m]) {
-        d.e[m].m = true;
+    d.e[viewPersonId].k = true;
+    if (ownPersonId && d.e[ownPersonId]) {
+        d.e[ownPersonId].m = true;
     }
     return d;
 }

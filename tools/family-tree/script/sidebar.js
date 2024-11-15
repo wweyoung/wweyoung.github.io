@@ -103,7 +103,7 @@ function SetSidebarPersonAndViewMode(id, viewMode) {
     var v = GetElement("nametitle");
     v.innerHTML = EncodeHTML(SPN(person));
     v.className = person.p ? "sname" : "sdefname";
-    SetElementValue("shareperson", _t("Invite $ to share family", person.h));
+    // SetElementValue("shareperson", _t("Invite $ to share family", person.h));
     SetElementShow("hideurl", false);
     GetElement("switchpanel3").style.display = person.cp ? "block" : "none";
     GetElement("switchpanel4").style.display = (Edd || Eud) ? "block" : "none";

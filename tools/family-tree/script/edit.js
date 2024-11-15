@@ -68,7 +68,7 @@ function OnBodyOnload() {
     }
     TreeBg = GetElement("treebg")
     if (hideSidebar) {
-        SwapHideSideBar(false);
+        SetHideSideBarShow(false);
     }
     if (staticMode || (typeof (XMLHttpRequest) != "undefined")) {
         window.onbeforeunload = OnWindowBeforeUnload;
@@ -142,8 +142,7 @@ function OnBodyOnload() {
             Eca = true;
             Ecd = true;
             var familyId = GetElementValue("familyid");
-            var ic = GetElementValue("importcacheid");
-            if (familyId || ic) {
+            if (familyId) {
                 LoadScriptText()
                 // HttpPostNoBody("family_read", {
                 //     f: fi,
@@ -225,7 +224,7 @@ function EBT() {
 // EPU 页面退出触发
 function OnWindowBeforeUnload(e) {
     if ((!Esc) && (!staticMode)) {
-        if (GetElementValue("newscript").length || GetElementValue("importcacheid")) {
+        if (GetElementValue("newscript").length) {
             e = e || window.event;
             var m = _t("If you leave this page before saving, your changes to this family will be lost.");
             e.returnValue = m;
@@ -365,21 +364,21 @@ function EUS(r, viewPersonId, viewMode, d, s) {
         }
     }
     if (preViewMode == "history") {
-        SwapHideSideBar(true);
+        SetHideSideBarShow(true);
         if ((!IsSafariBrowser && Elh != preViewMode) || (IsSafariBrowser && viewMode)) {
             // GetElement("extraframe").src = "history.php"
         }
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "share") {
-        SwapHideSideBar(true);
+        SetHideSideBarShow(true);
         // GetElement("extraframe").src = "share.php"
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "download") {
-        SwapHideSideBar(true);
+        SetHideSideBarShow(true);
         // GetElement("extraframe").src = "download.php"
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "print") {
-        SwapHideSideBar(true);
+        SetHideSideBarShow(true);
         if (viewMode) {
             // GetElement("extraframe").src = "print.php"
         }
@@ -415,12 +414,12 @@ function EUS(r, viewPersonId, viewMode, d, s) {
     if (viewMode == "calendar") {
         SwitchToCalendar();
         SetElementShow("caltimediv", true);
-        SwapHideSideBar(true);
+        SetHideSideBarShow(true);
     }
     if (viewMode == "timeline") {
         SwichToTimeLine();
         SetElementShow("caltimediv", true);
-        SwapHideSideBar(true);
+        SetHideSideBarShow(true);
     }
     if (preViewMode == "path") {
         SSP(ViewPersonId);
@@ -860,11 +859,10 @@ async function SaveScriptToFile(script) {
 function OnSavingScript(isSaved) {
     if (!staticMode) {
         var newScriptLength = GetElementValue("newscript").length;
-        var ic = GetElementValue("importcacheid");
         let p;
         if (IsSaving) {
             p = "lsaving";
-        } else if (newScriptLength || ic) {
+        } else if (newScriptLength) {
             p = "lsave";
         } else {
             p = isSaved ? "lsaved" : "linitial";
@@ -1139,19 +1137,19 @@ function ETU() {
 }
 
 // ETI 侧边栏展开/收起
-function ETI() {
+function SwapSideBar() {
     var w = GetElement("leftdiv").offsetWidth;
     var s = TGS();
     var v = IsElementVisibility("leftdiv");
     ESM("view");
-    SwapHideSideBar(!v);
+    SetHideSideBarShow(!v);
     JustifyNavrowElement();
     TSD(s.right + (v ? -w : w), s.top);
     TCD(ViewPersonId, 250);
 }
 
 // ESI 侧边栏展开/收起
-function SwapHideSideBar(isShow) {
+function SetHideSideBarShow(isShow) {
     let ids = ["treemargin", "fileviewmargin", "navdiv", "welcomemargin", "optionsdiv", "filesmargin", "usersmargin"];
     ids.forEach(id=>{
         let element = GetElement(id);
@@ -1182,7 +1180,7 @@ function SwapDayNightMode() {
         var sb = false;
     }
     document.body.className = nc;
-    var fs = ["extraframe", "uploadiframe", "usersframe"];
+    var fs = ["uploadiframe", "usersframe"];
     for (var j = 0; j < fs.length; j++) {
         var e = GetElement(fs[j]).contentDocument;
         if (e) {
@@ -1224,7 +1222,6 @@ function ESL() {
 
 function ECI(c, s) {
     HideWelcome();
-    SetElementValue("importcacheid", c);
     SetElementValue("newscript", "");
     Efa = {};
     Eis = s;
@@ -1235,7 +1232,6 @@ function ECI(c, s) {
 
 // ESA 清除数据
 function ClearAndRestart() {
-    SetElementValue("importcacheid", "");
     SetElementValue("newscript", "");
     Efa = {};
     Eis = "";

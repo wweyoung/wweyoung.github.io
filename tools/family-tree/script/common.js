@@ -111,10 +111,6 @@ function SetBreak(html) {
 }
 
 // DT 获取时间戳
-function DateTimestamp() {
-    return Date.now();
-}
-
 // BR 组装url
 function BuildURL(prefix, filename, paramMap) {
     var url = prefix + "ap_" + filename + ".php?";
@@ -128,7 +124,7 @@ function BuildURL(prefix, filename, paramMap) {
 
 // BA 组装url 最后加随机数
 function BuildURLNoCache(prefix, filename, paramMap) {
-    return BuildURL(prefix, filename, paramMap) + "_=" + (DateTimestamp() + Math.random());
+    return BuildURL(prefix, filename, paramMap) + "_=" + (Date.now() + Math.random());
 }
 
 function HttpPostNoBody(filename, paramMap, callback, callbackArg) {

@@ -362,16 +362,17 @@ function TGL(yb, ad, p) {
     return ey.trim();
 }
 
-function TGG(y) {
+// TGG 获取展示的结婚离婚字段码
+function GetMarryAttrsByConfigFields(configFields) {
     var m = {};
-    var yd = ("." + y + ".");
-    if (yd.indexOf(".sm.") >= 0) {
+    var yd = ("." + configFields + ".");
+    if (yd.indexOf(".sm.") >= 0) { // 结婚日期
         m["m"] = true;
     }
-    if (yd.indexOf(".sw.") >= 0) {
+    if (yd.indexOf(".sw.") >= 0) { // 结婚地点
         m["w"] = true;
     }
-    if (yd.indexOf(".sd.") >= 0) {
+    if (yd.indexOf(".sd.") >= 0) { // 离婚日期
         m["d"] = true;
     }
     return m;
@@ -431,7 +432,7 @@ function TCD(i, t) {
             sx += 0.9 * (Math.min(0, Math.max(o.es.l - as.l, o.es.r - as.r)) + Math.max(0, Math.min(o.es.l - as.l, o.es.r - as.r)));
             sy += 0.9 * (Math.min(0, Math.max(o.es.t - as.t, o.es.b - as.b)) + Math.max(0, Math.min(o.es.t - as.t, o.es.b - as.b)));
         }
-        var scs = DateTimestamp();
+        var scs = Date.now();
         TSS(sx, sy, scs, scs + t, "_sel");
     }
 }
@@ -459,17 +460,6 @@ var Tdx, Tdy;
 
 function TGS() {
     var e = TreeBg;
-    if (self.pageYOffset) {
-        scrolltop = self.pageYOffset;
-        scrollleft = self.pageXOffset;
-    } else if (document.documentElement && document.documentElement.scrollTop) {
-        scrolltop = document.documentElement.scrollTop;
-        scrollleft = document.documentElement.scrollLeft;
-    } else if (document.body) {
-        scrolltop = document.body.scrollTop;
-        scrollleft = document.body.scrollLeft;
-    }
-
     return {top: -e.offsetTop, left: -e.offsetLeft};
 }
 
@@ -479,7 +469,7 @@ function TreeElementAddEventListener(element) {
         // console.log("onmousedown", e);
         e = e ? e : window.event;
         Tpd = true;
-        scrollpos = TGS();
+        let scrollpos = TGS();
         Tdx = scrollpos.left + e.clientX;
         Tdy = scrollpos.top + e.clientY;
     };
@@ -487,15 +477,13 @@ function TreeElementAddEventListener(element) {
         Tpd = false;
     };
     element.onmousemove = function (e) {
-        // console.log("onmousemove", e);
-
         e = e ? e : window.event;
         if (Tpd) {
             TSS(Tdx - e.clientX, Tdy - e.clientY, 0, 0, null);
         }
     };
     document.body.onselectstart = function (e) {
-        if (Tpd) {
+        if (Tpd) { // 触摸时禁止选中
             return false;
         }
     };
@@ -508,7 +496,7 @@ function TreeElementAddEventListener(element) {
     element.ontouchstart = function (e) {
         console.log("ontouchstart", e)
         Tpd = true;
-        scrollpos = TGS();
+        let scrollpos = TGS();
         let {x, y} = GetTouchesAvgXY(e.touches);
         Tdx = scrollpos.left + x;
         Tdy = scrollpos.top + y;
@@ -540,6 +528,10 @@ function TreeElementAddEventListener(element) {
         }
         lastTouches = e.touches;
     };
+    element.onclick = function (e) {
+        console.log("onclick", e)
+        SetHideSideBarShow(e.target.id !== 'treemargin')
+    };
 }
 
 function GetTouchesAvgXY(touches) {
@@ -569,15 +561,15 @@ function TSS(x, y, scs, scf, scv) {
     Tss = scs;
     Tse = scf;
     Tsv = scv;
-    if (DateTimestamp() >= scf) {
+    if (Date.now() >= scf) {
         TST();
     } else {
-        Tst = setTimeout("TST()", 10);
+        Tst = setTimeout(TST, 10);
     }
 }
 
 function TST() {
-    var n = DateTimestamp();
+    var n = Date.now();
     if (n >= Tse) {
         TSD(Tsd.left, Tsd.top);
         if (Tsv && GetElement(Tsv)) {
@@ -587,56 +579,58 @@ function TST() {
         var p = (n - Tss) / (Tse - Tss);
         p = 1 - Math.pow(0.5, p / 0.2);
         TSD(Tsf.left + p * (Tsd.left - Tsf.left), Tsf.top + p * (Tsd.top - Tsf.top));
-        Tst = setTimeout("TST()", 10);
+        Tst = setTimeout(TST, 10);
     }
 }
 
 function TSD(x, y) {
-    if (true) {
-        TreeBg.style.left = -x;
-        TreeBg.style.top = -y;
-    }
+    TreeBg.style.left = -x;
+    TreeBg.style.top = -y;
 }
 
 function TCT() {
     ESP(this.pid, true);
 }
 
-function TFE(o, i) {
-    return (o.ps && i) ? o.ps[i] : null;
+function TreeBgPsOf(i) {
+    return (TreeBg.ps && i) ? TreeBg.ps[i] : null;
 }
 
-function TRT(efa, viewPersonId, personId, y, ad, bn, sf, c, l, fl, ch, ph, co, pi, zf, wf, ts, s) {
+function TRT(family, viewPersonId, ownPersonId, personShowFields, otherAgeConfig, birthNameConfig, surnameFirstConfig,
+             colorsConfig, linesConfig, maleLeftConfig, childrenLevelConfig, parentLevelConfig, cursionLevelConfig,
+             preViewPersonId, zoomConfig, widthConfig, textSizeConfig, s) {
     // console.log("TRT", arguments)
-    var o = TreeBg;
     var _b9 = null;
-    if (TFE(o, viewPersonId)) {
-        var oi = viewPersonId;
-        var sd = 0;
-        if (viewPersonId != pi) {
+    let oiPersonId, sd;
+    if (TreeBgPsOf(viewPersonId)) {
+        oiPersonId = viewPersonId;
+        sd = 0;
+        if (viewPersonId != preViewPersonId) {
             _b9 = "_sel";
             if (GetElement(_b9)) {
                 SetElementVisibility(_b9, false);
             }
         }
     } else {
-        var oi = TFE(o, pi) ? pi : null;
-        var sd = oi ? 250 : 0;
+        oiPersonId = TreeBgPsOf(preViewPersonId) ? preViewPersonId : null;
+        sd = oiPersonId ? 250 : 0;
     }
-    var pg = TGG(y);
-    TRD(BFT(efa, viewPersonId, personId, ch, ph, co, fl, pg), y, ad, bn, sf, c, l, o, oi, true, false, zf, wf, ts, _b9);
+    var showMarryAttrs = GetMarryAttrsByConfigFields(personShowFields);
+    TRD(BFT(family, viewPersonId, ownPersonId, childrenLevelConfig, parentLevelConfig, cursionLevelConfig, maleLeftConfig, showMarryAttrs),
+        personShowFields, otherAgeConfig, birthNameConfig, surnameFirstConfig, colorsConfig, linesConfig, TreeBg, oiPersonId,
+        true, false, zoomConfig, widthConfig, textSizeConfig, _b9);
     if (s && noCentering) {
         if (_b9 && GetElement(_b9)) {
             SetElementVisibility(_b9, true);
         }
     } else {
-        setTimeout("TCD('" + viewPersonId + "', " + (s ? 250 : 0) + ")", sd);
+        setTimeout(() => TCD(viewPersonId, s ? 250 : 0), sd);
     }
-    o = GetElement("treediv");
+    let treediv = GetElement("treediv");
     if (IsDarkMode()) {
-        o.style.backgroundColor = "";
+        treediv.style.backgroundColor = "";
     } else {
-        o.style.backgroundColor = c.back;
+        treediv.style.backgroundColor = colorsConfig.back;
     }
 }
 

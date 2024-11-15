@@ -845,19 +845,19 @@ function FSC(f, ci) {
     }
 }
 
-function FPP(p, i) {
+function FPP(person, id) {
     var x = null;
-    if (i == p.m1) {
+    if (id == person.m1) {
         x = "f1";
-    } else if (i == p.f1) {
+    } else if (id == person.f1) {
         x = "m1";
-    } else if (i == p.m2) {
+    } else if (id == person.m2) {
         x = "f2";
-    } else if (i == p.f2) {
+    } else if (id == person.f2) {
         x = "m2";
-    } else if (i == p.m3) {
+    } else if (id == person.m3) {
         x = "f3";
-    } else if (i == p.f3) {
+    } else if (id == person.f3) {
         x = "m3";
     }
 
@@ -918,18 +918,18 @@ function FPG(p, pi) {
     return false;
 }
 
-function FLA(f, i) {
+function FLA(family, id) {
     var ac = [];
-    var c = f[i].c;
+    var c = family[id].c;
     for (var j = 0; j < c.length; j++) {
-        var cp = f[c[j]];
-        var pf = FPP(cp, i);
+        var cp = family[c[j]];
+        var pf = FPP(cp, id);
         var oi = pf ? cp[pf] : null;
-        if (!(oi && f[oi])) {
+        if (!(oi && family[oi])) {
             ArrayPush(ac, c[j]);
         }
     }
-    FSC(f, ac);
+    FSC(family, ac);
     return ac;
 }
 

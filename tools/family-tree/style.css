@@ -878,22 +878,12 @@ a.fattachpmlink:hover {
     }
 }
 
-.nshrink1 .iconlabel {
-    display: none;
-}
-
-.nshrink2 #showzoom {
-    display: none;
-}
-
-.nshrink3 #backto {
-    display: none;
-}
-
-.nshrink4 #optionslinktext {
-    display: none;
-}
-
-.nshrink5 .buttondash {
-    display: none;
+.nshrink1 #findfield_label,
+.nshrink1 .iconlabel,
+.nshrink2 #showzoom,
+.nshrink3 #backto,
+.nshrink4 #optionslinktext,
+.nshrink5 .buttondash,
+.nshrink5 .nav_unimportant5 {
+    display: none !important;
 }
