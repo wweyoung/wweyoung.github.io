@@ -863,6 +863,7 @@ a.fattachpmlink:hover {
     }
 
     .marginon {
+        height: calc(100% - 335px);
         width: 100%;
     }
 
@@ -881,9 +882,8 @@ a.fattachpmlink:hover {
 .nshrink1 #findfield_label,
 .nshrink1 .iconlabel,
 .nshrink2 #showzoom,
-.nshrink3 #backto,
-.nshrink4 #optionslinktext,
-.nshrink5 .buttondash,
+.nshrink3 #optionslinktext,
+.nshrink4 .buttondash,
 .nshrink5 .nav_unimportant5 {
     display: none !important;
 }

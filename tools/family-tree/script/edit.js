@@ -68,7 +68,7 @@ function OnBodyOnload() {
     }
     TreeBg = GetElement("treebg")
     if (hideSidebar) {
-        SetHideSideBarShow(false);
+        SetSideBarShow(false);
     }
     if (staticMode || (typeof (XMLHttpRequest) != "undefined")) {
         window.onbeforeunload = OnWindowBeforeUnload;
@@ -364,21 +364,21 @@ function EUS(r, viewPersonId, viewMode, d, s) {
         }
     }
     if (preViewMode == "history") {
-        SetHideSideBarShow(true);
+        SetSideBarShow(true);
         if ((!IsSafariBrowser && Elh != preViewMode) || (IsSafariBrowser && viewMode)) {
             // GetElement("extraframe").src = "history.php"
         }
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "share") {
-        SetHideSideBarShow(true);
+        SetSideBarShow(true);
         // GetElement("extraframe").src = "share.php"
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "download") {
-        SetHideSideBarShow(true);
+        SetSideBarShow(true);
         // GetElement("extraframe").src = "download.php"
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "print") {
-        SetHideSideBarShow(true);
+        SetSideBarShow(true);
         if (viewMode) {
             // GetElement("extraframe").src = "print.php"
         }
@@ -414,12 +414,12 @@ function EUS(r, viewPersonId, viewMode, d, s) {
     if (viewMode == "calendar") {
         SwitchToCalendar();
         SetElementShow("caltimediv", true);
-        SetHideSideBarShow(true);
+        SetSideBarShow(true);
     }
     if (viewMode == "timeline") {
         SwichToTimeLine();
         SetElementShow("caltimediv", true);
-        SetHideSideBarShow(true);
+        SetSideBarShow(true);
     }
     if (preViewMode == "path") {
         SSP(ViewPersonId);
@@ -905,6 +905,7 @@ function EAR(_79, _7a, _7b) {
 // EBS 返回到personid
 function BackToPersonId() {
     ESP(OwnerPersonId, true);
+    TreeFocusOnPerson(OwnerPersonId, 500)
 }
 
 // ECZ 画布单位放大/缩小
@@ -1096,7 +1097,7 @@ function ETO() {
     SetElementShow("optionsdiv", s);
     SetElementInnerHTML("optionslinktext", s ? _h("Hide options") : _h("Options"));
     GetElement("treemargin").style.paddingBottom = (s ? (GetElement("optionsdiv").offsetHeight + "px") : 0);
-    TCD(ViewPersonId, 250);
+    TreeFocusOnPerson(ViewPersonId, 250);
 }
 
 function ETF() {
@@ -1115,7 +1116,7 @@ function ETF() {
     SetElementShow("filesbutton", !s);
     SetElementShow("filestreebutton", s);
     GetElement("treemargin").style.paddingBottom = (s ? (GetElement("filesdiv").offsetHeight + "px") : 0);
-    TCD(ViewPersonId, 250);
+    TreeFocusOnPerson(ViewPersonId, 250);
 }
 
 function ETU() {
@@ -1133,25 +1134,32 @@ function ETU() {
     SetElementShow("usersbutton", !s);
     SetElementShow("userstreebutton", s);
     GetElement("treemargin").style.paddingBottom = (s ? (GetElement("usersdiv").offsetHeight + "px") : 0);
-    TCD(ViewPersonId, 250);
+    TreeFocusOnPerson(ViewPersonId, 250);
 }
 
 // ETI 侧边栏展开/收起
-function SwapSideBar() {
-    var w = GetElement("leftdiv").offsetWidth;
-    var s = TGS();
-    var v = IsElementVisibility("leftdiv");
+function SwapSideBar(show) {
+    var preShow = IsElementVisibility("leftdiv");
+    if (show === undefined) {
+        show = !preShow;
+    } else {
+        if (preShow === show) {
+            return;
+        }
+    }
     ESM("view");
-    SetHideSideBarShow(!v);
+    SetSideBarShow(show);
     JustifyNavrowElement();
-    TSD(s.right + (v ? -w : w), s.top);
-    TCD(ViewPersonId, 250);
+    if (show) {
+        TreeFocusOnPerson(ViewPersonId, 250);
+    }
 }
 
+
 // ESI 侧边栏展开/收起
-function SetHideSideBarShow(isShow) {
+function SetSideBarShow(isShow) {
     let ids = ["treemargin", "fileviewmargin", "navdiv", "welcomemargin", "optionsdiv", "filesmargin", "usersmargin"];
-    ids.forEach(id=>{
+    ids.forEach(id => {
         let element = GetElement(id);
         if (isShow) {
             element.classList.replace("marginoff", "marginon")

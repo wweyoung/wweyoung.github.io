@@ -407,9 +407,10 @@ function TGP(yb, p, si) {
     return (ml ? (_t("m.") + " " + ml) : "") + (dl ? ((ml ? ", " : "") + _t("d.") + " " + dl) : "");
 }
 
-function TCD(i, t) {
+// TCD
+function TreeFocusOnPerson(id, time = 250) {
     var o = TreeBg;
-    if (i && o && o.ps && o.ps[i]) {
+    if (id && o && o.ps && o.ps[id]) {
         var dw, dh;
         dw = o.offsetWidth;
         dh = o.offsetHeight;
@@ -425,15 +426,15 @@ function TCD(i, t) {
         if ((dh < 64) || (dh > 4096)) {
             dh = self.outerHeight;
         }
-        var sx = o.ps[i].x - dw / 2;
-        var sy = o.ps[i].y - dh / 2;
+        var sx = o.ps[id].x - dw / 2;
+        var sy = o.ps[id].y - dh / 2;
         if (o.es) {
             var as = {l: sx + 64, t: sy + 32, r: sx + dw - 32, b: sy + dh - 64};
             sx += 0.9 * (Math.min(0, Math.max(o.es.l - as.l, o.es.r - as.r)) + Math.max(0, Math.min(o.es.l - as.l, o.es.r - as.r)));
             sy += 0.9 * (Math.min(0, Math.max(o.es.t - as.t, o.es.b - as.b)) + Math.max(0, Math.min(o.es.t - as.t, o.es.b - as.b)));
         }
         var scs = Date.now();
-        TSS(sx, sy, scs, scs + t, "_sel");
+        TSS(sx, sy, scs, scs + time);
     }
 }
 
@@ -455,37 +456,38 @@ function TRB(o, l, t, w, h, k, bg, _8e) {
     o.appendChild(v);
 }
 
-var Tpd = false;
+var TreeIsPressed = false;
 var Tdx, Tdy;
 
 function TGS() {
-    var e = TreeBg;
-    return {top: -e.offsetTop, left: -e.offsetLeft};
+    return {top: -TreeBg.offsetTop, left: -TreeBg.offsetLeft};
 }
 
 // TIS 给图谱绑定事件
 function TreeElementAddEventListener(element) {
+    document.body.onselectstart = function (e) {
+        if (TreeIsPressed) { // 触摸时禁止选中
+            return false;
+        }
+    };
     element.onmousedown = function (e) {
         // console.log("onmousedown", e);
         e = e ? e : window.event;
-        Tpd = true;
+        TreeIsPressed = true;
         let scrollpos = TGS();
         Tdx = scrollpos.left + e.clientX;
         Tdy = scrollpos.top + e.clientY;
     };
-    element.onmouseup = function (e) {
-        Tpd = false;
-    };
     element.onmousemove = function (e) {
+        console.log("onmousemove", TreeIsPressed)
         e = e ? e : window.event;
-        if (Tpd) {
-            TSS(Tdx - e.clientX, Tdy - e.clientY, 0, 0, null);
+        if (TreeIsPressed) {
+            TreeSetOffset(Tdx - e.clientX, Tdy - e.clientY)
+            // TSS(Tdx - e.clientX, Tdy - e.clientY, 0, 0);
         }
     };
-    document.body.onselectstart = function (e) {
-        if (Tpd) { // 触摸时禁止选中
-            return false;
-        }
+    element.onmouseup = function (e) {
+        TreeIsPressed = false;
     };
     element.onwheel = function (e) {
         var d = e.wheelDelta;
@@ -495,7 +497,7 @@ function TreeElementAddEventListener(element) {
     let lastTouches;
     element.ontouchstart = function (e) {
         console.log("ontouchstart", e)
-        Tpd = true;
+        TreeIsPressed = true;
         let scrollpos = TGS();
         let {x, y} = GetTouchesAvgXY(e.touches);
         Tdx = scrollpos.left + x;
@@ -507,16 +509,17 @@ function TreeElementAddEventListener(element) {
     element.ontouchend = function (e) {
         console.log("ontouchend", e)
         lastTouches = null;
-        if (Tpd) {
-            Tpd = false;
+        if (TreeIsPressed) {
+            TreeIsPressed = false;
         }
     };
     element.ontouchmove = function (e) {
         // console.log("ontouchmove", e.touches, e.type)
 
-        if (Tpd) {
+        if (TreeIsPressed) {
             let {x, y} = GetTouchesAvgXY(e.touches);
-            TSS(Tdx - x, Tdy - y, 0, 0, null);
+            TreeSetOffset(Tdx - x, Tdy - y)
+            // TSS(Tdx - x, Tdy - y, 0, 0);
             e.preventDefault();
         }
 
@@ -530,7 +533,7 @@ function TreeElementAddEventListener(element) {
     };
     element.onclick = function (e) {
         console.log("onclick", e)
-        SetHideSideBarShow(e.target.id !== 'treemargin')
+        SwapSideBar(e.target.id !== 'treemargin')
     };
 }
 
@@ -548,42 +551,35 @@ function GetTouchesAvgXY(touches) {
 function GetTouchDistance(touches) {
     return Math.sqrt(Math.pow(touches[0].clientX - touches[1].clientX, 2) + Math.pow(touches[0].clientY - touches[1].clientY, 2))
 }
+// TSS, TSE
+var Tst = null, Tsf, Tsd, TreeAnimateStartTime, TreeAnimateEndTime;
 
-var Tst = null, Tsf, Tsd, Tss, Tse, Tsv;
-
-function TSS(x, y, scs, scf, scv) {
+function TSS(x, y, scs, scf) {
     if (Tst) {
         clearTimeout(Tst);
         Tst = null;
     }
     Tsf = TGS();
     Tsd = {top: y, left: x};
-    Tss = scs;
-    Tse = scf;
-    Tsv = scv;
-    if (Date.now() >= scf) {
-        TST();
+    TreeAnimateStartTime = scs;
+    TreeAnimateEndTime = scf;
+    TreeAnimateStep();
+}
+
+// TST
+function TreeAnimateStep() {
+    var now = Date.now();
+    if (now >= TreeAnimateEndTime) {
+        TreeSetOffset(Tsd.left, Tsd.top);
     } else {
-        Tst = setTimeout(TST, 10);
+        var p = (now - TreeAnimateStartTime) / (TreeAnimateEndTime - TreeAnimateStartTime);
+        // p = 1 - Math.pow(0.5, p / 0.2);
+        TreeSetOffset(Tsf.left + p * (Tsd.left - Tsf.left), Tsf.top + p * (Tsd.top - Tsf.top));
+        Tst = setTimeout(TreeAnimateStep, 10);
     }
 }
 
-function TST() {
-    var n = Date.now();
-    if (n >= Tse) {
-        TSD(Tsd.left, Tsd.top);
-        if (Tsv && GetElement(Tsv)) {
-            SetElementVisibility(Tsv, true);
-        }
-    } else {
-        var p = (n - Tss) / (Tse - Tss);
-        p = 1 - Math.pow(0.5, p / 0.2);
-        TSD(Tsf.left + p * (Tsd.left - Tsf.left), Tsf.top + p * (Tsd.top - Tsf.top));
-        Tst = setTimeout(TST, 10);
-    }
-}
-
-function TSD(x, y) {
+function TreeSetOffset(x, y) {
     TreeBg.style.left = -x;
     TreeBg.style.top = -y;
 }
@@ -624,7 +620,7 @@ function TRT(family, viewPersonId, ownPersonId, personShowFields, otherAgeConfig
             SetElementVisibility(_b9, true);
         }
     } else {
-        setTimeout(() => TCD(viewPersonId, s ? 250 : 0), sd);
+        setTimeout(() => TreeFocusOnPerson(viewPersonId, s ? 250 : 0), sd);
     }
     let treediv = GetElement("treediv");
     if (IsDarkMode()) {

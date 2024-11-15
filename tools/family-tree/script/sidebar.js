@@ -179,7 +179,7 @@ function SSA(_a, _b) {
     }
     SetElementValue("editbutton", et);
     SetElementShow("nonrelations", true);
-    SetElementShow("shareperson", (!staticMode) && GetElementValue("sessionid") && (p.z != "1") && !md);
+    // SetElementShow("shareperson", (!staticMode) && GetElementValue("sessionid") && (p.z != "1") && !md);
     SetElementShow("nonediting", !Sed);
     SetElementClassShowRow("relactions", AllowWrite && !Sed);
     if (Sed) {
