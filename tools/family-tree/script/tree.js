@@ -53,7 +53,7 @@ function TAD(od, d, dx, dy) {
     }
 }
 
-function TDS(yb, zf, wf, bn, ts) {
+function TDS(yb, zoom, wf, bn, ts) {
     var ya = [yb.age, yb.bd, yb.j, yb.b, yb.v, yb.d, yb.y, yb.Z, yb.F, yb.U, yb.e, yb.e, yb.tku, yb.tku, yb.a, yb.a, yb.E, yb.I, yb.A];
     var yc = 0;
     for (var j = 0; j < ya.length; j++) {
@@ -62,23 +62,23 @@ function TDS(yb, zf, wf, bn, ts) {
         }
     }
     var sz = {
-        Tew: parseInt(((yc || yb.r || yb.pm || yb.TJ) ? 100 : 80) * zf * wf),
-        Tnh: parseInt((yb["0p"] ? 0 : (((bn == 2) || yb.N) ? 50 : 40)) * zf),
-        Tph: parseInt((yb.r ? 100 : 0) * zf),
-        Tdh: parseInt(20 * yc * zf),
-        Tmh: parseInt(40 * zf),
-        Ths: parseInt(20 * zf),
-        Tvs: parseInt(40 * zf),
-        Tfs: (12 * zf * ts),
-        Tds: (10 * zf * ts),
-        partnerfontsize: (9 * zf * ts)
+        Tew: parseInt(((yc || yb.r || yb.pm || yb.TJ) ? 100 : 80) * zoom * wf),
+        Tnh: parseInt((yb["0p"] ? 0 : (((bn == 2) || yb.N) ? 50 : 40)) * zoom),
+        Tph: parseInt((yb.r ? 100 : 0) * zoom),
+        Tdh: parseInt(20 * yc * zoom),
+        Tmh: parseInt(40 * zoom),
+        Ths: parseInt(20 * zoom),
+        Tvs: parseInt(40 * zoom),
+        Tfs: (12 * zoom * ts),
+        Tds: (10 * zoom * ts),
+        partnerfontsize: (9 * zoom * ts)
     };
     sz.Teh = parseInt(Math.max(sz.Tnh + sz.Tph + sz.Tdh, sz.Tmh));
     sz.Tep = Math.max(0, sz.Tew * 0.04);
     return sz;
 }
 
-function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zf, wf, ts, _35) {
+function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
     var _36 = wp ? (ios ? 1920 : 19200) : 0;
     var _37 = wp ? (ios ? 1200 : 12000) : 0;
     var yb = {};
@@ -92,7 +92,7 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zf, wf, ts, _35) {
     var ssn = !yb["0lq"];
     var ni = yb["N"];
     var tj = yb["TJ"];
-    var sz = TDS(yb, zf, wf, bn, ts);
+    var sz = TDS(yb, zoom, wf, bn, ts);
     var tw = (sz.Tew + sz.Ths) * d.w - sz.Ths;
     var th = (sz.Teh + sz.Tvs) * d.h - sz.Tvs;
     if (!wp) {
@@ -479,7 +479,7 @@ function TreeElementAddEventListener(element) {
         Tdy = scrollpos.top + e.clientY;
     };
     element.onmousemove = function (e) {
-        console.log("onmousemove", TreeIsPressed)
+        // console.log("onmousemove", TreeIsPressed)
         e = e ? e : window.event;
         if (TreeIsPressed) {
             TreeSetOffset(Tdx - e.clientX, Tdy - e.clientY)
@@ -515,7 +515,6 @@ function TreeElementAddEventListener(element) {
     };
     element.ontouchmove = function (e) {
         // console.log("ontouchmove", e.touches, e.type)
-
         if (TreeIsPressed) {
             let {x, y} = GetTouchesAvgXY(e.touches);
             TreeSetOffset(Tdx - x, Tdy - y)
@@ -594,34 +593,28 @@ function TreeBgPsOf(i) {
 
 function TRT(family, viewPersonId, ownPersonId, personShowFields, otherAgeConfig, birthNameConfig, surnameFirstConfig,
              colorsConfig, linesConfig, maleLeftConfig, childrenLevelConfig, parentLevelConfig, cursionLevelConfig,
-             preViewPersonId, zoomConfig, widthConfig, textSizeConfig, s) {
+             preViewPersonId, zoomConfig, widthConfig, textSizeConfig, isFixed) {
     // console.log("TRT", arguments)
-    var _b9 = null;
-    let oiPersonId, sd;
+    // var _b9 = null;
+    let oiPersonId, focusAnimationTime;
     if (TreeBgPsOf(viewPersonId)) {
         oiPersonId = viewPersonId;
-        sd = 0;
+        focusAnimationTime = 0;
         if (viewPersonId != preViewPersonId) {
-            _b9 = "_sel";
-            if (GetElement(_b9)) {
-                SetElementVisibility(_b9, false);
-            }
+            // _b9 = "_sel";
+            // if (GetElement(_b9)) {
+            //     SetElementVisibility(_b9, false);
+            // }
         }
     } else {
         oiPersonId = TreeBgPsOf(preViewPersonId) ? preViewPersonId : null;
-        sd = oiPersonId ? 250 : 0;
+        focusAnimationTime = oiPersonId ? 250 : 0;
     }
     var showMarryAttrs = GetMarryAttrsByConfigFields(personShowFields);
-    TRD(BFT(family, viewPersonId, ownPersonId, childrenLevelConfig, parentLevelConfig, cursionLevelConfig, maleLeftConfig, showMarryAttrs),
-        personShowFields, otherAgeConfig, birthNameConfig, surnameFirstConfig, colorsConfig, linesConfig, TreeBg, oiPersonId,
-        true, false, zoomConfig, widthConfig, textSizeConfig, _b9);
-    if (s && noCentering) {
-        if (_b9 && GetElement(_b9)) {
-            SetElementVisibility(_b9, true);
-        }
-    } else {
-        setTimeout(() => TreeFocusOnPerson(viewPersonId, s ? 250 : 0), sd);
-    }
+    TRD(BFT(family, viewPersonId, ownPersonId, childrenLevelConfig, parentLevelConfig, cursionLevelConfig, maleLeftConfig, showMarryAttrs), personShowFields, otherAgeConfig, birthNameConfig, surnameFirstConfig, colorsConfig, linesConfig, TreeBg, oiPersonId, true, false, zoomConfig, widthConfig, textSizeConfig);
+    // if (!isFixed) {
+        setTimeout(() => TreeFocusOnPerson(viewPersonId, 250), focusAnimationTime);
+    // }
     let treediv = GetElement("treediv");
     if (IsDarkMode()) {
         treediv.style.backgroundColor = "";

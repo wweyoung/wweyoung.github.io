@@ -313,7 +313,7 @@ function EMD(e) {
     }
 }
 
-function EUS(r, viewPersonId, viewMode, d, s) {
+function EUS(r, viewPersonId, viewMode, d, isFixed) {
     // console.log('>EUS', arguments)
     var preViewPersonId = ViewPersonId = GetElementValue("viewpersonid");
     var preViewMode = GetElementValue("viewmode");
@@ -403,7 +403,7 @@ function EUS(r, viewPersonId, viewMode, d, s) {
         TRT(Efa, ViewPersonId, OwnerPersonId, PersonShowFields, GetConfigOtherAgeValue(), GetConfigBirthNameValue(),
             GetConfigSurnameFirstValue(), GetConfigAllColors(), GetConfigAllLines(), GetConfigMaleLeftValue(),
             GetConfigChildrenLevelValue(), GetConfigParentsLevelValue(), GetConfigCousinsLevelValue(), preViewPersonId,
-            GetElementValue("showzoom"), GetElementValue("showwidth"), GetElementValue("textsize"), s);
+            GetElementValue("showzoom"), GetElementValue("showwidth"), GetElementValue("textsize"), isFixed);
         NRT();
     }
     if (viewMode == "path") {
@@ -922,7 +922,7 @@ function ZoomInOutScale(scale) {
 }
 
 // ESZ 保存画布比例大小
-function SaveZoomSize() {
+function OnZoomSizeChanged() {
     SetCookie("zoomfactor", GetElementValue("showzoom"));
     ERI();
 }
