@@ -106,7 +106,6 @@ function SetSidebarPersonAndViewMode(id, viewMode) {
     // SetElementValue("shareperson", _t("Invite $ to share family", person.h));
     SetElementShow("hideurl", false);
     GetElement("switchpanel3").style.display = person.cp ? "block" : "none";
-    GetElement("switchpanel4").style.display = (Edd || Eud) ? "block" : "none";
     if (!md) {
         SetElementValue("showpath", _t("Show relationship to $", person.h));
         SetElementShow("showpath", true);
@@ -143,7 +142,7 @@ function SSA(_a, _b) {
     if (!pw) {
         Sed = false;
     }
-    for (var j = 0; j <= 4; j++) {
+    for (var j = 0; j <= 3; j++) {
         GetElement("switchpanel" + j).className = ((_a == j) ? "sswitched" : "sswitch");
         GetElement("switchlink" + j).className = ((_a == j) ? "sswitchedlink" : "");
     }
@@ -165,17 +164,12 @@ function SSA(_a, _b) {
     SetElementClassShowRow("bioedit1", (Spa == 2) && Sed);
     SetElementClassShowRow("bioeditdeath", (Spa == 2) && (p.z == 1) && Sed);
     SetElementClassShowRow("bioedit2", (Spa == 2) && Sed);
-    SetElementClassShowRow("filesview", (Spa == 4));
-    SetElementClassShowRow("filesview2", (Spa == 4) && !Sed);
     SetElementClassShowRow("viewfooter", pw && (!Sed) && (Spa != 4));
     SetElementClassShowRow("editfooter", Sed && (Spa != 4));
     if (Spa == 3) {
         var et = _t("Edit partnership details");
     } else {
         var et = md ? _t("Edit my details") : _t("Edit $'s details", p.h);
-    }
-    if (Spa == 4) {
-        SetElementShow("sideuploadfile", Eud);
     }
     SetElementValue("editbutton", et);
     SetElementShow("nonrelations", true);
@@ -761,6 +755,7 @@ function S3D(pi, t, ti, d, rc) {
 
 function SDH(i, c) {
     return "<SPAN ID=\"" + i + "options\" STYLE=\"display:none;\">" +
+        "<SELECT ID=\"" + i + "type\" CLASS=\"sselect\" onChange=\"" + c + "\"></SELECT>&nbsp;" +
         "<SELECT ID=\"" + i + "variant\" CLASS=\"sselect\" onChange=\"" + c + "\"></SELECT>&nbsp;" +
         "<SPAN TITLE=\"" + _h("Before the Common Era (BC)") + "\">" +
         "<INPUT ID=\"" + i + "bce\" TYPE=\"checkbox\" onClick=\"" + c + "\">" +
@@ -812,52 +807,6 @@ function SP3(e) {
 }
 
 function SP4(e) {
-    RemoveElementAllChild("filesview");
-    var p = Efa[SidebarPersonId];
-    var l = 0;
-    if (p.fs) {
-        var fs = [];
-        for (var j in p.fs) {
-            var f = Eff[j];
-            if (f) {
-                fs[l] = Eff[j];
-                fs[l].i = j;
-                l++;
-            }
-        }
-    }
-    var t = GetElement("filesview");
-    if (l) {
-        fs.sort(DSD);
-        for (var j = 0; j < l; j++) {
-            var f = fs[j];
-            var h = "";
-            if (Edd) {
-                if (DTV(f.t)) {
-                    h += "<a href=\"#\" title=\"" + _h("View $1 $2", DSH(f.s), DTH(f.t)) + "\" onclick=\"DSI('" + f.i + "'); return false;\">";
-                } else {
-                    h += "<a href=\"" + EncodeHTML(DGU(f.i, true)) + "\" title=\"" + _h("Download $1 $2", DSH(f.s), DTH(f.t)) + "\">";
-                }
-            }
-            h += EncodeHTML(f.n || _t("Untitled")) + (Edd ? "</a>" : "") + (f.d ? (" &ndash; " + f.d) : "");
-            var c = document.createElement("TD");
-            c.className = "fboth";
-            c.colSpan = 2;
-            c.innerHTML = h;
-            var r = document.createElement("TR");
-            r.appendChild(c);
-            t.appendChild(r);
-        }
-    } else {
-        var c = document.createElement("TD");
-        c.className = "fboth";
-        c.colSpan = 2;
-        c.style.textAlign = "center";
-        c.innerHTML = _h("This person has no files attached.");
-        var r = document.createElement("TR");
-        r.appendChild(c);
-        t.appendChild(r);
-    }
 }
 
 function SSG(v) {
@@ -1254,9 +1203,9 @@ function PersonOperate(operation, v) {
         if (v) {
             childrenObj.V = v;
         }
-        if (operation == "addchildwithnew") {
+        if (operation === "addchildwithnew") {
             var newParentId = GenerateId();
-            if (person.g == "m") {
+            if (person.g === "m") {
                 childrenObj.m = newParentId;
             } else {
                 childrenObj.f = newParentId;
@@ -1266,7 +1215,6 @@ function PersonOperate(operation, v) {
             ESE(true, [childrenId, newParentId], childrenId);
         } else {
             childrenObj.l = person.l;
-            childrenObj.q = person.l;
             UpdatePerson(childrenId, childrenObj);
             ESE(true, [childrenId], childrenId);
         }
@@ -1704,36 +1652,40 @@ function NSN(a, b) {
 }
 
 function SSD(i, d) {
-    var v = GetElement(i + "variant");
+    let v = GetElement(i + "type");
+    v.options.add(new Option("公历", ''));
+    v.options.add(new Option("农历", 'L'));
+    v = GetElement(i + "variant");
     v.options.length = 0;
     for (var j in DateDecorates) {
         v.options[v.options.length] = new Option(DateDecorates[j], j);
     }
     for (var n = 1; n <= 2; n++) {
-        var v = GetElement(i + "dom" + n);
+        v = GetElement(i + "dom" + n);
         v.options.length = 0;
         v.options[v.options.length] = new Option("日", 0);
         for (var j = 1; j <= 31; j++) {
-            v.options[v.options.length] = new Option(j+'日', j);
+            v.options[v.options.length] = new Option(j + '日', j);
         }
-        var v = GetElement(i + "month" + n);
+        v = GetElement(i + "month" + n);
         v.options[0] = new Option('月', 0)
         for (let j = 1; j <= 12; j++) {
-            v.options[j] = new Option(j+'月', j);
+            v.options[j] = new Option(j + '月', j);
         }
     }
     var p = DateDetailStrToObj(d ? d.toString() : "");
-    var bce = (p.y1 < 0) || (p.y2 < 0);
+    var bce = (p[1].y < 0) || (p[2]?.y < 0);
+    SetElementValue(i + "type", p.type);
     SetElementValue(i + "variant", p.v);
     GetElement(i + "bce").checked = bce;
     SetElementShow(i + "options", p.v || bce);
     SetElementShow(i + "expand", !(p.v || bce));
-    SetSelectElementSelected(i + "dom1", p.d1);
-    SetSelectElementSelected(i + "month1", p.m1);
-    SetElementValue(i + "year1", bce ? -p.y1 : p.y1);
-    SetSelectElementSelected(i + "dom2", p.d2);
-    SetSelectElementSelected(i + "month2", p.m2);
-    SetElementValue(i + "year2", bce ? -p.y2 : p.y2);
+    SetSelectElementSelected(i + "dom1", p[1].d);
+    SetSelectElementSelected(i + "month1", p[1].m);
+    SetElementValue(i + "year1", bce ? -p[1].y : p[1].y);
+    SetSelectElementSelected(i + "dom2", p[2].d);
+    SetSelectElementSelected(i + "month2", p[2].m);
+    SetElementValue(i + "year2", bce ? -p[2].y : p[2].y);
     SHD(i);
 }
 
@@ -1754,7 +1706,7 @@ function SGD(i) {
         y1 = -y1;
         y2 = -y2;
     }
-    return BuildDateDetailStr(GetElementValue(i + "variant"), GetElementValue(i + "dom1"), GetElementValue(i + "month1"), y1, GetElementValue(i + "dom2"), GetElementValue(i + "month2"), y2);
+    return BuildDateDetailStr(GetElementValue(i + "variant"), GetElementValue(i + "type"), GetElementValue(i + "dom1"), GetElementValue(i + "month1"), y1, GetElementValue(i + "dom2"), GetElementValue(i + "month2"), y2);
 }
 
 function SIU(u) {
@@ -1893,14 +1845,14 @@ function SwitchToCalendar() {
         var p = Efa[j];
         if (p.b && (p.z != 1)) {
             var bd = DateDetailStrToObj(p.b);
-            if (bd.d1 && bd.m1 && (!bd.v) && (((bd.y1 >= (y - 120)) && (bd.y1 < y)) || !bd.y1)) {
-                es[es.length] = {d: bd.d1, m: bd.m1, y: bd.y1, t: "b", i1: j};
+            if (bd[1].d && bd[1].m && (!bd.v) && (((bd[1].y >= (y - 120)) && (bd[1].y < y)) || !bd[1].y)) {
+                es[es.length] = {...bd[1], t: "b", i1: j, dateType: bd.type};
             }
         }
         if (p.es && (p.es > j) && Efa[p.es] && (Efa[p.es].es == j) && (p.z != 1) && (Efa[p.es].z != 1) && p.gp && (p.gp[p.es] == "m") && p.mp && p.mp[p.es]) {
             var md = DateDetailStrToObj(p.mp[p.es]);
-            if (md.d1 && md.m1 && (!md.v) && (((md.y1 >= (y - 100)) && (md.y1 < y)) || !md.y1)) {
-                es[es.length] = {d: md.d1, m: md.m1, y: md.y1, t: "m", i1: j, i2: p.es};
+            if (md[1].d && md[1].m && (!md.v) && (((md[1].y >= (y - 100)) && (md[1].y < y)) || !md[1].y)) {
+                es[es.length] = {...md[1], t: "m", i1: j, i2: p.es, dateType: bd.type};
             }
         }
     }
@@ -1924,7 +1876,7 @@ function SwitchToCalendar() {
                 h += "<tr><td colspan=\"2\" class=\"cm\">" + ms[e.m] + " " + e.sy + "</td></tr>";
                 lmy = my;
             }
-            h += "<tr><td class=\"cl\" style=\"white-space:nowrap;\">" + _h("^", e.d) + "</td><td class=\"cr\">";
+            h += "<tr><td class=\"cl\" style=\"white-space:nowrap;\">" + e.d + "日" + (e.dateType ? ' (农历)' : '') + "</td><td class=\"cr\">";
             if (e.i2) {
                 h += "<a href=\"#\" onClick=\"ESP('" + e.i1 + "', true); return false;\">" + EncodeHTML(FDN(Efa[e.i1], false, 1, sf, (bn == 1), true, false, false, false)) + "</a>";
                 h += " and <a href=\"#\" onClick=\"ESP('" + e.i2 + "', true); return false;\">" + EncodeHTML(FDN(Efa[e.i2], false, 1, sf, (bn == 1), true, false, false, false)) + "</a>";

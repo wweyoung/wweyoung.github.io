@@ -409,23 +409,27 @@ function FAL(f, i, si) {
     return pa;
 }
 
-function FAD(d) {
+// FAD 日期有月或年
+function IsDateObjHasYearOrMonth(d) {
     var p = DateStrToObj(d);
     return (p.m || p.y) ? true : false;
 }
 
-// FPD 日期文本转对象:"B20241109" => {y: -2024, m: 11, d: 9}
-function DateStrToObj(d) {
+// FPD 日期文本转对象:"B20241109L" => {y: -2024, m: 11, d: 9}
+function DateStrToObj(date) {
+    if (!date) {
+        return {};
+    }
     try {
-        var bce = (d.substring(0, 1) == "B");
+        var bce = (date[0] == "B");
         if (bce) {
-            d = d.substring(1);
+            date = date.substring(1);
         }
-        var yr = parseInt(d.substring(0, 4), 10);
+        var yr = parseInt(date.substring(0, 4), 10);
         if (bce) {
             yr = -yr;
         }
-        return {d: parseInt(d.substring(6, 8), 10), m: parseInt(d.substring(4, 6), 10), y: yr};
+        return {d: parseInt(date.substring(6, 8), 10), m: parseInt(date.substring(4, 6), 10), y: yr};
     } catch (e) {
         return {};
     }
@@ -445,24 +449,27 @@ function DateObjCompare(date1, date2) {
 
 
 /**
- * FPS 日期字符串详情转对象: 19990629-20241109 => {v, y1, m1, d1, y2, m2, d2}
+ * FPS 日期字符串详情转对象: L19990629-20241109 => {v, type, y1, m1, d1, y2, m2, d2}
  * @param dataStr 日期字符串 19990629[~><(-20241109)]
  * @param isBetweenSort 区间是否排序
  */
 function DateDetailStrToObj(dataStr, isBetweenSort) {
-    var s1 = DateStrToObj(dataStr);
-    var p = {v: "", d1: s1.d, m1: s1.m, y1: s1.y};
-    var hi = dataStr.indexOf("-");
-    if (hi >= 0) {
-        var s2 = DateStrToObj(dataStr.substring(hi + 1));
+    let p = {2: {}};
+    if (dataStr[0] === 'L') {
+        p.type = 'L';
+        dataStr = dataStr.substring(1);
+    }
+    var dates = dataStr.split("-");
+    var s1 = DateStrToObj(dates[0]);
+    p[1] = s1;
+    if (dates.length > 1) { // 区间日期
+        var s2 = DateStrToObj(dates[1]);
         if (isBetweenSort && (DateObjCompare(s1, s2) > 0)) {
-            p = {v: "", d1: s2.d, m1: s2.m, y1: s2.y};
+            p[1] = s2;
             s2 = s1;
         }
         p.v = "bet";
-        p.d2 = s2.d;
-        p.m2 = s2.m;
-        p.y2 = s2.y;
+        p[2] = s2;
     } else if (dataStr.indexOf("~") >= 0) {
         p.v = "app";
     } else if (dataStr.indexOf(">") >= 0) {
@@ -506,57 +513,59 @@ function DateToString(date, month, year) {
  * @param isUseSymbol true展示符号 / false展示文字
  */
 function DateDetailStrToString(dateStr, isUpperCase, isUseSymbol) {
-    var p = DateDetailStrToObj(dateStr ? dateStr.toString() : "", true);
+    var dates = DateDetailStrToObj(dateStr ? dateStr.toString() : "", true);
     var s = "";
-    if (p) {
-        if (p.v == "bet") {
-            if (p.y1 && p.y2 && ((p.y2 - p.y1) == 1) && (!p.m1) && (!p.m2)) {
-                var s = FCT(p.y1, p.y2);
+    if (!dates) {
+        return s;
+    }
+    if (dates.v == "bet") {
+        if (dates[1].y && dates[2].y && ((dates[2].y - dates[1].y) == 1) && (!dates[1].m) && (!dates[2].m)) {
+            var s = FCT(dates[1].y, dates[2].y);
+        } else {
+            var sy = (dates[1].y === dates[2].y);
+            var us = false;
+            if (dates[1].m && dates[2].m && sy) {
+                dates[1].y = "";
             } else {
-                var sy = (p.y1 == p.y2);
-                var us = false;
-                if (p.m1 && p.m2 && sy) {
-                    p.y1 = "";
-                } else {
-                    if ((p.y1 < 0) && (p.y2 < 0) && (!p.m1) && (!p.m2)) {
-                        p.y1 = -p.y1;
-                    }
-                }
-                if (sy && (p.m1 == p.m2) && p.d1 && p.d2) {
-                    var s1 = p.d1;
-                    us = ((p.d2 - p.d1) == 1);
-                } else {
-                    var s1 = DateToString(p.d1, p.m1, p.y1);
-                    us = sy && p.m1 && p.m2 && ((p.m2 - p.m1) == 1) && (!p.d1) && (!p.d2);
-                }
-                var s2 = DateToString(p.d2, p.m2, p.y2);
-                if (s1 && s2) {
-                    var s = s1 + (((s1 + "").indexOf(" ") > 0) ? " ~ " : (us ? "/" : "~")) + s2;
-                } else {
-                    if (s1 || s2) {
-                        var s = (isUseSymbol ? ("~ " + s1 + s2) : (isUpperCase ? _t("Approx $", s1 + s2) : _t("approx $", s1 + s2)));
-                    }
+                if ((dates[1].y < 0) && (dates[2].y < 0) && (!dates[1].m) && (!dates[2].m)) {
+                    dates[1].y = -dates[2].y;
                 }
             }
-        } else {
-            s = DateToString(p.d1, p.m1, p.y1);
-            if (s) {
-                if (isUseSymbol) {
-                    var es = {"app": "~ ", "bef": "< ", "aft": "> "};
-                    s = (es[p.v] || "") + s;
-                } else {
-                    var ts = {
-                        "app": isUpperCase ? _i("Approx $") : _i("approx $"),
-                        "bef": isUpperCase ? _i("Before $") : _i("before $"),
-                        "aft": isUpperCase ? _i("After $") : _i("after $")
-                    };
-                    if (ts[p.v]) {
-                        s = _t(ts[p.v], s);
-                    }
+            if (sy && (dates[1].m == dates[2].m) && dates[1].d && dates[2].d) {
+                var s1 = dates[1].d;
+                us = ((dates[2].d - dates[1].d) == 1);
+            } else {
+                var s1 = DateToString(dates[1].d, dates[1].m, dates[1].y);
+                us = sy && dates[1].m && dates[2].m && ((dates[2].m - dates[1].m) == 1) && (!dates[1].d) && (!dates[2].d);
+            }
+            var s2 = DateToString(dates[2].d, dates[2].m, dates[2].y);
+            if (s1 && s2) {
+                var s = s1 + (((s1 + "").indexOf(" ") > 0) ? " ~ " : (us ? "/" : "~")) + s2;
+            } else {
+                if (s1 || s2) {
+                    var s = (isUseSymbol ? ("~ " + s1 + s2) : (isUpperCase ? _t("Approx $", s1 + s2) : _t("approx $", s1 + s2)));
+                }
+            }
+        }
+    } else {
+        s += DateToString(dates[1].d, dates[1].m, dates[1].y);
+        if (s) {
+            if (isUseSymbol) {
+                var es = {"app": "~ ", "bef": "< ", "aft": "> "};
+                s = (es[dates.v] || "") + s;
+            } else {
+                var ts = {
+                    "app": isUpperCase ? _i("Approx $") : _i("approx $"),
+                    "bef": isUpperCase ? _i("Before $") : _i("before $"),
+                    "aft": isUpperCase ? _i("After $") : _i("after $")
+                };
+                if (ts[dates.v]) {
+                    s = _t(ts[dates.v], s);
                 }
             }
         }
     }
+    if (dates.type === 'L') s += ' (农历)';
     return s;
 }
 
@@ -565,23 +574,19 @@ function DateDetailStrToYearStr(d) {
     var p = DateDetailStrToObj(d ? d.toString() : "", true);
     var s = "";
     if (p.v == "bet") {
-        if (p.y1 && p.y2) {
-            if (p.y1 == p.y2) {
-                s = DateYearToString(p.y1);
+        if (p[1].y && p[2].y) {
+            if (p[1].y == p[2].y) {
+                s = DateYearToString(p[1].y);
+            } else if ((p[2].y - p[1].y) == 1) {
+                s = FCT(p[1].y, p[2].y);
             } else {
-                if ((p.y2 - p.y1) == 1) {
-                    s = FCT(p.y1, p.y2);
-                } else {
-                    s = Math.abs(p.y1) + "~" + DateYearToString(p.y2);
-                }
+                s = Math.abs(p[1].y) + "~" + DateYearToString(p[2].y);
             }
-        } else {
-            if (p.y1 || p.y2) {
-                s = "~" + DateYearToString(p.y1) + DateYearToString(p.y2);
-            }
+        } else if (p[1].y || p[2].y) {
+            s = "~" + DateYearToString(p[1].y) + DateYearToString(p[2].y);
         }
     } else {
-        s = DateYearToString(p.y1);
+        s = DateYearToString(p[1].y);
         if (s) {
             var es = {"app": "~", "bef": "<", "aft": ">"};
             s = (es[p.v] || "") + s;
@@ -640,7 +645,7 @@ function GetNowDateStr() {
 }
 
 // FBS 组装日期详情对象
-function BuildDateDetailStr(decorate, d1, m1, y1, d2, m2, y2) {
+function BuildDateDetailStr(decorate, type, d1, m1, y1, d2, m2, y2) {
     var s = GetDateStr(d1, m1, y1);
     if (decorate == "bet") {
         s += "-" + GetDateStr(d2, m2, y2);
@@ -652,7 +657,7 @@ function BuildDateDetailStr(decorate, d1, m1, y1, d2, m2, y2) {
         s += "<";
     }
 
-    return s;
+    return (type || '') + s;
 }
 
 function FDN(p, mn, sn, isFamilyNameFirst, bn, ah, ni, ti, su) {
@@ -1049,7 +1054,7 @@ function FTP(f, p, si, sp) {
                 if (gpi == "e") {
                     s = (cm > 0) ? _t("Ex-fiancee") : _t("Ex-fiance");
                 } else {
-                    if ((gpi == "r") && FAD(pz) && (!((p.z == 1) && (p.d == pz))) && (!((sp.z == 1) && (sp.d == pz)))) {
+                    if ((gpi == "r") && IsDateObjHasYearOrMonth(pz) && (!((p.z == 1) && (p.d == pz))) && (!((sp.z == 1) && (sp.d == pz)))) {
                         s = _t("Ex-partner");
                     } else {
                         s = pl ? _t("Late partner") : (cp ? _t("Partner") : _t("Ex-partner"));
@@ -1062,13 +1067,13 @@ function FTP(f, p, si, sp) {
 }
 
 let RelationTitle = {
-    self: {'':'自己', m:'自己男', f:'自己女'},
-    partner: {'':'伴', m:'丈夫', f:'妻子'},
-    children: {'':'子女', m:'子', f:'女'},
-    parent: {'':'父母', m:'父', f:'母'}
+    self: {'': '自己', m: '自己男', f: '自己女'},
+    partner: {'': '伴', m: '丈夫', f: '妻子'},
+    children: {'': '子女', m: '子', f: '女'},
+    parent: {'': '父母', m: '父', f: '母'}
 }
 
-function GetRelationTitle(type, person){
+function GetRelationTitle(type, person) {
     return type[person.g] || type[0];
 }
 
@@ -1271,8 +1276,8 @@ function FIM(f, r, j) {
 function FSE(d) {
     var p = DateDetailStrToObj(d || "", true);
     var e = null;
-    if ((p.v != "bef") && p.y1) {
-        e = {d: p.d1, m: p.m1, y: p.y1};
+    if ((p.v != "bef") && p[1].y) {
+        e = {...p[1]};
         if (!e.m) {
             e.m = 1;
         }
@@ -1290,13 +1295,13 @@ function FSL(d) {
     var p = DateDetailStrToObj(d || "", true);
     var l = null;
     if (p.v == "bet") {
-        if (p.y2) {
-            l = {d: p.d2, m: p.m2, y: p.y2};
+        if (p[2].y) {
+            l = {...p[2]};
         }
     } else {
         if (p.v != "aft") {
-            if (p.y1) {
-                l = {d: p.d1, m: p.m1, y: p.y1};
+            if (p[1].y) {
+                l = {...p[1]};
                 if (p.v == "app") {
                     l.a = true;
                 }

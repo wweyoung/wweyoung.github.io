@@ -334,9 +334,6 @@ function EUS(r, viewPersonId, viewMode, d, isFixed) {
         if ((staticMode || GetElementValue("familyid")) && OwnerPersonId && Efa[OwnerPersonId]) {
             var fb = FDN(Efa[OwnerPersonId], false, 1, false, false, false);
             SetElementInnerText("lfamilyinfo", '');
-            if (!staticMode) {
-                SetElementShow("historybutton", true);
-            }
         } else {
             SetElementInnerText("lfamilyinfo", "");
         }
@@ -363,20 +360,15 @@ function EUS(r, viewPersonId, viewMode, d, isFixed) {
             document.activeElement.blur();
         }
     }
-    if (preViewMode == "history") {
-        SetSideBarShow(true);
-        if ((!IsSafariBrowser && Elh != preViewMode) || (IsSafariBrowser && viewMode)) {
-            // GetElement("extraframe").src = "history.php"
-        }
-        SetElementVisibility("extradiv", true);
-    } else if (preViewMode == "share") {
+    if (preViewMode == "share") {
         SetSideBarShow(true);
         // GetElement("extraframe").src = "share.php"
         SetElementVisibility("extradiv", true);
     } else if (preViewMode == "download") {
-        SetSideBarShow(true);
+        SaveFamily(true, true);
+        // SetSideBarShow(true);
         // GetElement("extraframe").src = "download.php"
-        SetElementVisibility("extradiv", true);
+        // SetElementVisibility("extradiv", true);
     } else if (preViewMode == "print") {
         SetSideBarShow(true);
         if (viewMode) {
@@ -506,7 +498,7 @@ function ESP(i, s) {
     }
     var viewMode = GetElementValue("viewmode");
     Eeq = [];
-    EUS(false, i, (viewMode == "share" || viewMode == "print" || viewMode == "history" || viewMode == "path"
+    EUS(false, i, (viewMode == "share" || viewMode == "print" || viewMode == "path"
         || viewMode == "calendar" || viewMode == "timeline" || viewMode == "users") ? null : "view", false, s);
 }
 
@@ -771,18 +763,18 @@ function GenerateId() {
 var IsSaving = false;
 
 // ESS 保存
-function SaveFamily(saveFile = false) {
+function SaveFamily(saveFile = false, saveNew = false) {
     if (!staticMode) {
         var familyId = GetElementValue("familyid");
         if (!IsSaving) {
             let newScript = GetElementValue("newscript");
             var len = newScript.length;
             // 如果有修改且打开了文件或需要保存文件
-            if (len && (FileHandler.handler || saveFile)) {
+            if ((len || saveNew) && (FileHandler.handler || saveFile)) {
                 IsSaving = true;
                 let script = GetSaveScript(ScriptText + '\n' + newScript);
                 // console.log(script);
-                SaveScriptToFile(script).then(() => {
+                SaveScriptToFile(script, saveNew).then(() => {
                     ScriptText = script;
                     SetElementValue("newscript", '')
                     // SavedCallback('', script.length)
@@ -800,7 +792,7 @@ function SaveFamily(saveFile = false) {
     }
 }
 
-async function SaveScriptToFile(script) {
+async function SaveScriptToFile(script, saveNew = false) {
     let exportIframe = GetElement("export-iframe").contentDocument;
     exportIframe.getElementById("script-textarea").setAttribute("value", script);
     let exportHtml = exportIframe.documentElement.outerHTML;
@@ -818,6 +810,9 @@ async function SaveScriptToFile(script) {
         if (e.name === 'AbortError') {
             throw e;
         }
+        saveNew = true;
+    }
+    if (saveNew) {
         let blob = new Blob([exportHtml], {
             type: FileHandler.accept
         });
@@ -878,7 +873,6 @@ function OnSavingScript(isSaved) {
         SetElementShow("sharebutton", Esf && si && familyId && !Eaf);
         SetElementShow("usersbutton", Eaf && si && familyId);
         SetElementShow("downloadbutton", familyId && AllowDownload && !Eis.length);
-        SetElementShow("filesbutton", familyId && (Edd || Eud) && !isElementShow("filesdiv"));
         JustifyNavrowElement();
         SSF();
     }
@@ -956,11 +950,12 @@ function OnConfigOtherAgeChanged() {
     var e = GetElement("otherage");
     var v = GetElementValue("otherage");
     if (v == "on") {
+        let p;
         if (e.options.length > 2) {
-            var p = DateStrToObj(e.options[2].value);
+            p = DateStrToObj(e.options[2].value);
         } else {
             var d = new Date();
-            var p = {y: d.getFullYear(), m: 1 + d.getMonth(), d: d.getDate()};
+            p = {y: d.getFullYear(), m: 1 + d.getMonth(), d: d.getDate()};
         }
         var f = DateNumberToStr(Math.abs(p.y), 9999, 4) + "-" + DateNumberToStr(p.m, 12, 2) + "-" + DateNumberToStr(p.d, 31, 2) + ((p.y < 0) ? " B" : "");
         while (true) {
@@ -1088,9 +1083,6 @@ function ResetConfigTextSize() {
 
 function ETO() {
     var s = !isElementShow("optionsdiv");
-    if (s && isElementShow("filesdiv")) {
-        ETF();
-    }
     if (s && isElementShow("usersdiv")) {
         ETU();
     }
@@ -1100,32 +1092,10 @@ function ETO() {
     TreeFocusOnPerson(ViewPersonId, 250);
 }
 
-function ETF() {
-    var s = !isElementShow("filesdiv");
-    if (s && isElementShow("optionsdiv")) {
-        ETO();
-    }
-    if (s && isElementShow("usersdiv")) {
-        ETU();
-    }
-    if (s) {
-        DDF(true);
-        DUS();
-    }
-    SetElementShow("filesdiv", s);
-    SetElementShow("filesbutton", !s);
-    SetElementShow("filestreebutton", s);
-    GetElement("treemargin").style.paddingBottom = (s ? (GetElement("filesdiv").offsetHeight + "px") : 0);
-    TreeFocusOnPerson(ViewPersonId, 250);
-}
-
 function ETU() {
     var s = !isElementShow("usersdiv");
     if (s && isElementShow("optionsdiv")) {
         ETO();
-    }
-    if (s && isElementShow("filesdiv")) {
-        ETF();
     }
     if (s) {
         // GetElement("usersframe").src = "users.php"
@@ -1158,7 +1128,7 @@ function SwapSideBar(show) {
 
 // ESI 侧边栏展开/收起
 function SetSideBarShow(isShow) {
-    let ids = ["treemargin", "fileviewmargin", "navdiv", "welcomemargin", "optionsdiv", "filesmargin", "usersmargin"];
+    let ids = ["treemargin", "navdiv", "welcomemargin", "optionsdiv", "usersmargin"];
     ids.forEach(id => {
         let element = GetElement(id);
         if (isShow) {

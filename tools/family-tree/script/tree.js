@@ -63,17 +63,17 @@ function TDS(yb, zoom, wf, bn, ts) {
     }
     var sz = {
         Tew: parseInt(((yc || yb.r || yb.pm || yb.TJ) ? 100 : 80) * zoom * wf),
-        Tnh: parseInt((yb["0p"] ? 0 : (((bn == 2) || yb.N) ? 50 : 40)) * zoom),
-        Tph: parseInt((yb.r ? 100 : 0) * zoom),
-        Tdh: parseInt(20 * yc * zoom),
-        Tmh: parseInt(40 * zoom),
+        Tnh: parseInt((yb["0p"] ? 0 : (((bn == 2) || yb.N) ? 35 : 20)) * zoom * ts), // 名字高度
+        Tph: parseInt((yb.r ? 100 : 0) * zoom), // 照片高度
+        Tdh: parseInt(20 * zoom * ts),
+        minHeight: parseInt(10 * zoom),
         Ths: parseInt(20 * zoom),
         Tvs: parseInt(40 * zoom),
         Tfs: (12 * zoom * ts),
-        Tds: (10 * zoom * ts),
+        Tds: (10 * zoom * ts), // fontsize
         partnerfontsize: (9 * zoom * ts)
     };
-    sz.Teh = parseInt(Math.max(sz.Tnh + sz.Tph + sz.Tdh, sz.Tmh));
+    sz.Teh = parseInt(Math.max(sz.Tnh + sz.Tph + sz.Tdh, sz.minHeight));
     sz.Tep = Math.max(0, sz.Tew * 0.04);
     return sz;
 }
@@ -179,7 +179,7 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
         var rs = "";
         var fn = FDN(e.p, true, (bn == 2) ? 2 : 1, sf, (bn == 1), true, true, true, true);
         var _53 = ((e.p.z == "1") && !pr) ? c.deceased : c.living;
-        var sh = sz.Tnh;
+        var height = sz.Tnh;
         var ey = y ? TGL(yb, ad, e.p) : null;
         if (sp && e.p.r) {
             var er = e.p.r.split(" ");
@@ -196,17 +196,17 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
                     }
                 }
                 rs += "<TR HEIGHT=\"" + (ey ? sz.Tph : (sz.Tph + sz.Tep * 2)) + "\"><TD CLASS=\"dcell\" style=\"color:" + _53 + "; padding:0 " + sz.Tep + "px;\"><IMG SRC=\"" + u + "\" WIDTH=\"" + ew + "\" HEIGHT=\"" + eh + "\" TITLE=\"" + EncodeHTML(fn) + "\"></TD></TR>";
-                sh += sz.Tph + sz.Tep * 2;
+                height += sz.Tph + sz.Tep * 2;
             }
         }
         if (ey) {
             rs += "<TR><TD CLASS=\"dcell\" STYLE=\"font-size:" + sz.Tds + "px;color:" + _53 + "; padding:0 " + sz.Tep + "px;\" TITLE=\"" + EncodeHTML(ey.replace(/\n/g, ", ")) + "\">" + EncodeHTMLLine(ey) + "</TD></TR>";
-            sh += sz.Tdh;
+            height += sz.Tdh;
         }
         var sx = ox + (e.x) * (sz.Tew + sz.Ths);
         var sy = oy + (e.y) * (sz.Teh + sz.Tvs);
-        sh = Math.max(sh, sz.Tmh);
-        TRB(o, sx - (sz.Tew / 2), sy - (sh / 2), sz.Tew, sh, e.k ? 3 : 1, (e.p.g == "f") ? c.female : ((e.p.g == "m") ? c.male : (((e.p.g || "").charAt(0) == "o") ? c.other : "#FFFFFF")), null);
+        height = Math.max(height, sz.minHeight);
+        TreeCreateDbox(o, sx - (sz.Tew / 2), sy - (height / 2), sz.Tew, height, e.k ? 3 : 1, (e.p.g === "f") ? c.female : ((e.p.g === "m") ? c.male : (((e.p.g || "").charAt(0) === "o") ? c.other : "#FFFFFF")));
         var v = document.createElement("div");
         v.className = "di";
         if (locale_rtl) {
@@ -214,9 +214,9 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
         }
         var s = v.style;
         s.width = sz.Tew + "px";
-        s.height = sh + "px";
+        s.height = height + "px";
         s.left = (sx - (sz.Tew / 2)) + "px";
-        s.top = (sy - (sh / 2)) + "px";
+        s.top = (sy - (height / 2)) + "px";
         if (wp) {
             v.onmousedown = TCT;
             v.id = i;
@@ -438,22 +438,18 @@ function TreeFocusOnPerson(id, time = 250) {
     }
 }
 
-function TRB(o, l, t, w, h, k, bg, _8e) {
-    v = document.createElement("div");
+function TreeCreateDbox(parent, l, t, width, height, k, background) {
+    let v = document.createElement("div");
     v.className = "dbox";
-    var s = v.style;
-    if (_8e) {
-        s.visibility = "hidden";
-        v.id = _8e;
-    }
-    s.position = "absolute";
-    s.width = (w) + "px";
-    s.height = (h) + "px";
-    s.left = (l - k) + "px";
-    s.top = (t - k) + "px";
-    s.background = bg;
-    s.borderWidth = k + "px";
-    o.appendChild(v);
+    var style = v.style;
+    style.position = "absolute";
+    style.width = (width) + "px";
+    style.height = (height) + "px";
+    style.left = (l - k) + "px";
+    style.top = (t - k) + "px";
+    style.background = background;
+    style.borderWidth = k + "px";
+    parent.appendChild(v);
 }
 
 var TreeIsPressed = false;
@@ -650,6 +646,7 @@ let AllTitle = {
     '姑妈': {'伴': '姑父', is: '父系父辈'},
     '伯父': {'伴': '伯母', is: '伯叔'},
     '叔叔': {'伴': '婶婶', is: '伯叔'},
+    '伯母婶婶': {'伴': '伯叔', is:'父系父辈'},
     '父的亲姊妹': {'父': '亲祖父', '母': '亲祖母'},
     '亲伯叔': {'子': '堂兄弟', '女': '堂姐妹', is: ['父的亲姊妹', '伯叔'], name: '伯叔'},
     '亲姑妈': {'子': '表兄弟', '女': '表姐妹', is: ['父的亲姊妹', '姑妈']},
@@ -661,6 +658,8 @@ let AllTitle = {
     '岳父母': {'子': '舅子', '女': '姨子'},
     '岳父': {'父': '祖岳父', '母': '祖岳母', '伴': '岳母', is: '岳父母'},
     '岳母': {'父': '外祖岳父', '母': '外祖岳母', '伴': '岳父', is: '岳父母'},
+    '伯岳父': {'伴': '伯岳母', is: '岳父'},
+    '伯岳母': {'伴': '伯岳父', is: '岳母'},
     // 爷辈
     '祖父母': {'子': '伯叔', '女': '姑妈'},
     '祖父': {'父': '曾祖父', '母': '曾祖母', '伴': '祖母', is: '祖父母'},
@@ -695,8 +694,14 @@ let AllTitle = {
     '太祖母': {'伴': '太祖父', is: '太祖'},
     // 子辈
     '子女': {'父母': '伴'},
-    '子': {'子': '孙子', '女': '孙女', '伴侣': '儿媳', is: '子女', name: '儿子'},
-    '女': {'子': '外孙子', '女': '外孙女', '伴': '女婿', is: '子女', name: '女儿'},
+    '子': {'子': '孙子', '女': '孙女', '伴': '儿媳', is: '子女', name: '儿子'},
+    '女': {'子': '外孙', '女': '外孙女', '伴': '女婿', is: '子女', name: '女儿'},
+    '侄子女': {'父': '伯叔','母':'伯母婶婶', is: '子女'},
+    '侄子': {'子': '侄孙', '女': '侄孙女', '伴': '侄媳妇', is: '侄子女'},
+    '侄女': {'子': '侄外孙', '女': '侄外孙女', '伴': '侄女婿', is: '侄子女'},
+    '外甥子女': {'父': '姐妹丈夫', '母':'姐妹', is: '子女'},
+    '外甥': {'子': '甥孙', '女': '甥孙女', '伴': '甥媳妇', is: '外甥子女'},
+    '外甥女': {'子': '甥外孙', '女': '甥外孙女', '伴': '甥女婿', is: '外甥子女'},
     // 孙辈
     '孙子女': {'父': '儿子', '母': '儿媳', '子': '曾孙', '女': '曾孙女'},
     '孙子': {'伴': '孙媳妇', is: '孙子女'},

@@ -66,7 +66,7 @@ var locale_names = {
 };
 var locale_phrases = {
     "^": {
-        "str": "第^届"
+        "str": "^日"
     },
     "Save": {
         "str": "保存"
@@ -554,59 +554,8 @@ var locale_phrases = {
     "at most $": {
         "str": "最多 $"
     },
-    "Download file": {
-        "str": "下载文件"
-    },
-    "Uploaded $": {
-        "str": "已上传 $"
-    },
-    "$ image": {
-        "str": "$ 图像"
-    },
-    "Image": {
-        "str": "图像"
-    },
-    "Text": {
-        "str": "文本"
-    },
-    "$ audio": {
-        "str": "$ 音频"
-    },
-    "Audio": {
-        "str": "音频"
-    },
-    "$ video": {
-        "str": "$ 视频"
-    },
-    "Video": {
-        "str": "视频"
-    },
-    "$ archive": {
-        "str": "$ 压缩包"
-    },
-    "Archive": {
-        "str": "压缩包"
-    },
     "Delete": {
         "str": "删除"
-    },
-    "No files match the current search.": {
-        "str": "没有文件符合当前搜索条件。"
-    },
-    "There are currently no files in this family.": {
-        "str": "此家庭目前没有文件。"
-    },
-    "# file/s": {
-        "str": "#个文件"
-    },
-    "$1 used (plus $2 in other families) of $3 available": {
-        "str": "已使用 $1（加上其他家庭中的 $2），共 $3 可用"
-    },
-    "$1 used of $2 available": {
-        "str": "已使用 $1，共 $2 可用"
-    },
-    "You do not currently have permission to $ files.": {
-        "str": "您目前没有权限 $ 文件。"
     },
     "download": {
         "str": "下载"
@@ -619,36 +568,6 @@ var locale_phrases = {
     },
     "delete": {
         "str": "删除"
-    },
-    "View file": {
-        "str": "查看文件"
-    },
-    "Untitled": {
-        "str": "无标题"
-    },
-    "Are you sure you want to permanently delete the file $?": {
-        "str": "您确定要永久删除文件 $ 吗？"
-    },
-    "The file could not be deleted - please try again.": {
-        "str": "无法删除文件 - 请重试。"
-    },
-    "Detach this person": {
-        "str": "解除此人的关联"
-    },
-    "Attach another person": {
-        "str": "关联其他人"
-    },
-    "This file is $1 in size, which is larger than the maximum of $2.": {
-        "str": "此文件大小为 $1，超过了最大限制 $2。"
-    },
-    "Please select a file to upload it.": {
-        "str": "请选择一个文件进行上传。"
-    },
-    "The file could not be uploaded - please try again.": {
-        "str": "无法上传文件 - 请重试。"
-    },
-    "Please wait while uploading...": {
-        "str": "上传中，请稍候..."
     },
     "Are you sure you want to permanently remove the picture for this person?": {
         "str": "您确定要永久删除此人的照片吗？"
@@ -670,21 +589,6 @@ var locale_phrases = {
     },
     "No matches found": {
         "str": "未找到匹配项"
-    },
-    "The email will include a link allowing <> to view and download this family, but not make changes.": {
-        "str": "电子邮件将包含一个链接，允许 <> 查看和下载此家庭，但不能进行更改。"
-    },
-    "The email will include a link allowing <> to view and download this family and its files, but not make changes.": {
-        "str": "电子邮件将包含一个链接，允许 <> 查看和下载此家庭及其文件，但不能进行更改。"
-    },
-    "The email will include a link allowing <> to view, download, modify and share this family.": {
-        "str": "电子邮件将包含一个链接，允许 <> 查看、下载、修改和分享此家庭。"
-    },
-    "The email will include a link allowing <> to view, download, modify and share this family, but only view and download files.": {
-        "str": "电子邮件将包含一个链接，允许 <> 查看、下载、修改和分享此家庭，但只能查看和下载文件。"
-    },
-    "The email will include a link allowing <> to view, modify and share this family, and upload, edit and delete files.": {
-        "str": "电子邮件将包含一个链接，允许 <> 查看、修改和分享此家庭，并上传、编辑和删除文件。"
     },
     "Married": {
         "str": "已婚"
@@ -726,13 +630,13 @@ var locale_phrases = {
         "str": "显示 $1 的 $2"
     },
     "Edit partnership details": {
-        "str": "编辑合作关系详情"
+        "str": "编辑伴侣关系"
     },
     "Edit my details": {
-        "str": "编辑我的详情"
+        "str": "编辑我的信息"
     },
     "Edit $'s details": {
-        "str": "编辑 $ 的详情"
+        "str": "编辑 $ 的信息"
     },
     "parent": {
         "str": "父母"
@@ -855,7 +759,7 @@ var locale_phrases = {
         "str": "公元前 (BC)"
     },
     "BCE": {
-        "str": "公元前 (BCE)"
+        "str": "公元前"
     },
     "Day": {
         "str": "日"
@@ -871,15 +775,6 @@ var locale_phrases = {
     },
     "Swap two dates": {
         "str": "交换两个日期"
-    },
-    "View $1 $2": {
-        "str": "查看$1 $2"
-    },
-    "Download $1 $2": {
-        "str": "下载$1 $2"
-    },
-    "This person has no files attached.": {
-        "str": "此人没有附加文件。"
     },
     "Set mother to $": {
         "str": "将母亲设为$"
@@ -1486,20 +1381,5 @@ var locale_phrases = {
     },
     "Month_12": {
         "str": "十二月"
-    },
-    "This link will allow <> to view and download this family, but not make changes.": {
-        "str": "此链接将允许 <> 查看和下载此家族，但不能进行更改。"
-    },
-    "This link will allow <> to view and download this family and its files, but not make changes.": {
-        "str": "此链接将允许 <> 查看和下载此家族及其文件，但不能进行更改。"
-    },
-    "This link will allow <> to view, download, modify and share this family.": {
-        "str": "此链接将允许 <> 查看、下载、修改和分享此家族。"
-    },
-    "This link will allow <> to view, download, modify and share this family, but only view and download files.": {
-        "str": "此链接将允许 <> 查看、下载、修改和分享此家族，但只能查看和下载文件。"
-    },
-    "This link will allow <> to view, modify and share this family, and upload, edit and delete files.": {
-        "str": "此链接将允许 <> 查看、修改和分享此家族，并上传、编辑和删除文件。"
     }
 };

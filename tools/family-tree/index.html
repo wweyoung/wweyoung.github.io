@@ -119,56 +119,6 @@
 
                 <div id="fadediv" class="dright" style="bottom:33px; height:4px;"></div>
 
-                <div id="filesdiv" class="dright rbody"
-                     style="bottom:32px; display:none; border-bottom:solid #666666 1px; top:0; overflow:auto;">
-                    <div id="filesmargin" class="marginon" style="position:relative;">
-                        <div style="position:absolute; top:0; height:32px; left:0; right:0;">
-                            <table width="100%">
-                                <tr>
-                                    <td class="fboth" width="100%">
-                                        <input id="filesfind" PLACEHOLDER="Search" onInput="DIF();"
-                                               style="width:100%; border:none;">
-                                    </td>
-                                    <td class="fboth" NOWRAP>
-                                        <span id="filesuploadfile"><input type="button" VALUE="上传文件"
-                                                                          onClick="DTU('', true); "></span>
-                                        <input type="button" VALUE="关闭" onClick="ETF(); ">
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div style="position:absolute; top:32px; bottom:24px; left:0; right:0; overflow-y:auto;">
-                            <table id="filestable" width="100%">
-                                <tr id="filesheader">
-                                    <TH class="fname">
-                                        <A HREF="#" onclick="DCT('n', false); " TITLE="按名称排序">姓名</A>
-                                        <span id="filessortn"></span>
-                                    </TH>
-                                    <TH class="fdesc">描述</TH>
-                                    <TH class="fattach">
-                                        <A HREF="#" onclick="DCT('a', false); " TITLE="按附加人员排序">附加到</A>
-                                        <span id="filessorta"></span>
-                                    </TH>
-                                    <TH class="ftype">
-                                        <A HREF="#" onclick="DCT('t', false); " TITLE="按类型排序">类型</A>
-                                        <span id="filessortt"></span></TH>
-                                    <TH class="fsize">
-                                        <A HREF="#" onclick="DCT('s', true); " TITLE="按大小排序">大小</A>
-                                        <span id="filessorts"></span></TH>
-                                    <TH class="fuploaded">
-                                        <A HREF="#" onclick="DCT('u', true); " TITLE="按上传日期排序">已上传</A>
-                                        <span id="filessortu"></span></TH>
-                                    <TH class="fbuttons"></TH>
-                                </tr>
-                                <Tbody id="filesrows">
-                                </Tbody>
-                            </table>
-                        </div>
-                        <div id="filesstatus"
-                             style="position:absolute; bottom:0; height:24px; left:0; right:0; line-height:24px; vertical-align:middle; text-align:center; font-style:italic; font-size:14px;"></div>
-                    </div>
-                </div>
-
                 <div id="usersdiv" class="dright rbody"
                      style="bottom:32px; display:none; border-bottom:solid #666666 1px; top:0; overflow:auto;">
                     <div id="usersmargin" class="marginon" style="position:relative;">
@@ -193,7 +143,7 @@
 
 
                                 <tr>
-                                    <td ALIGN="center">在左侧填写信息以开始设计您的家谱。</td>
+                                    <td ALIGN="center">在右侧填写信息以开始设计您的家谱。</td>
                                 </tr>
                                 <tr>
                                     <td ALIGN="center">添加父母、子女、伴侣、兄弟姐妹等。</td>
@@ -208,34 +158,10 @@
                                 </tr>
 
                                 <tr>
-                                    <td ALIGN="center">本系统不会保留您的任何信息。
-                                    </td>
+                                    <td ALIGN="center">注：本系统不会保留您的任何信息。</td>
                                 </tr>
                             </table>
                         </CENTER>
-                    </div>
-                </div>
-
-                <div id="fileviewdiv" class="dright" style="top:0px; height:100%; display:none;">
-                    <div id="fileviewmargin" class="marginon" style="background-color:white; position:relative;">
-                        <div style="position:absolute; left:0; right:0; top:0; height:35px; padding:0 8px; font-size:16px; line-height:36px; border-bottom:1px solid #999; overflow:hidden;">
-                            <span id="fileviewname" style="font-weight:bold;"></span>
-                            &ndash;
-                            <span id="fileviewmeta"></span>
-                            &ndash;
-                            <span id="fileviewdate"></span>
-                        </div>
-                        <div style="position:absolute; inset-inline-end:0; top:0; height:35px; padding:0 8px; line-height:36px; text-align:end;">
-                            <input type="button" VALUE="关闭" onClick="DHV(); ">
-                        </div>
-                        <div style="position:absolute; left:0; right:0; top:36px; bottom:0;">
-                            <IFRAME id="fileviewiframe" class="fullsize" FRAMEBORDER="0" SCROLLING="auto"></IFRAME>
-                        </div>
-                        <div id="fileviewinline"
-                             style="display:flex; align-items:center; justify-content:center; position:absolute; left:8px; right:8px; top:40px; bottom:8px;">
-                            <IMG id="fileviewimage" style="max-width:100%; max-height:100%;">
-                            <AUDIO id="fileviewaudio" CONTROLS></AUDIO>
-                        </div>
                     </div>
                 </div>
 
@@ -294,10 +220,6 @@
                                                 <td ALIGN="center" id="switchpanel2" class="sswitch">
                                                     <A HREF="#" onMouseDown="SWA(2); "
                                                        onClick="" id="switchlink2">传记</A>
-                                                </td>
-                                                <td ALIGN="center" id="switchpanel4" class="sswitch">
-                                                    <A HREF="#" onMouseDown="SWA(4); "
-                                                       onClick="" id="switchlink4">文件</A>
                                                 </td>
                                             </tr>
                                         </table>
@@ -625,26 +547,6 @@
                                             </tr>
                                             </Tbody>
 
-                                            <Tbody id="filesview" class="hiderows">
-                                            </Tbody>
-
-                                            <Tbody id="filesview2" class="hiderows">
-                                            <tr>
-                                                <td><IMG class="blankpixel" width="1" height="6"></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sboth" COLspan="2">
-										<span id="sideuploadfile">
-                                            <input type="button" VALUE="上传文件" class="sbutton2"
-                                                   onClick="DTU(Spe, true); ">
-										</span>
-                                                    <input type="button" VALUE="显示所有文件" class="sbutton2"
-                                                           onClick="ETF(); ">
-                                                </td>
-                                            </tr>
-                                            </Tbody>
-
-
                                             <Tbody id="viewfooter" class="hiderows">
                                             <tr>
                                                 <td><IMG class="blankpixel" width="1" height="6"></td>
@@ -754,54 +656,6 @@
                     暂不支持！
                     <input type="button" VALUE="完成" class="sbutton" style="margin-top:12px;"
                            onClick="ESM('view'); ">
-                </div>
-
-                <div id="uploaddiv" class="dright"
-                     style="position:absolute; top:0; bottom:0; display:none; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-                    <div class="rbody" style="padding:16px; border:1px solid #999; max-height:80%; overflow-y:auto;">
-                        <table>
-                            <tr>
-                                <td COLspan="2"
-                                    style="text-align:center; font-size:18px; font-weight:bold; padding-bottom:12px;">
-                                    上传文件
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="uleft">文件:</td>
-                                <td style="width:320px; display:flex; align-items:center;"><input id="uploadfile"
-                                                                                                  type="file"
-                                                                                                  style="flex:1;"
-                                                                                                  onchange="DUC();"><span
-                                        style="flex:0; white-space:nowrap; font-size:11px;">(最大 <span id="uploadmax">12345</span>)</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="uleft">姓名:</td>
-                                <td><input id="uploadname" type="text" style="width:100%;"></td>
-                            </tr>
-                            <tr>
-                                <td class="uleft">描述:</td>
-                                <td><textarea id="uploaddesc" type="text" rows="4" style="width:100%;"></textarea></td>
-                            </tr>
-                            <tr>
-                                <td class="uleft">附加到:</td>
-                                <td>
-                                    <table cellspacing=0 CELLPADDING=0 style="width:100%;">
-                                        <Tbody id="uploadattachrows">
-                                        </Tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <input type="button" value="上传文件" onClick="DCU(); ">
-
-                                    <input type="button" value="取消" onClick="DTU(); ">
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
                 </div>
 
                 <div id="optionsdiv" class="marginon rbody"
@@ -916,11 +770,11 @@
                                        onClick="SetConfigColor('deceased', '#777777'); ">重置</a>
                                     <br/><span class="cleft">框宽度:</span>
                                     <input id="showwidth" type="range" MIN="0.5" MAX="2.0" STEP="0.001" class="cright"
-                                           onInput="OnConfigWidthChanged();" onChange="ECW();">
+                                           onInput="OnConfigWidthChanged();" onChange="OnConfigWidthChanged();">
                                     <a href="#" class="creset" onClick="ResetConfigWidth(); ">重置</a>
                                     <br/><span class="cleft">文本大小:</span>
                                     <input id="textsize" type="range" MIN="0.5" MAX="2.0" STEP="0.001" class="cright"
-                                           onInput="OnConfigTextSizeChanged();" onChange="ECT();">
+                                           onInput="OnConfigTextSizeChanged();" onChange="OnConfigTextSizeChanged();">
                                     <a href="#" class="creset" onClick="ResetConfigTextSize(); ">重置</a>
                                 </td>
 
@@ -1072,9 +926,9 @@
                                 </span>
                                 <span id="usersbutton" style="display:none;">
 								<span class="buttondash">&ndash;</span>
-								<A HREF="#" onClick="ETU(); " TITLE="查看邀请/用户"><IMG
+								<A HREF="#" onClick="ETU(); " TITLE="查看成员"><IMG
                                         SRC="data:;base64,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"
-                                        class="icon" ALIGN="ABSMIDDLE"><span class="iconlabel">用户</span></A>
+                                        class="icon" ALIGN="ABSMIDDLE"><span class="iconlabel">成员</span></A>
 							</span>
                                 <span id="userstreebutton" style="display:none;">
 								<span class="buttondash">&ndash;</span>
@@ -1086,25 +940,6 @@
                                 <A HREF="#" onClick="ESM('calendar'); " TITLE="查看事件日历或时间线"><IMG
                                         SRC="data:;base64,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"
                                         class="icon" ALIGN="ABSMIDDLE"><span class="iconlabel">日历</span></A>
-                                <span id="historybutton" style="display:none;">
-								<span class="buttondash">&ndash;</span>
-								<A HREF="#" onClick="ESM('history'); " TITLE="查看编辑历史"><IMG
-                                        SRC="data:;base64,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"
-                                        class="icon" ALIGN="ABSMIDDLE"><span class="iconlabel">历史</span></A>
-							    </span>
-                                <span id="filesbutton" class="nav_unimportant5" style="display:none;">
-                                    <span class="buttondash">&ndash;</span>
-                                    <A HREF="#" onClick="ETF(); " TITLE="查看/编辑文件">
-                                    <IMG SRC="data:;base64,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"
-                                         class="icon" ALIGN="ABSMIDDLE">
-                                    <span id="fileslinktext" class="iconlabel">文件</span></A>
-							    </span>
-                                <span id="filestreebutton" style="display:none;">
-								<span class="buttondash">&ndash;</span>
-								<A HREF="#" onClick="ETF(); " TITLE="显示家谱">
-                                    <IMG SRC="data:;base64,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"
-                                         class="icon" ALIGN="ABSMIDDLE"><span class="iconlabel">家谱</span></A>
-							    </span>
                                 <span class="buttondash">&ndash;</span>
                                 <IMG SRC="data:;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAYAAAAehFoBAAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABd3d3Lmlua3NjYXBlLm9yZwAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACygAwAEAAAAAQAAACwAAAAA06l3rAAAAAlwSFlzAAALEwAACxMBAJqcGAAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAABl5JREFUWAnNmFuoVVUUhrW7GpVd7GYJauY17CEI66FDEUUWQdFLD0FEhE/1WCAFRYEPXR6iIHyplxCpIAgEezCxyBKtDOxix1K6mJXa1e7ft9f8dZ7dPues7TmhP/xrjDnXnGOONeaYY629J04YHccw5Fj4Rxl6IvKKwoXI6fAU6Jjf4Q9wB9wM34BbYHA8Suykb1zlcZW1WeiPwx3wn5b8i3Gb4L1wCgx8uHHFRKzF6KnoT0MXb+uo4/7uGv817WUw0L7rjBlxVEM3wN0wDridtdP7aG+Db8J1cCMchAdgPa5ur+feDCjG7HSdAvdjMIv+VOlG6jl4EzR/zfEa5vjF8E74KvwNxs6PRdfeABR1gJqeltd64grmuMif8Jeie5gehGfCbuRg9triSxj8AozT7kr0pcXQCUW2Fi6YSD2ArkG3MdFZi34RDIziSdAdcV4cVdq2GkwqEtHBjVx3Qm0n0upWHKG9VnCRRFejGvGA/Vz0Z5GBTvQbjXqOKWS5c42kmSk2DYpWtuOsk3ZBjbn9ymdg4MKHC6OesmbV2Qq1n3R7CV3oS3a60zHS5QluamRPkWuqwabAeCBOz8TYfuh64S1lgVaBmc1gD5jUwPdwFhStc6sZPuo1Dt3BSNf6tUhLY1BXq/QNkY/RcnKe2pImnJgD1ekYp0u2fT32XDe07osRg2SiD8JM+gL9XCjGKxUaa4euieB1dLluoryyDEm1OTSj0q5Ed1JKmK9hYRQSCdsaGQu10Q3tfwQTLPXTy6CeFcMJqYPWTrG2EZ0S4/eA6Ha+6e3vagWo00ub2n+tmNHpmXBeaddjS1fjyOLS0oAV4v3S1oBwoob7/fhJ1CIzv9uRHDa/U0yVOVAkWE2rXB1wYdXzFfqXpe0EjbugD3M7PB9aSboXpasn4qxnYQNcB+2LXdQJ270A1xDTG9FxuB7X6dZhC3ngC8MDIHTYbdTB5fAhOBZo5xqo0zqXh9mL7vnJAT8NXdQBa3q4OlGnA432gl9mQsNureNkL71Xn28017kcCp0NYivt+FOPyb2OwwcOtoavfw8zxne/9TEPqWF3QFnr3X3cnjAZboarbIB6q42sFSEOxh/H/Acu9F3V66ejKeInoAv7G028Av1MPBsakZ7G6O9GnNDWx9CUc667kLQ4C12HPXT2efCFumkxBDr8KRwovechZ0ArhROEC7jwYCHisBFbtYGUsfR9XhQf0gcbAp16t/T4hCfDy0o7QmddSANjpbaC6AOlw/eAabettF2zJ+bT62S3X7kaBjr4fyDOWBFMSdeVG6HpIfIia1pd17dpZ5InenG5P+JHSJeNfppxahmTXDffEo8WIzqbhypdQ8U9NJ24t8iV1e3xjnLsWR12lfVc20BdCsWogbIy7IROTGpcjy5GndwMa3U1anlBPIkeR5UvFgs+UA586RoqcvNuup2YKPsAvorF5EaM6eo6sXMrumtZIpWmxCIoRg1QHHbwWqgBa6FyE5wKhYtlOzsdfVzM2UR2AN2XQ+3wI8VWxpTm8MJ6LGZDfx5pLNKaPAcGk1Dqh0x/L6nd/I7z/m3Q17v24/Tr6MKD1tbuwQkqV0MNyvzpofN3wRpGQ7qQjhl9pdF0W5WB9f0pGLvWW+u+7R1wARSjpkMzrLl6IFL7lqLH+P5KX49+M2ybGmcw9j74GYy9/N9hO9G2Fi+EYkSnu2udWyI9DEvgy3AadPuMWMZ/gm6+b4AfQRc0YqbLOdDFzVXp94mw+hgQbayB8+EFUKd1cg90/FbozrlmK2jQrRVGaDVMdHy3+0GSdqSLGrmUxPQr6znOXQ6F5yIVyRRx7Lcwka4DRPfoiNOO9Of3O7B2pB/dHVsFdVLkcM1F9wtOW0k9nV4ARXakabW4arjO12tpPw8HoZEbyWlr63twBYwDqAfPSc7LPPpMKW0l4sM67fa3gduTU+34KdDvYx2ZAadCHTA1XGw7/ACaj4H3dcpoB9o1jcznddB8N+LaM6evgh/CjENtDx/Ow+HkfjDaHA+YMHd3Qx8qEdfp5HTG0dU/zG8dsSrEIR9Eo+lXr9OJ5rBwjtC5b6BO58VVO51x3D7yiDM6nUjnQJpmi468i0M9SMrZq9M6aaTr6nHUOY1/nZRSeqCTy/vQdd437VGJHDBLXnJZh+uqc9Q5nmo0F8/eglvgkn8BnSXj/xVK5ikAAAAASUVORK5CYII="
                                      class="icon" style="cursor:pointer;" ALIGN="ABSMIDDLE" TITLE="缩小"

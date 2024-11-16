@@ -6,7 +6,7 @@ function BMG(f, i, si, pg) {
     if (pg["m"] && si) {
         if (p.gp && p.mp) {
             var t = p.gp[si];
-            if (((t == "m") || (t == "s") || (t == "d") || (t == "a")) && FAD(p.mp[si])) {
+            if (((t == "m") || (t == "s") || (t == "d") || (t == "a")) && IsDateObjHasYearOrMonth(p.mp[si])) {
                 eg = Math.max(eg, 0.625);
             }
         }
@@ -21,7 +21,7 @@ function BMG(f, i, si, pg) {
     }
     if (pg["d"] && si) {
         if (p.gp && p.dp) {
-            if ((p.gp[si] == "d") && FAD(p.dp[si])) {
+            if ((p.gp[si] == "d") && IsDateObjHasYearOrMonth(p.dp[si])) {
                 eg = Math.max(eg, 0.625);
             }
         }
