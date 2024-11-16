@@ -573,7 +573,7 @@ var locale_phrases = {
         "str": "您确定要永久删除此人的照片吗？"
     },
     "Back to me": {
-        "str": "返回到我"
+        "str": "回到自己"
     },
     "Back to start": {
         "str": "返回开始"
@@ -690,7 +690,7 @@ var locale_phrases = {
         "str": "添加新父母"
     },
     "Add brother/sister": {
-        "str": "添加兄弟/姐妹"
+        "str": "添加兄弟姐妹"
     },
     "Add child": {
         "str": "添加孩子"
@@ -996,10 +996,10 @@ var locale_phrases = {
         "str": "您的工作将不会被保存！"
     },
     "^ birthday": {
-        "str": "第^个生日"
+        "str": "^岁生日"
     },
     "^ anniversary": {
-        "str": "第^个周年纪念"
+        "str": "^周年纪念"
     },
     "There are no birthdays or anniversaries to display.": {
         "str": "没有生日或周年纪念可显示。"

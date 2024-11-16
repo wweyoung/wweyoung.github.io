@@ -719,12 +719,12 @@ function UpdatePerson(id, props) {
 }
 
 // EPC 更新关系?变更数据
-function EPC(i1, i2, c) {
+function EPC(id1, id2, c) {
     // console.log("EPC", arguments)
     for (var p in c) {
         var v = c[p] ? ReplaceRN2N(new String(c[p])) : "";
-        UpdatePersonRelationField(i1, i2, p, v);
-        GetElement("newscript").value += "\np" + i1 + " " + i2 + "\t" + p.charAt(0) + EscapeEF(v);
+        UpdatePersonRelationField(id1, id2, p, v);
+        GetElement("newscript").value += "\np" + id1 + " " + id2 + "\t" + p.charAt(0) + EscapeEF(v);
     }
     OnSavingScript(false);
 }

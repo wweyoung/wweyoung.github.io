@@ -644,7 +644,7 @@ let AllTitle = {
     '婆婆': {is: '母'},
     '公公': {is: '父'},
     '父的亲姊妹': {'父': '亲祖父', '母': '亲祖母', is: '父系父辈'},
-    '亲伯叔': {'子': '堂兄弟', '女': '堂姐妹', is: ['父的亲姊妹', '伯叔'], name: '伯叔'},
+    '亲伯叔': {'子': '堂兄弟', '女': '堂姐妹', is: ['父的亲姊妹', '伯叔'], name: ['伯父', '叔叔']},
     '亲姑父母': {'子': '表兄弟', '女': '表姐妹', is: ['姑父母']},
     '亲姑妈': {'子': '表兄弟', '女': '表姐妹', is: ['亲姑父母', '父的亲姊妹', '姑妈'], name: '姑妈'},
     '亲伯父': {is: ['亲伯叔', '伯父'], name: '伯父'},
@@ -728,9 +728,13 @@ let AllTitle = {
 
 let TitleChild = {};
 Object.entries(AllTitle).forEach(([key, value]) => {
-    let is = value.is || '';
-    let childTitles = TitleChild[is] || (TitleChild[is] = []);
-    childTitles.push(key);
+    if(value.is) {
+        let isList = value.is.constructor === String ? [value.is] : value.is;
+        for (let is of isList) {
+            let childTitles = TitleChild[is] || (TitleChild[is] = []);
+            childTitles.push(key);
+        }
+    }
 });
 
 function GetAppellationOf(title, of) {

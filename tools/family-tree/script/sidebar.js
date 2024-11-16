@@ -1062,12 +1062,12 @@ function PersonOperate(operation, v) {
         }
         var d = (operation == "moveleft") ? -1 : 1;
         while (true) {
-            si += d;
-            if ((si < 0) || (si > bs.length)) {
+            spouseId += d;
+            if ((spouseId < 0) || (spouseId > bs.length)) {
                 break;
             }
-            if ((si == 0) || (si == bs.length) || (FPO(f[bs[si - 1]], ot) != FPO(f[bs[si]], ot))) {
-                UpdatePerson(SidebarPersonId, {O: FBO(f, bs.slice(0, si), bs.slice(si), ot)});
+            if ((spouseId == 0) || (spouseId == bs.length) || (FPO(f[bs[spouseId - 1]], ot) != FPO(f[bs[spouseId]], ot))) {
+                UpdatePerson(SidebarPersonId, {O: FBO(f, bs.slice(0, spouseId), bs.slice(spouseId), ot)});
                 break;
             }
         }
@@ -1211,7 +1211,9 @@ function PersonOperate(operation, v) {
                 childrenObj.f = newParentId;
             }
             UpdatePerson(childrenId, childrenObj);
-            UpdatePerson(newParentId, {"^": childrenId, g: FIG(person.g)});
+            let newParentProps = {"^": childrenId, g: FIG(person.g)};
+            if (!person.s) newParentProps.s = SidebarPersonId; // 如果没有主要伴侣，则设为主要伴侣
+            UpdatePerson(newParentId, newParentProps);
             ESE(true, [childrenId, newParentId], childrenId);
         } else {
             childrenObj.l = person.l;
@@ -1283,13 +1285,13 @@ function PersonOperate(operation, v) {
     } else if (operation == "addspouse") {
         ECS();
         SPX(f, SidebarPersonId, person.s, true);
-        var si = GenerateId();
-        UpdatePerson(si, {
+        var spouseId = GenerateId();
+        UpdatePerson(spouseId, {
             "^": SidebarPersonId,
             s: SidebarPersonId,
             g: person.g === 'm' ? 'f' : 'm'
         });
-        ESE(true, [si], SidebarPersonId);
+        ESE(true, [spouseId], SidebarPersonId);
     } else if ((operation == "addexspouse") || (operation == "addextraspouse")) {
         ECS();
         var si = GenerateId();

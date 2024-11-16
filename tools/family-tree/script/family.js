@@ -149,9 +149,9 @@ function FRF(persons, personId, ownerPersonId) {
         var mi = p.m1;
         var fi = p.f1;
         if (!p.h) {
-            if (i == personId) {
+            if (i === personId) {
                 p.h = _t("Me");
-            } else if (i == ownerPersonId) {
+            } else if (i === ownerPersonId) {
                 p.h = _t("Founder");
             } else {
                 var r = p["^"];
@@ -298,12 +298,13 @@ function FUP(f, mi, fi) {
     return FRP(f, mi, fi) || (f[mi] && f[mi].ep && (f[mi].ep[fi] == 2));
 }
 
-function FGM(g) {
-    return (g == "f") ? -1 : ((g == "m") ? 1 : 0);
+// FGM
+function FamilyGenderToNumber(g) {
+    return (g == "f") ? -1 : (g == "m" ? 1 : 0);
 }
 
 function FCM(p1, p2) {
-    return (p1 ? FGM(p1.g) : 0) - (p2 ? FGM(p2.g) : 0);
+    return (p1 ? FamilyGenderToNumber(p1.g) : 0) - (p2 ? FamilyGenderToNumber(p2.g) : 0);
 }
 
 function FPM(f, i) {
@@ -1021,47 +1022,37 @@ function FTM(p, mi, fi) {
 
 function FTP(f, p, si, sp) {
     var cp = (p.s == si) || (p.ep && (p.ep[si] == 2)) || (p.z == 1);
-    var pl = (p.z != 1) && (sp.z == 1);
-    var pw = (p.z == 1) && (sp.z != 1);
+    var isPartnerLate = (p.z != 1) && (sp.z == 1);
+    var isWidow = (p.z == 1) && (sp.z != 1);
     var pz = p.zp && p.zp[si];
     var gpi = new String(p.gp ? p.gp[si] : "");
     var s = "";
-    var cm = -FGM(sp.g);
-    if (((gpi == "m") && (cp || pl)) || (gpi == "s")) {
-        if (pl) {
+    var cm = -FamilyGenderToNumber(sp.g);
+    if (((gpi == "m") && (cp || isPartnerLate)) || (gpi == "s")) {
+        if (isPartnerLate) {
             s = cm ? ((cm > 0) ? _t("Late wife") : _t("Late husband")) : _t("Late spouse");
+        } else if (isWidow) {
+            s = cm ? ((cm > 0) ? _t("Widow") : _t("Widower")) : _t("Widowed spouse");
         } else {
-            if (pw) {
-                s = cm ? ((cm > 0) ? _t("Widow") : _t("Widower")) : _t("Widowed spouse");
-            } else {
-                s = cm ? ((cm > 0) ? _t("Wife") : _t("Husband")) : _t("Spouse");
-            }
+            s = cm ? ((cm > 0) ? _t("Wife") : _t("Husband")) : _t("Spouse");
         }
         if (gpi == "s") {
             s = _t("$ (separated)", s);
         }
-    } else {
-        if ((gpi == "m") || (gpi == "d") || (gpi == "a")) {
-            s = cm ? ((cm > 0) ? _t("Ex-wife") : _t("Ex-husband")) : _t("Ex-spouse");
+    } else if ((gpi == "m") || (gpi == "d") || (gpi == "a")) {
+        s = cm ? ((cm > 0) ? _t("Ex-wife") : _t("Ex-husband")) : _t("Ex-spouse");
+    } else if ((gpi == "e") && (cp || isPartnerLate)) {
+        if (isPartnerLate) {
+            s = (cm > 0) ? _t("Late fiancee") : _t("Late fiance");
         } else {
-            if ((gpi == "e") && (cp || pl)) {
-                if (pl) {
-                    s = (cm > 0) ? _t("Late fiancee") : _t("Late fiance");
-                } else {
-                    s = (cm > 0) ? _t("Fiancee") : _t("Fiance");
-                }
-            } else {
-                if (gpi == "e") {
-                    s = (cm > 0) ? _t("Ex-fiancee") : _t("Ex-fiance");
-                } else {
-                    if ((gpi == "r") && IsDateObjHasYearOrMonth(pz) && (!((p.z == 1) && (p.d == pz))) && (!((sp.z == 1) && (sp.d == pz)))) {
-                        s = _t("Ex-partner");
-                    } else {
-                        s = pl ? _t("Late partner") : (cp ? _t("Partner") : _t("Ex-partner"));
-                    }
-                }
-            }
+            s = (cm > 0) ? _t("Fiancee") : _t("Fiance");
         }
+    } else if (gpi == "e") {
+        s = (cm > 0) ? _t("Ex-fiancee") : _t("Ex-fiance");
+    } else if ((gpi == "r") && IsDateObjHasYearOrMonth(pz) && (!((p.z == 1) && (p.d == pz))) && (!((sp.z == 1) && (sp.d == pz)))) {
+        s = _t("Ex-partner");
+    } else {
+        s = isPartnerLate ? _t("Late partner") : (cp ? _t("Partner") : _t("Ex-partner"));
     }
     return s;
 }
@@ -1074,7 +1065,7 @@ let RelationTitle = {
 }
 
 function GetRelationTitle(type, person) {
-    return type[person.g] || type[0];
+    return type[person.g] || type[''];
 }
 
 // FCP 废弃
