@@ -1782,7 +1782,7 @@ function CalculateRelationPath(personId) {
         Spd = personId;
     }
     SetElementInnerHTML("pathcontent", TPHNew(Efa, GetBaseRelationRoutes(Efa, Sps, Spd, 1, 1),
-        GetConfigBirthNameValue(), GetConfigSurnameFirstValue(), false));
+        GetConfigBirthNameValue(), GetConfigSurnameFirstValue()));
     SSP(SidebarPersonId);
 }
 

@@ -546,6 +546,7 @@ function GetTouchesAvgXY(touches) {
 function GetTouchDistance(touches) {
     return Math.sqrt(Math.pow(touches[0].clientX - touches[1].clientX, 2) + Math.pow(touches[0].clientY - touches[1].clientY, 2))
 }
+
 // TSS, TSE
 var Tst = null, Tsf, Tsd, TreeAnimateStartTime, TreeAnimateEndTime;
 
@@ -609,7 +610,7 @@ function TRT(family, viewPersonId, ownPersonId, personShowFields, otherAgeConfig
     var showMarryAttrs = GetMarryAttrsByConfigFields(personShowFields);
     TRD(BFT(family, viewPersonId, ownPersonId, childrenLevelConfig, parentLevelConfig, cursionLevelConfig, maleLeftConfig, showMarryAttrs), personShowFields, otherAgeConfig, birthNameConfig, surnameFirstConfig, colorsConfig, linesConfig, TreeBg, oiPersonId, true, false, zoomConfig, widthConfig, textSizeConfig);
     // if (!isFixed) {
-        setTimeout(() => TreeFocusOnPerson(viewPersonId, 250), focusAnimationTime);
+    setTimeout(() => TreeFocusOnPerson(viewPersonId, 250), focusAnimationTime);
     // }
     let treediv = GetElement("treediv");
     if (IsDarkMode()) {
@@ -621,11 +622,12 @@ function TRT(family, viewPersonId, ownPersonId, personShowFields, otherAgeConfig
 
 let AllTitle = {
     // 平辈
-    '自己男': {伴: '妻子', is: '自己'},
-    '自己女': {伴: '丈夫', is: '自己'},
-    '伴': {伴: '自己', is: '自己&伴', name: '伴侣'},
-    '丈夫': {父: '公公', 母: '婆婆', is: '伴'},
-    '妻子': {父: '岳父', 母: '岳母', is: '伴'},
+    '自己': {'父': '父', '母': '母', '子': '子', '女': '女'},
+    '自己男': {'伴': '妻子', is: '自己'},
+    '自己女': {'伴': '丈夫', is: '自己'},
+    '伴': {'伴': '自己', is: '自己&伴', name: '伴侣'},
+    '丈夫': {'父': '公公', '母': '婆婆', is: '伴'},
+    '妻子': {'父': '岳父', '母': '岳母', is: '伴'},
     '兄弟姐妹': {'父': '父', '母': '母'},
     '兄弟': {'子': '侄子', '女': '侄女', '伴': '兄弟媳妇', is: '兄弟姐妹'},
     '姐妹': {'子': '外甥', '女': '外甥女', '伴': '姐妹丈夫', is: '兄弟姐妹'},
@@ -633,46 +635,56 @@ let AllTitle = {
     '堂姐妹': {is: '姐妹'},
     '表兄弟': {is: '兄弟'},
     '表姐妹': {is: '姐妹'},
-    '兄弟媳妇': {'伴': '兄弟'},
-    '姐妹丈夫': {'伴': '姐妹'},
+    '兄弟媳妇': {'伴': '兄弟', name: ['嫂子', '弟妹']},
+    '姐妹丈夫': {'伴': '姐妹', name: ['姐夫', '妹夫']},
     // 父辈
     '父母': {'子女': '兄弟姐妹', '子': '兄弟', '女': '姐妹', '伴': '父母'},
     '父': {'父': '亲祖父', '母': '亲祖母', '伴': '母', is: '父母', name: '父亲'},
     '母': {'父': '外祖父', '母': '外祖母', '伴': '父', is: '父母', name: '母亲'},
     '婆婆': {is: '母'},
     '公公': {is: '父'},
-    '父系父辈': {'父': '祖父', '母': '祖母', '子': '兄弟', '女': '姐妹'},
-    '伯叔': {is: '父系父辈'},
-    '姑妈': {'伴': '姑父', is: '父系父辈'},
-    '伯父': {'伴': '伯母', is: '伯叔'},
-    '叔叔': {'伴': '婶婶', is: '伯叔'},
-    '伯母婶婶': {'伴': '伯叔', is:'父系父辈'},
-    '父的亲姊妹': {'父': '亲祖父', '母': '亲祖母'},
+    '父的亲姊妹': {'父': '亲祖父', '母': '亲祖母', is: '父系父辈'},
     '亲伯叔': {'子': '堂兄弟', '女': '堂姐妹', is: ['父的亲姊妹', '伯叔'], name: '伯叔'},
-    '亲姑妈': {'子': '表兄弟', '女': '表姐妹', is: ['父的亲姊妹', '姑妈']},
+    '亲姑父母': {'子': '表兄弟', '女': '表姐妹', is: ['姑父母']},
+    '亲姑妈': {'子': '表兄弟', '女': '表姐妹', is: ['亲姑父母', '父的亲姊妹', '姑妈'], name: '姑妈'},
     '亲伯父': {is: ['亲伯叔', '伯父'], name: '伯父'},
     '亲叔叔': {is: ['亲伯叔', '叔叔'], name: '叔叔'},
+    '父系父辈': {'父': '祖父', '母': '祖母', '子': '兄弟', '女': '姐妹'},
+    '伯叔': {is: '父系父辈', name: ['伯父', '叔叔']},
+    '伯父': {'伴': '伯母', is: '伯叔'},
+    '叔叔': {'伴': '婶婶', is: '伯叔'},
+    '伯母婶婶': {'伴': '伯叔', is: '父系父辈'},
+    '姑父母': {is: '父系父辈'},
+    '姑妈': {'伴': '姑父', is: ['姑父母', '父系父辈']},
+    '姑父': {'伴': '姑妈', is: ['姑父母', '父系父辈']},
     '母的亲姊妹': {'父': '外祖父', '母': '外祖母', '子': '表兄弟', '女': '表姐妹'},
     '舅': {'伴': '舅妈', is: '母的亲姊妹'},
     '姨妈': {'伴': '姨父', is: '母的亲姊妹'},
-    '岳父母': {'子': '舅子', '女': '姨子'},
+    '岳父母': {'子': '舅子', '女': '姨子', is: '父母'},
     '岳父': {'父': '祖岳父', '母': '祖岳母', '伴': '岳母', is: '岳父母'},
     '岳母': {'父': '外祖岳父', '母': '外祖岳母', '伴': '岳父', is: '岳父母'},
     '伯岳父': {'伴': '伯岳母', is: '岳父'},
     '伯岳母': {'伴': '伯岳父', is: '岳母'},
+    '舅岳父': {'伴': '舅岳母', is: '岳父'},
+    '舅岳母': {'伴': '舅岳母', is: '岳父'},
+    '姨岳母': {'伴': '姨岳父', is: '岳母'},
+    '姨岳父': {'伴': '姨岳母', is: '岳母'},
     // 爷辈
     '祖父母': {'子': '伯叔', '女': '姑妈'},
     '祖父': {'父': '曾祖父', '母': '曾祖母', '伴': '祖母', is: '祖父母'},
     '祖母': {'父': '曾外祖父', '母': '曾外祖母', '伴': '祖父', is: '祖父母'},
-    '亲祖父母': {'子': '亲伯叔', is: '祖父母'},
+    '亲祖父母': {'子': '亲伯叔', '女': '亲姑妈', is: '祖父母'},
     '亲祖父': {'伴': '亲祖母', is: ['亲祖父母', '祖父'], name: '祖父'},
     '亲祖母': {'伴': '亲祖父', is: ['亲祖父母', '祖母'], name: '祖母'},
     '外祖父母': {'子': '舅', '女': '姨妈'},
     '外祖父': {'父': '外曾祖父', '母': '外曾祖母', '伴': '外祖母', is: '外祖父母'},
     '外祖母': {'父': '外曾外祖父', '母': '外曾外祖母', '伴': '外祖父', is: '外祖父母'},
-    '祖岳父母': {'子': '伯岳父', '女': '姑岳母'},
-    '祖岳父': {'伴': '祖岳父', is: '祖岳父母'},
-    '祖岳母': {'伴': '祖岳母', is: '祖岳父母'},
+    '祖岳': {'子': '伯岳父', '女': '姑岳母'},
+    '祖岳父': {'伴': '祖岳父', is: '祖岳'},
+    '祖岳母': {'伴': '祖岳母', is: '祖岳'},
+    '外祖岳': {'子': '舅岳父', '女': '姨岳母', is: '祖岳'},
+    '外祖岳父': {'伴': '外祖岳母', is: ['外祖岳', '祖岳父']},
+    '外祖岳母': {'伴': '外祖岳父', is: ['外祖岳', '祖岳母']},
     '曾祖': {'子': '祖父', '女': '姑奶奶'},
     '曾祖父': {'父': '高祖父', '母': '高祖母', '伴': '曾祖母', is: '曾祖'},
     '曾祖母': {'父': '高外祖父', '母': '高外祖母', '伴': '曾祖父', is: '曾祖'},
@@ -696,10 +708,10 @@ let AllTitle = {
     '子女': {'父母': '伴'},
     '子': {'子': '孙子', '女': '孙女', '伴': '儿媳', is: '子女', name: '儿子'},
     '女': {'子': '外孙', '女': '外孙女', '伴': '女婿', is: '子女', name: '女儿'},
-    '侄子女': {'父': '伯叔','母':'伯母婶婶', is: '子女'},
+    '侄子女': {'父': '伯叔', '母': '伯母婶婶', is: '子女'},
     '侄子': {'子': '侄孙', '女': '侄孙女', '伴': '侄媳妇', is: '侄子女'},
     '侄女': {'子': '侄外孙', '女': '侄外孙女', '伴': '侄女婿', is: '侄子女'},
-    '外甥子女': {'父': '姐妹丈夫', '母':'姐妹', is: '子女'},
+    '外甥子女': {'父': '姐妹丈夫', '母': '姐妹', is: '子女'},
     '外甥': {'子': '甥孙', '女': '甥孙女', '伴': '甥媳妇', is: '外甥子女'},
     '外甥女': {'子': '甥外孙', '女': '甥外孙女', '伴': '甥女婿', is: '外甥子女'},
     // 孙辈
@@ -724,28 +736,46 @@ Object.entries(AllTitle).forEach(([key, value]) => {
 function GetAppellationOf(title, of) {
     // 当前没有 而且 有父类
     let result;
-    while (of) {
-        let titleInfo = AllTitle[title];
-        while (titleInfo && !titleInfo[of] && titleInfo.is) {
-            if (titleInfo.is.constructor === String) {
-                if (titleInfo.is === '自己') return of;
-                titleInfo = AllTitle[titleInfo.is];
-            } else {
-                for (let is of titleInfo.is) {
-                    let subTitle = GetAppellationOf(is, of);
-                    if (subTitle) {
-                        return subTitle;
-                    }
+    let titles = [title];
+    let foundTitles = new Set();
+    let aTitle;
+    do {
+        aTitle = titles[0];
+        let titleInfo = AllTitle[aTitle];
+        if (titleInfo) {
+            if (titleInfo[of]) {
+                result = titleInfo[of];
+                break;
+            }
+            console.log(aTitle + ' 的 (' + of + ') 是 ' + result);
+            if (titleInfo.is) {
+                console.log(aTitle + ' 属于 ' + titleInfo.is);
+                if (titleInfo.is.constructor === String) {
+                    titles.push(titleInfo.is);
+                } else {
+                    titles.push(...titleInfo.is);
                 }
             }
         }
-        result = titleInfo && titleInfo[of];
-        if (result) {
-            break;
+        foundTitles.add(aTitle);
+        titles = titles.filter(t => !foundTitles.has(t));
+    } while (titles.length > 0);
+
+    console.log(aTitle + ' 的 (' + of + ') 是 ' + result);
+
+    if (!result) {
+        if (AllTitle[of]?.is) {
+            let ofs = AllTitle[of].is;
+            if (ofs.constructor === String) {
+                ofs = [ofs];
+            }
+            for (let subOf of ofs) {
+                console.log('(' + of + ') 属于 ' + subOf);
+                result = GetAppellationOf(title, subOf);
+                if (result) return result;
+            }
         }
-        of = AllTitle[of]?.is;
     }
-    console.log(title + ' 的 ' + of + ' 是' + result);
     return result;
 }
 
@@ -1078,11 +1108,11 @@ function TPH(family, paths, bn, sf, s) {
 
 // TPH 废弃
 // 计算关系路径HTML
-function TPHNew(family, paths, bn, sf, s) {
+function TPHNew(family, paths, bn, sf) {
     let fromId = paths[0].id;
     let logRoutes = []
-    let title = GetAppellation(GetRelationTitle(RelationTitle.self, family[fromId]), paths.slice(0, -1).map(obj => obj.type), logRoutes).join('/') || '无关';
-    // console.log(paths, logRoutes);
+    let targetTitles = GetAppellation(GetRelationTitle(RelationTitle.self, family[fromId]), paths.slice(0, -1).map(obj => obj.type), logRoutes);
+    let targetTitleNames = GetTitleNames(targetTitles).join(" / ");
 
     let fromName = FDN(family[fromId], true, 1, sf, (bn == 1), true, true, true, true);
     let endId = paths[paths.length - 1].id;
@@ -1091,7 +1121,7 @@ function TPHNew(family, paths, bn, sf, s) {
     '    </p>
         <p class="pa">↓</p>
     <p id="shortpath-${fromId}" class="ptitle" style="display: none;">
-        <a href="#" onclick="SEP('${fromId}', true); return false;" title="展开此关系">${title}</a>
+        <a href="#" onclick="SEP('${fromId}', true); return false;" title="展开此关系">${targetTitleNames}</a>
     </p>
      <div id="longpath-${fromId}" style="display: inline-block;">
          <div class="pl">
@@ -1106,16 +1136,31 @@ function TPHNew(family, paths, bn, sf, s) {
             <p class="pi" id="path-${paths[i].id}"><a href="#" onclick="ESP('${paths[i].id}', true); return false;">${EncodeHTML(name)}</a></p>
         `);
         if (logRoutes[i - 1]?.size) {
-            let forFromTitle = Array.from(logRoutes[i - 1], (t) => AllTitle[t]?.name || t).join(' / ');
+            let forFromTitle = GetTitleNames(logRoutes[i - 1]).join(" / ")
             strBuilder.push(`<p class="pr">(${forFromTitle})</p>`);
         }
         strBuilder.push('<p class="pa">↓</p>');
     }
     strBuilder.push(`
     </div>
-    <p class="ptitle"><a href="#" onclick="SEP('${fromId}', false); return false;" title="收缩此关系">${title}</a></p>
+    <p class="ptitle"><a href="#" onclick="SEP('${fromId}', false); return false;" title="收缩此关系">${targetTitleNames}</a></p>
     </div>
     <p class="ps" id="path-${endId}"><a href="#" onclick="ESP('${endId}', true); return false;">${EncodeHTML(name)}</a></p>
     `)
     return strBuilder.join('');
+}
+
+function GetTitleNames(titleKeys) {
+    let names = [];
+    titleKeys.forEach(titleKey => {
+        let titleName = AllTitle[titleKey]?.name;
+        if (!titleName) {
+            names.push(titleKey);
+        } else if (titleName.constructor === String) {
+            names.push(titleName);
+        } else {
+            names.push(...titleName);
+        }
+    })
+    return names;
 }
