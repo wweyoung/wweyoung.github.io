@@ -207,20 +207,20 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
         var sy = oy + (e.y) * (sz.Teh + sz.Tvs);
         height = Math.max(height, sz.minHeight);
         TreeCreateDbox(o, sx - (sz.Tew / 2), sy - (height / 2), sz.Tew, height, e.k ? 3 : 1, (e.p.g === "f") ? c.female : ((e.p.g === "m") ? c.male : (((e.p.g || "").charAt(0) === "o") ? c.other : "#FFFFFF")));
-        var v = document.createElement("div");
-        v.className = "di";
+        var diElement = document.createElement("div");
+        diElement.className = "di";
         if (locale_rtl) {
-            v.dir = "rtl";
+            diElement.dir = "rtl";
         }
-        var s = v.style;
+        var s = diElement.style;
         s.width = sz.Tew + "px";
         s.height = height + "px";
         s.left = (sx - (sz.Tew / 2)) + "px";
         s.top = (sy - (height / 2)) + "px";
         if (wp) {
-            v.onmousedown = TCT;
-            v.id = i;
-            v.pid = e.p.i;
+            diElement.onclick = OnTreeDiMouseDown;
+            diElement.id = i;
+            diElement.pid = e.p.i;
             o.ps[i] = {x: sx, y: sy};
         }
         if (spn) {
@@ -229,8 +229,8 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
         } else {
             var ns = "";
         }
-        v.innerHTML = "<TABLE WIDTH=\"100%\" HEIGHT=\"100%\" STYLE=\"table-layout:fixed; border-collapse:collapse;\">" + ns + rs + "</TABLE>";
-        o.appendChild(v);
+        diElement.innerHTML = "<TABLE WIDTH=\"100%\" HEIGHT=\"100%\" STYLE=\"table-layout:fixed; border-collapse:collapse;\">" + ns + rs + "</TABLE>";
+        o.appendChild(diElement);
     }
 }
 
@@ -456,7 +456,7 @@ var TreeIsPressed = false;
 var Tdx, Tdy;
 
 function TGS() {
-    return {top: -TreeBg.offsetTop, left: -TreeBg.offsetLeft};
+    return {top: TreeBg.offsetTop, left: TreeBg.offsetLeft};
 }
 
 // TIS 给图谱绑定事件
@@ -471,14 +471,14 @@ function TreeElementAddEventListener(element) {
         e = e ? e : window.event;
         TreeIsPressed = true;
         let scrollpos = TGS();
-        Tdx = scrollpos.left + e.clientX;
-        Tdy = scrollpos.top + e.clientY;
+        Tdx = e.clientX - scrollpos.left;
+        Tdy = e.clientY - scrollpos.top;
     };
     element.onmousemove = function (e) {
         // console.log("onmousemove", TreeIsPressed)
         e = e ? e : window.event;
         if (TreeIsPressed) {
-            TreeSetOffset(Tdx - e.clientX, Tdy - e.clientY)
+            TreeSetOffset(e.clientX - Tdx, e.clientY - Tdy)
             // TSS(Tdx - e.clientX, Tdy - e.clientY, 0, 0);
         }
     };
@@ -496,8 +496,8 @@ function TreeElementAddEventListener(element) {
         TreeIsPressed = true;
         let scrollpos = TGS();
         let {x, y} = GetTouchesAvgXY(e.touches);
-        Tdx = scrollpos.left + x;
-        Tdy = scrollpos.top + y;
+        Tdx = x - scrollpos.left;
+        Tdy = y - scrollpos.top;
         if (e.touches.length === 2) {
             lastTouches = e.touches;
         }
@@ -513,7 +513,7 @@ function TreeElementAddEventListener(element) {
         // console.log("ontouchmove", e.touches, e.type)
         if (TreeIsPressed) {
             let {x, y} = GetTouchesAvgXY(e.touches);
-            TreeSetOffset(Tdx - x, Tdy - y)
+            TreeSetOffset(x - Tdx, y - Tdy)
             // TSS(Tdx - x, Tdy - y, 0, 0);
             e.preventDefault();
         }
@@ -528,7 +528,11 @@ function TreeElementAddEventListener(element) {
     };
     element.onclick = function (e) {
         console.log("onclick", e)
-        SwapSideBar(e.target.id !== 'treemargin')
+        let targetIsMargin = e.target.id === 'treemargin';
+        SwitchSideBar(!targetIsMargin);
+        if (targetIsMargin) {
+            SwitchOptionShowHide(false);
+        }
     };
 }
 
@@ -566,21 +570,22 @@ function TSS(x, y, scs, scf) {
 function TreeAnimateStep() {
     var now = Date.now();
     if (now >= TreeAnimateEndTime) {
-        TreeSetOffset(Tsd.left, Tsd.top);
+        TreeSetOffset(-Tsd.left, -Tsd.top);
     } else {
         var p = (now - TreeAnimateStartTime) / (TreeAnimateEndTime - TreeAnimateStartTime);
         // p = 1 - Math.pow(0.5, p / 0.2);
-        TreeSetOffset(Tsf.left + p * (Tsd.left - Tsf.left), Tsf.top + p * (Tsd.top - Tsf.top));
+        TreeSetOffset(Tsf.left - p * (Tsd.left + Tsf.left), Tsf.top - p * (Tsd.top + Tsf.top));
         Tst = setTimeout(TreeAnimateStep, 10);
     }
 }
 
 function TreeSetOffset(x, y) {
-    TreeBg.style.left = -x;
-    TreeBg.style.top = -y;
+    TreeBg.style.left = x;
+    TreeBg.style.top = y;
 }
 
-function TCT() {
+// TCT
+function OnTreeDiMouseDown() {
     ESP(this.pid, true);
 }
 

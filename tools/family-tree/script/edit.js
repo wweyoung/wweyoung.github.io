@@ -487,18 +487,18 @@ function ImportReadScriptFile(file) {
     reader.readAsText(file);
 }
 
-function ESP(i, s) {
+function ESP(id, s) {
     HideWelcome();
     for (var j = 0; j < (Eeq.length - 1); j++) {
-        if (Eeq[j] == i) {
+        if (Eeq[j] == id) {
             Eeq.splice(j, 1);
-            EUS(false, i, "edit", false, s);
+            EUS(false, id, "edit", false, s);
             return;
         }
     }
     var viewMode = GetElementValue("viewmode");
     Eeq = [];
-    EUS(false, i, (viewMode == "share" || viewMode == "print" || viewMode == "path"
+    EUS(false, id, (viewMode == "share" || viewMode == "print" || viewMode == "path"
         || viewMode == "calendar" || viewMode == "timeline" || viewMode == "users") ? null : "view", false, s);
 }
 
@@ -1081,21 +1081,26 @@ function ResetConfigTextSize() {
     ERF();
 }
 
-function ETO() {
-    var s = !isElementShow("optionsdiv");
-    if (s && isElementShow("usersdiv")) {
+// ETO
+function SwitchOptionShowHide(show) {
+    let nowShow = isElementShow("optionsdiv");
+    if (show === nowShow) {
+        return;
+    }
+    show = !nowShow;
+    if (show && isElementShow("usersdiv")) {
         ETU();
     }
-    SetElementShow("optionsdiv", s);
-    SetElementInnerHTML("optionslinktext", s ? _h("Hide options") : _h("Options"));
-    GetElement("treemargin").style.paddingBottom = (s ? (GetElement("optionsdiv").offsetHeight + "px") : 0);
+    SetElementShow("optionsdiv", show);
+    SetElementInnerHTML("optionslinktext", show ? _h("Hide options") : _h("Options"));
+    GetElement("treemargin").style.paddingBottom = (show ? (GetElement("optionsdiv").offsetHeight + "px") : 0);
     TreeFocusOnPerson(ViewPersonId, 250);
 }
 
 function ETU() {
     var s = !isElementShow("usersdiv");
     if (s && isElementShow("optionsdiv")) {
-        ETO();
+        SwitchOptionShowHide();
     }
     if (s) {
         // GetElement("usersframe").src = "users.php"
@@ -1108,7 +1113,7 @@ function ETU() {
 }
 
 // ETI 侧边栏展开/收起
-function SwapSideBar(show) {
+function SwitchSideBar(show) {
     var preShow = IsElementVisibility("leftdiv");
     if (show === undefined) {
         show = !preShow;

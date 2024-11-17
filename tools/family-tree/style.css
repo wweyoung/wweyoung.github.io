@@ -708,11 +708,14 @@ input[type=color] {
     }
 
     .marginon {
-        height: calc(100% - 335px);
         width: 100%;
     }
 
     .marginoff {
+    }
+
+    #treemargin.marginon {
+        height: calc(100% - 335px);
     }
 
     #sidehide {
