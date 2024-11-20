@@ -54,9 +54,6 @@ function GetConfigOtherAgeValue() {
 }
 
 // NGB 获取姓氏选中值
-function GetConfigBirthNameValue() {
-    return parseInt(GetSelectElementValue("showbirthname"));
-}
 
 // NGS 名字前后选中值
 function GetConfigSurnameFirstValue() {
@@ -121,12 +118,13 @@ function ShowFindList() {
     GetElement("findlist").onclick = function (e) {
         var i = e.target.id || e.target.parentElement.id;
         if (i.substring(0, 5) == "list_") {
-            ESP(i.substring(5), true);
+            BackToPersonId(i.substring(5));
         }
     };
 }
 
-function NHF() {
+// NHF
+function HideFindList() {
     SetElementShow("findlist", false);
 }
 
@@ -145,8 +143,6 @@ function NUF(vl) {
 
 function NUL(e, sv, ai, si, no) {
     var ss = sv.trim().toLowerCase().split(/[ \-]/);
-    var bn = GetConfigBirthNameValue();
-    var bn1 = (bn == 1);
     var sf = GetConfigSurnameFirstValue();
     if (ai === null) {
         ai = [];
@@ -170,7 +166,7 @@ function NUL(e, sv, ai, si, no) {
     }
     for (var j = 0; j < ai.length; j++) {
         var p = Efa[ai[j]];
-        var n = (FDN(p, true, 2, sf, bn1, true, true, true, true) + FYS(p)).trim();
+        var n = (FDN(p, true, 2, sf, true, true, true, true) + FYS(p)).trim();
         var m = n.toLowerCase();
         var i = true;
         for (var k = 0; k < ss.length; k++) {
@@ -180,12 +176,8 @@ function NUL(e, sv, ai, si, no) {
             }
         }
         if (i) {
-            var sn1 = (bn1 ? (p.q || p.l) : (p.l || p.q)) || "";
-            var sn2 = (sn1 ? (bn1 ? p.l : p.q) : "") || "";
-            if (sn1 == sn2) {
-                sn2 = "";
-            }
-            jn[jn.length] = {i: ai[j], l: sn1, q: sn2, p: (p.p || ""), n: n};
+            var sn1 = p.l || "";
+            jn[jn.length] = {i: ai[j], l: sn1, p: (p.p || ""), n: n};
         }
     }
     jn.sort(NSB);

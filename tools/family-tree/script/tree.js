@@ -53,7 +53,7 @@ function TAD(od, d, dx, dy) {
     }
 }
 
-function TDS(yb, zoom, wf, bn, ts) {
+function TDS(yb, zoom, wf, ts) {
     var ya = [yb.age, yb.bd, yb.j, yb.b, yb.v, yb.d, yb.y, yb.Z, yb.F, yb.U, yb.e, yb.e, yb.tku, yb.tku, yb.a, yb.a, yb.E, yb.I, yb.A];
     var yc = 0;
     for (var j = 0; j < ya.length; j++) {
@@ -63,7 +63,7 @@ function TDS(yb, zoom, wf, bn, ts) {
     }
     var sz = {
         Tew: parseInt(((yc || yb.r || yb.pm || yb.TJ) ? 100 : 80) * zoom * wf),
-        Tnh: parseInt((yb["0p"] ? 0 : (((bn == 2) || yb.N) ? 35 : 20)) * zoom * ts), // 名字高度
+        Tnh: parseInt((yb["0p"] ? 0 : (yb.N ? 35 : 20)) * zoom * ts), // 名字高度
         Tph: parseInt((yb.r ? 100 : 0) * zoom), // 照片高度
         Tdh: parseInt(20 * zoom * ts),
         minHeight: parseInt(10 * zoom),
@@ -78,7 +78,7 @@ function TDS(yb, zoom, wf, bn, ts) {
     return sz;
 }
 
-function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
+function TRD(d, y, ad, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
     var _36 = wp ? (ios ? 1920 : 19200) : 0;
     var _37 = wp ? (ios ? 1200 : 12000) : 0;
     var yb = {};
@@ -92,7 +92,7 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
     var ssn = !yb["0lq"];
     var ni = yb["N"];
     var tj = yb["TJ"];
-    var sz = TDS(yb, zoom, wf, bn, ts);
+    var sz = TDS(yb, zoom, wf, ts);
     var tw = (sz.Tew + sz.Ths) * d.w - sz.Ths;
     var th = (sz.Teh + sz.Tvs) * d.h - sz.Tvs;
     if (!wp) {
@@ -177,7 +177,7 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
     for (var i in d.e) {
         var e = d.e[i];
         var rs = "";
-        var fn = FDN(e.p, true, (bn == 2) ? 2 : 1, sf, (bn == 1), true, true, true, true);
+        var fn = FDN(e.p, true, 1, sf, true, true, true, true);
         var _53 = ((e.p.z == "1") && !pr) ? c.deceased : c.living;
         var height = sz.Tnh;
         var ey = y ? TGL(yb, ad, e.p) : null;
@@ -224,7 +224,7 @@ function TRD(d, y, ad, bn, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
             o.ps[i] = {x: sx, y: sy};
         }
         if (spn) {
-            var tn = FDN(e.p, mn, ssn ? ((bn == 2) ? 2 : 1) : 0, sf, (bn == 1), true, ni, tj, tj);
+            var tn = FDN(e.p, mn, ssn ? 1 : 0, sf, true, ni, tj, tj);
             var ns = "<TR><TD CLASS=\"dcell\" STYLE=\"font-size:" + (e.d ? sz.Tds : sz.Tfs) + "px;color:" + _53 + "; padding:0 " + sz.Tep + "px;\"" + " TITLE=\"" + (e.d ? (_h("Duplicate:") + " ") : "") + EncodeHTML(fn) + "\">" + (e.d ? "<I>" + _h("Duplicate:") + "</I><BR>" : "") + (spn ? (SetBreak(EncodeHTMLLine(tn))) : "") + "</TD></TR>";
         } else {
             var ns = "";
@@ -311,7 +311,7 @@ function TGL(yb, ad, p) {
         ey += p.j + "\n";
     }
     if (yb["b"] || yb["v"]) {
-        var bs = yb["b"] ? DateDetailStrToString(p.b, false) : "";
+        var bs = yb["b"] ? DateDetailStrToString(p.b) : "";
         var vs = yb["v"] ? (p.v || "") : "";
         if (bs || vs) {
             ey += _t("Born") + " " + bs + ((bs && vs) ? ", " : "") + vs + "\n";
@@ -319,7 +319,7 @@ function TGL(yb, ad, p) {
     }
     var az = (yb["age"] && (p.z == "1") && !ae) ? FDR(p.b, p.d, false) : null;
     if ((yb["d"] || az || yb["y"] || yb["Z"]) && (p.z == "1")) {
-        var ds = yb["d"] ? DateDetailStrToString(p.d, false) : "";
+        var ds = yb["d"] ? DateDetailStrToString(p.d) : "";
         var ys = yb["y"] ? (p.y || "") : "";
         var Zs = yb["Z"] ? (p.Z || "") : "";
         if (ds || az || ys || Zs) {
@@ -327,7 +327,7 @@ function TGL(yb, ad, p) {
         }
     }
     if ((yb["F"] || yb["U"]) && (p.z == "1")) {
-        var Fs = yb["F"] ? DateDetailStrToString(p.F, false) : "";
+        var Fs = yb["F"] ? DateDetailStrToString(p.F) : "";
         var Us = yb["U"] ? (p.U || "") : "";
         if (Fs || Us) {
             ey += _t("Buried") + " " + Fs + ((Fs && Us) ? ", " : "") + Us + "\n";
@@ -593,9 +593,9 @@ function TreeBgPsOf(i) {
     return (TreeBg.ps && i) ? TreeBg.ps[i] : null;
 }
 
-function TRT(family, viewPersonId, ownPersonId, personShowFields, otherAgeConfig, birthNameConfig, surnameFirstConfig,
-             colorsConfig, linesConfig, maleLeftConfig, childrenLevelConfig, parentLevelConfig, cursionLevelConfig,
-             preViewPersonId, zoomConfig, widthConfig, textSizeConfig, isFixed) {
+function TRT(family, viewPersonId, ownPersonId, personShowFields, otherAgeConfig, surnameFirstConfig, colorsConfig,
+             linesConfig, maleLeftConfig, childrenLevelConfig, parentLevelConfig, cursionLevelConfig, preViewPersonId,
+             zoomConfig, widthConfig, textSizeConfig, isFixed) {
     // console.log("TRT", arguments)
     // var _b9 = null;
     let oiPersonId, focusAnimationTime;
@@ -613,10 +613,10 @@ function TRT(family, viewPersonId, ownPersonId, personShowFields, otherAgeConfig
         focusAnimationTime = oiPersonId ? 250 : 0;
     }
     var showMarryAttrs = GetMarryAttrsByConfigFields(personShowFields);
-    TRD(BFT(family, viewPersonId, ownPersonId, childrenLevelConfig, parentLevelConfig, cursionLevelConfig, maleLeftConfig, showMarryAttrs), personShowFields, otherAgeConfig, birthNameConfig, surnameFirstConfig, colorsConfig, linesConfig, TreeBg, oiPersonId, true, false, zoomConfig, widthConfig, textSizeConfig);
-    // if (!isFixed) {
-    setTimeout(() => TreeFocusOnPerson(viewPersonId, 250), focusAnimationTime);
-    // }
+    TRD(BFT(family, viewPersonId, ownPersonId, childrenLevelConfig, parentLevelConfig, cursionLevelConfig, maleLeftConfig, showMarryAttrs), personShowFields, otherAgeConfig, surnameFirstConfig, colorsConfig, linesConfig, TreeBg, oiPersonId, true, false, zoomConfig, widthConfig, textSizeConfig);
+    if (!isFixed) {
+        setTimeout(() => TreeFocusOnPerson(viewPersonId, 250), focusAnimationTime);
+    }
     let treediv = GetElement("treediv");
     if (IsDarkMode()) {
         treediv.style.backgroundColor = "";
@@ -711,8 +711,13 @@ let AllTitle = {
     '太祖母': {'伴': '太祖父', is: '太祖'},
     // 子辈
     '子女': {'父母': '伴'},
-    '子': {'子': '孙子', '女': '孙女', '伴': '儿媳', is: '子女', name: '儿子'},
-    '女': {'子': '外孙', '女': '外孙女', '伴': '女婿', is: '子女', name: '女儿'},
+    '儿子&儿媳': {'子': '孙子', '女': '孙女'},
+    '女儿&女婿': {'子': '外孙', '女': '外孙女'},
+    '儿媳&女婿': {'父母': '亲家', '父': '亲家公', '母': '亲家母'},
+    '子': {'伴': '儿媳', is: ['子女', '儿子&儿媳'], name: '儿子'},
+    '女': {'伴': '女婿', is: ['子女', '女儿&女婿'], name: '女儿'},
+    '儿媳': {'伴': '子', is: ['儿子&儿媳', '儿媳&女婿']},
+    '女婿': {'伴': '女', is: ['女儿&女婿', '儿媳&女婿']},
     '侄子女': {'父': '伯叔', '母': '伯母婶婶', is: '子女'},
     '侄子': {'子': '侄孙', '女': '侄孙女', '伴': '侄媳妇', is: '侄子女'},
     '侄女': {'子': '侄外孙', '女': '侄外孙女', '伴': '侄女婿', is: '侄子女'},
@@ -733,7 +738,7 @@ let AllTitle = {
 
 let TitleChild = {};
 Object.entries(AllTitle).forEach(([key, value]) => {
-    if(value.is) {
+    if (value.is) {
         let isList = value.is.constructor === String ? [value.is] : value.is;
         for (let is of isList) {
             let childTitles = TitleChild[is] || (TitleChild[is] = []);
@@ -833,7 +838,7 @@ function TPH(family, paths, bn, sf, s) {
             var t = paths[j].t;
             var i = paths[j].i;
             var e = family[i];
-            var fn = FDN(e, true, 1, sf, (bn == 1), true, true, true, true);
+            var fn = FDN(e, true, 1, sf, true, true, true, true);
             var nj = paths[j + 1] || s;
             var ni = nj ? nj.i : null;
             var n = ni ? family[ni] : {};
@@ -1117,13 +1122,13 @@ function TPH(family, paths, bn, sf, s) {
 
 // TPH 废弃
 // 计算关系路径HTML
-function TPHNew(family, paths, bn, sf) {
+function TPHNew(family, paths, sf) {
     let fromId = paths[0].id;
     let logRoutes = []
     let targetTitles = GetAppellation(GetRelationTitle(RelationTitle.self, family[fromId]), paths.slice(0, -1).map(obj => obj.type), logRoutes);
     let targetTitleNames = GetTitleNames(targetTitles).join(" / ");
 
-    let fromName = FDN(family[fromId], true, 1, sf, (bn == 1), true, true, true, true);
+    let fromName = FDN(family[fromId], true, 1, sf, true, true, true, true);
     let endId = paths[paths.length - 1].id;
     let strBuilder = [`<p class="pi" id="path-${fromId}" style="display: none;">\n' +
     '        <a href="#" onclick="ESP('${fromId}', true); return false;">${EncodeHTML(fromName)}</a>\n' +
@@ -1137,7 +1142,7 @@ function TPHNew(family, paths, bn, sf) {
     `];
     let name;
     for (let i = 1; i < paths.length; i++) {
-        name = FDN(family[paths[i].id], true, 1, sf, (bn == 1), true, true, true, true);
+        name = FDN(family[paths[i].id], true, 1, sf, true, true, true, true);
         let nextTitle = paths[i - 1].type;
         nextTitle = AllTitle[nextTitle].name || nextTitle;
         strBuilder.push(`

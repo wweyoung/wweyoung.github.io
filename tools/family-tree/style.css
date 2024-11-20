@@ -664,11 +664,6 @@ input[type=color] {
     border-color: #999
 }
 
-.ct {
-    width: 100%;
-    margin-top: -12px;
-}
-
 .cm {
     text-align: center;
     font-weight: bold;

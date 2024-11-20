@@ -87,7 +87,7 @@ function SPW(i) {
 }
 
 function SPN(p) {
-    return FDN(p, false, 1, GetConfigSurnameFirstValue(), (GetConfigBirthNameValue() == 1), true);
+    return FDN(p, false, 1, GetConfigSurnameFirstValue(), true);
 }
 
 // SSE 设置侧边栏展示的人物和
@@ -285,8 +285,6 @@ function TableAppendButton(tableId, content, option, subOption, s) {
 
 function SPP(i, ra, s, no, o) {
     var f = Efa;
-    var bn = GetConfigBirthNameValue();
-    var bn1 = (bn == 1);
     var sf = GetConfigSurnameFirstValue();
     var v = GetElement(i);
     v.style.display = "none";
@@ -319,7 +317,7 @@ function SPP(i, ra, s, no, o) {
     if (locale_rtl) {
         w.dir = "rtl";
     }
-    w.value = (s && f[s]) ? FDN(f[s], false, 1, sf, bn1, true) : _t("(none)");
+    w.value = (s && f[s]) ? FDN(f[s], false, 1, sf, true) : _t("(none)");
     w.onfocus = function () {
         w.tohide = false;
         w.oldvalue = w.value;
@@ -364,7 +362,7 @@ function SPP(i, ra, s, no, o) {
             v.options.length = 0;
             var z = i.substring(5);
             v.options[0] = new Option(z, z);
-            w.oldvalue = (z && f[z]) ? FDN(f[z], false, 1, sf, bn1, true) : _t("(none)");
+            w.oldvalue = (z && f[z]) ? FDN(f[z], false, 1, sf, true) : _t("(none)");
             w.completed();
             if (v.onchange) {
                 v.onchange();
@@ -577,8 +575,6 @@ function SP0(e) {
         }
     } else {
         RemoveElementAllChild("personalview");
-        var bn = GetConfigBirthNameValue();
-        var bn1 = (bn == 1);
         TableAppendFieldContent("personalview", "姓", p.l, false);
         TableAppendFieldContent("personalview", "名", p.p, false);
         p.T && TableAppendFieldContent("personalview", "字", p.T, false);
@@ -586,9 +582,9 @@ function SP0(e) {
         p.q && TableAppendFieldContent("personalview", "曾用名", p.q, false);
         p.J && TableAppendFieldContent("personalview", "字辈", p.J, false);
         TableAppendFieldContent("personalview", _t("Gender"), GenderNames[g] ? GenderNames[g] : ((g.charAt(0) == "o") ? g.substring(1) : GenderNames[""]), false);
-        TableAppendFieldContent("personalview", _t("Birth date"), DateDetailStrToString(p.b, true), false);
+        TableAppendFieldContent("personalview", _t("Birth date"), DateDetailStrToString(p.b), false);
         if (p.z == 1) {
-            TableAppendFieldContent("personalview", _t("Death date"), DateDetailStrToString(p.d, true), false);
+            TableAppendFieldContent("personalview", _t("Death date"), DateDetailStrToString(p.d), false);
         }
         var ac = FCR(f, SidebarPersonId, true, false, false);
         var dc = FCR(f, SidebarPersonId, false, true, false);
@@ -649,7 +645,7 @@ function SP2(e) {
                 if (((j != "y") && (j != "U") && (j != "F")) || (p.z == 1)) {
                     var h = false;
                     if (j == "F") {
-                        v = DateDetailStrToString(p[j], true);
+                        v = DateDetailStrToString(p[j]);
                     } else {
                         if ((j == "j") || (j == "E") || (j == "I") || (j == "A") || (j == "o")) {
                             v = ConvertURL2HTML(EncodeHTMLLine(p[j]));
@@ -736,7 +732,7 @@ function S3R(f, p, pi, rc) {
             for (var ti in t) {
                 if (t[ti]) {
                     var tpi = p[ti + "p"] ? p[ti + "p"][pi] : "";
-                    TableAppendFieldContent("partnersviewedit", t[ti], (ti == "w") ? tpi : DateDetailStrToString(tpi, true), false);
+                    TableAppendFieldContent("partnersviewedit", t[ti], (ti == "w") ? tpi : DateDetailStrToString(tpi), false);
                 }
             }
         }
@@ -1783,8 +1779,7 @@ function CalculateRelationPath(personId) {
         }
         Spd = personId;
     }
-    SetElementInnerHTML("pathcontent", TPHNew(Efa, GetBaseRelationRoutes(Efa, Sps, Spd, 1, 1),
-        GetConfigBirthNameValue(), GetConfigSurnameFirstValue()));
+    SetElementInnerHTML("pathcontent", TPHNew(Efa, GetBaseRelationRoutes(Efa, Sps, Spd, 1, 1), GetConfigSurnameFirstValue()));
     SSP(SidebarPersonId);
 }
 
@@ -1867,23 +1862,22 @@ function SwitchToCalendar() {
     if (es.length) {
         var ms = ["", _t("Month_1"), _t("Month_2"), _t("Month_3"), _t("Month_4"), _t("Month_5"), _t("Month_6"), _t("Month_7"), _t("Month_8"), _t("Month_9"), _t("Month_10"), _t("Month_11"), _t("Month_12")];
         var sf = GetConfigSurnameFirstValue();
-        var bn = GetConfigBirthNameValue();
         var h = "";
         var lmy = 0;
-        h += "<table class=\"ct\">";
+        h += "<table style=\"width: 100%\">";
         for (var j = 0; j < es.length; j++) {
             var e = es[j];
             var my = e.m + e.sy * 12;
             if (my != lmy) {
-                h += "<tr><td colspan=\"2\" class=\"cm\">" + ms[e.m] + " " + e.sy + "</td></tr>";
+                h += "<tr><td colspan=\"2\" class=\"cm\">" + e.sy + " " + ms[e.m] + "</td></tr>";
                 lmy = my;
             }
             h += "<tr><td class=\"cl\" style=\"white-space:nowrap;\">" + e.d + "日" + (e.dateType ? ' (农历)' : '') + "</td><td class=\"cr\">";
             if (e.i2) {
-                h += "<a href=\"#\" onClick=\"ESP('" + e.i1 + "', true); return false;\">" + EncodeHTML(FDN(Efa[e.i1], false, 1, sf, (bn == 1), true, false, false, false)) + "</a>";
-                h += " and <a href=\"#\" onClick=\"ESP('" + e.i2 + "', true); return false;\">" + EncodeHTML(FDN(Efa[e.i2], false, 1, sf, (bn == 1), true, false, false, false)) + "</a>";
+                h += "<a href=\"#\" onClick=\"ESP('" + e.i1 + "', true); return false;\">" + EncodeHTML(FDN(Efa[e.i1], false, 1, sf, true, false, false, false)) + "</a>";
+                h += " and <a href=\"#\" onClick=\"ESP('" + e.i2 + "', true); return false;\">" + EncodeHTML(FDN(Efa[e.i2], false, 1, sf, true, false, false, false)) + "</a>";
             } else {
-                h += "<a href=\"#\" onClick=\"ESP('" + e.i1 + "', true); return false;\">" + EncodeHTML(FDN(Efa[e.i1], true, 1, sf, (bn == 1), true, true, true, true)) + "</a>";
+                h += "<a href=\"#\" onClick=\"ESP('" + e.i1 + "', true); return false;\">" + EncodeHTML(FDN(Efa[e.i1], true, 1, sf, true, true, true, true)) + "</a>";
             }
             if (e.t == "b") {
                 h += " &ndash; " + (e.y ? _h("^ birthday", e.sy - e.y) : _h("birthday"));
@@ -1941,7 +1935,6 @@ function SwichToTimeLine() {
     es.sort(DateObjCompare);
     if (es.length) {
         var sf = GetConfigSurnameFirstValue();
-        var bn = GetConfigBirthNameValue();
         var h = "";
         var ly = -99999999;
         h += "<table class=\"ct\">";
@@ -1951,15 +1944,15 @@ function SwichToTimeLine() {
                 h += "<tr><td colspan=\"2\" class=\"cm\">" + DateYearToString(e.y) + "</td></tr>";
                 ly = e.y;
             }
-            var dt = DateDetailStrToString(e.fd, true, true);
+            var dt = DateDetailStrToString(e.fd, true, '');
             h += "<tr><td class=\"cl\"" + ((dt.length < 14) ? " nowrap" : "") + ">" + dt + "</td><td class=\"cr\">";
             var l1 = "a href=\"#\" onClick=\"ESP('" + e.i1 + "', true); return false;\"";
             var l2 = e.i2 ? "a href=\"#\" onClick=\"ESP('" + e.i2 + "', true); return false;\"" : "";
             if (e.i2) {
-                var n1 = FDN(Efa[e.i1], false, 1, sf, (bn == 1), true, false, false, false);
-                var n2 = FDN(Efa[e.i2], false, 1, sf, (bn == 1), true, false, false, false);
+                var n1 = FDN(Efa[e.i1], false, 1, sf, true, false, false, false);
+                var n2 = FDN(Efa[e.i2], false, 1, sf, true, false, false, false);
             } else {
-                var n1 = FDN(Efa[e.i1], true, 1, sf, (bn == 1), true, true, true, true);
+                var n1 = FDN(Efa[e.i1], true, 1, sf, true, true, true, true);
                 var n2 = "";
             }
             if (e.t == "b") {

@@ -12,10 +12,9 @@
         var hideSidebar = false;
         var defaultZoom = 1.25;
         var defaultDetail = null;
-        var defaultBirthName = 0;
         var defaultSurnameFirst = 1;
         var defaultMaleLeft = 1;
-        var defaultCousins = 2;
+        var defaultCousins = 5;
         var defaultChildren = 8;
         var defaultParents = 5;
         var defaultColors = {
@@ -31,8 +30,8 @@
         var defaultLines = {
             current: 'thick',
             otherpartner: 'medium',
-            biological: 'medium',
-            otherparent: 'gray'
+            biological: 'thick',
+            otherparent: 'medium'
         };
     </script>
 
@@ -71,15 +70,8 @@
                         <input type="hidden" id="viewmode" NAME="viewstate" VALUE="view">
                         <input type="hidden" id="name" NAME="name" VALUE="Me1">
                         <input type="hidden" id="email" NAME="email" VALUE="">
-
-
-                        <input type="hidden" NAME="affiliate" VALUE="">
-                        <input type="hidden" id="sessionid" VALUE="886140306151210118">
+                        <input type="hidden" id="sessionid" VALUE="1">
                         <input type="hidden" id="familyid" NAME="familyid" VALUE="">
-                        <input type="hidden" id="importcacheid" NAME="importcacheid" VALUE="">
-                        <input type="hidden" id="checksum" NAME="checksum" VALUE="w1ao15t6vz">
-
-                        <input type="hidden" NAME="do_startbranch" id="do_startbranch">
 
                         <span>
                             <span id="lsave" style="display:none;"><FONT COLOR="red"><B>家谱未保存。</B></FONT></span>
@@ -109,7 +101,7 @@
                 </table>
             </noscript>
 
-            <div id="main" class="fullsize" style="position:relative;" onMouseDown="EMD();" onTouchStart="EMD();">
+            <div id="main" class="fullsize" style="position:relative;" onMouseDown="OnMainMouseDown();" onTouchStart="OnMainMouseDown();">
 
                 <div id="treediv" class="dright" style="top:0px; height:100%; overflow:hidden;">
                     <div id="treemargin" class="marginon" style="cursor:move;">
@@ -648,8 +640,7 @@
                         <span id="showcalendar">日历 / <a href="#" onClick="ESM('timeline'); ">时间线</A></span>
                         <span id="showtimeline"><a href="#" onClick="ESM('calendar'); ">日历</A> / 时间线</span>
                     </h2>
-                    <div id="caltimecontent" class="bordertop"
-                         style="position:absolute; top:32px; bottom:8px; left:0; right:0; overflow:scroll;"></div>
+                    <div id="caltimecontent" class="bordertop"></div>
                 </div>
 
                 <div id="extradiv" class="dleft lbody" style="visibility:hidden;">
@@ -779,26 +770,19 @@
                                 </td>
 
                                 <td style="text-align:end; padding-right:16px;" NOWRAP>
-                                    <span class="oleft">姓氏:</span>
-                                    <SELECT id="showbirthname" class="oright" onChange="OnConfigBirthNameChanged();"
-                                            TITLE="显示哪个姓氏">
-                                        <OPTION VALUE="0">现在</OPTION>
-                                        <OPTION VALUE="1">出生时</OPTION>
-                                        <OPTION VALUE="2">两者</OPTION>
-                                    </SELECT><br>
-                                    <span class="oleft">名字:</span>
+                                    <span class="oleft">名字先后:</span>
                                     <SELECT id="showsurnamefirst" class="oright"
                                             onChange="OnConfigSurnameFirstChanged();" TITLE="名字在姓氏前或后显示">
                                         <OPTION VALUE="0">前</OPTION>
                                         <OPTION VALUE="1">后</OPTION>
                                     </SELECT><br>
-                                    <span class="oleft">左边的伴侣:</span>
+                                    <span class="oleft">左侧伴侣:</span>
                                     <SELECT id="showmaleleft" class="oright" onChange="OnMaleLeftChanged();"
                                             TITLE="关系的左右排序">
                                         <OPTION VALUE="0">女性</OPTION>
                                         <OPTION VALUE="1">男性</OPTION>
                                     </SELECT><br/>
-                                    <LABEL class="oleft">父母:</LABEL>
+                                    <LABEL class="oleft">父母代数:</LABEL>
                                     <SELECT id="showparents" class="oright" onChange="OnParentsLevelChanged();"
                                             TITLE="显示的祖先世代">
                                         <OPTION VALUE="1">1 代</OPTION>
@@ -817,7 +801,7 @@
                                         <OPTION VALUE="40">40 代</OPTION>
                                         <OPTION VALUE="50">50 代</OPTION>
                                     </SELECT><br/>
-                                    <span class="oleft">子女:</span>
+                                    <span class="oleft">子女代数:</span>
                                     <SELECT id="showchildren" class="oright" onChange="OnChildrenLevelChanged();"
                                             TITLE="显示的后代世代">
                                         <OPTION VALUE="1">1 代</OPTION>
@@ -836,7 +820,7 @@
                                         <OPTION VALUE="40">40 代</OPTION>
                                         <OPTION VALUE="50">50 代</OPTION>
                                     </SELECT><br/>
-                                    <span class="oleft">其他:</span>
+                                    <span class="oleft">旁系代数:</span>
                                     <SELECT id="showcousins" class="oright" onChange="OnCousinsLevelChanged();"
                                             TITLE="显示的姑姑、叔叔、堂兄弟姐妹、侄子和侄女的世代">
                                         <OPTION VALUE="0">没有任何</OPTION>
@@ -874,14 +858,14 @@
                                         <OPTION VALUE="thick">粗</OPTION>
                                         <OPTION VALUE="gray">灰色</OPTION>
                                         <OPTION VALUE="dashed">虚线</OPTION>
-                                    </SELECT><br/><span class="lleft">父母:</span>
+                                    </SELECT><br/><span class="lleft">亲生父母:</span>
                                     <SELECT id="linebiological" class="lright" onChange="OnLineStyleChanged(this);">
                                         <OPTION VALUE="thin">细</OPTION>
                                         <OPTION VALUE="medium">中等</OPTION>
                                         <OPTION VALUE="thick">粗</OPTION>
                                         <OPTION VALUE="gray">灰色</OPTION>
                                         <OPTION VALUE="dashed">虚线</OPTION>
-                                    </SELECT><br/><span class="lleft">非生物:</span>
+                                    </SELECT><br/><span class="lleft">非亲生:</span>
                                     <SELECT id="lineotherparent" class="lright" onChange="OnLineStyleChanged(this);">
                                         <OPTION VALUE="thin">细</OPTION>
                                         <OPTION VALUE="medium">中等</OPTION>
@@ -905,7 +889,7 @@
                                  style="position: absolute; height:33px; line-height:33px; bottom:0; left:0; right:0; text-align:center; white-space: nowrap; margin:0 32px;">
                                 <A HREF="#" onClick="SwitchOptionShowHide(); " TITLE="显示/隐藏选项">
                                     <IMG SRC="data:;base64,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"
-                                        class="icon" ALIGN="ABSMIDDLE"><span id="optionslinktext">选项</span></A>
+                                         class="icon" ALIGN="ABSMIDDLE"><span id="optionslinktext">选项</span></A>
                                 <span id="printbutton" class="nav_unimportant5">
                                     <span class="buttondash">&ndash;</span>
                                     <A HREF="#" onClick="ESM('print'); " TITLE="打印家谱"><IMG

@@ -94,8 +94,6 @@ function OnBodyOnload() {
             var c = GetCookie("line" + f);
             SetElementValue("line" + f, (c === null) ? defaultLines[f] : decodeURIComponent(c));
         }
-        var c = GetCookie("showbirthname");
-        SetSelectElementSelected("showbirthname", (c === null) ? defaultBirthName : c);
         var c = GetCookie("showsurnamefirst");
         SetSelectElementSelected("showsurnamefirst", (c === null) ? defaultSurnameFirst : c);
         var c = GetCookie("showmaleleft");
@@ -305,11 +303,12 @@ function ERP(isNeedSaveFamily) {
     setInterval(EBT, 250);
 }
 
-function EMD(e) {
+// EMD
+function OnMainMouseDown(e) {
     e = e || window.event;
     var t = e.target || e.srcElement || e;
     if (!(GetElement("findfield").contains(t) || GetElement("findlist").contains(t))) {
-        NHF();
+        HideFindList();
     }
 }
 
@@ -325,14 +324,14 @@ function EUS(r, viewPersonId, viewMode, d, isFixed) {
         FRF(Efa, personId, OwnerPersonId);
         if (personId && Efa[personId]) {
             SetBackToText(personId);
-            SetElementValue("name", FDN(Efa[personId], false, 1, false, false, false));
+            SetElementValue("name", FDN(Efa[personId], false, 1, false, false));
             SetElementValue("email", Efa[personId].e);
         } else {
             SetBackToText(OwnerPersonId);
         }
         SetPersonCount(Object.entries(Efa).length);
         if ((staticMode || GetElementValue("familyid")) && OwnerPersonId && Efa[OwnerPersonId]) {
-            var fb = FDN(Efa[OwnerPersonId], false, 1, false, false, false);
+            var fb = FDN(Efa[OwnerPersonId], false, 1, false, false);
             SetElementInnerText("lfamilyinfo", '');
         } else {
             SetElementInnerText("lfamilyinfo", "");
@@ -392,10 +391,7 @@ function EUS(r, viewPersonId, viewMode, d, isFixed) {
         ESB(preViewMode + ":" + ViewPersonId);
     }
     if (d || (ViewPersonId != preViewPersonId)) {
-        TRT(Efa, ViewPersonId, OwnerPersonId, PersonShowFields, GetConfigOtherAgeValue(), GetConfigBirthNameValue(),
-            GetConfigSurnameFirstValue(), GetConfigAllColors(), GetConfigAllLines(), GetConfigMaleLeftValue(),
-            GetConfigChildrenLevelValue(), GetConfigParentsLevelValue(), GetConfigCousinsLevelValue(), preViewPersonId,
-            GetElementValue("showzoom"), GetElementValue("showwidth"), GetElementValue("textsize"), isFixed);
+        TRT(Efa, ViewPersonId, OwnerPersonId, PersonShowFields, GetConfigOtherAgeValue(), GetConfigSurnameFirstValue(), GetConfigAllColors(), GetConfigAllLines(), GetConfigMaleLeftValue(), GetConfigChildrenLevelValue(), GetConfigParentsLevelValue(), GetConfigCousinsLevelValue(), preViewPersonId, GetElementValue("showzoom"), GetElementValue("showwidth"), GetElementValue("textsize"), isFixed);
         NRT();
     }
     if (viewMode == "path") {
@@ -882,8 +878,7 @@ function EAS() {
     HttpPost("userfamily_add", {
         s: GetElementValue("sessionid"),
         f: GetElementValue("familyid"),
-        p: OwnerPersonId,
-        c: GetElementValue("checksum")
+        p: OwnerPersonId
     }, "", EAR, null);
 }
 
@@ -897,9 +892,9 @@ function EAR(_79, _7a, _7b) {
 }
 
 // EBS 返回到personid
-function BackToPersonId() {
-    ESP(OwnerPersonId, true);
-    TreeFocusOnPerson(OwnerPersonId, 500)
+function BackToPersonId(personId = OwnerPersonId) {
+    ESP(personId, true);
+    TreeFocusOnPerson(personId, 100)
 }
 
 // ECZ 画布单位放大/缩小
@@ -918,7 +913,7 @@ function ZoomInOutScale(scale) {
 // ESZ 保存画布比例大小
 function OnZoomSizeChanged() {
     SetCookie("zoomfactor", GetElementValue("showzoom"));
-    ERI();
+    ERF();
 }
 
 // ECD 改变家谱图选项checkbox
@@ -1020,10 +1015,6 @@ function SetConfigColor(field, color) {
 }
 
 // ESN 改变姓氏展示选项
-function OnConfigBirthNameChanged() {
-    SetCookie("showbirthname", GetConfigBirthNameValue());
-    ERF();
-}
 
 // ESF 改变名字前后展示选项
 function OnConfigSurnameFirstChanged() {
@@ -1176,7 +1167,7 @@ function SwapDayNightMode() {
 
 function EFB(i) {
     var sf = FCS(Efa, i);
-    SetElementValue("do_startbranch", sf.join("\t"));
+    console.log(sf);
     // document.topform.submit();
 }
 
@@ -1188,7 +1179,6 @@ function EIU(r) {
         return BuildURL("ap/", "image_read", {
             f: GetElementValue("familyid"),
             p: OwnerPersonId,
-            c: GetElementValue("checksum"),
             r: r
         });
     }

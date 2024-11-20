@@ -503,62 +503,57 @@ function DateToString(date, month, year) {
         str += month + '月'
     }
     if (date) {
-        str += date + "日";
+        str += date + '日';
     }
     return str;
 }
 
 /**
  * FDT 日期字符串详情转展示文本: '19990629-20241109' => '29 6月 1999 ~ 9 11月 2024'
- * @param isUpperCase 文本首字母是否大写
  * @param isUseSymbol true展示符号 / false展示文字
  */
-function DateDetailStrToString(dateStr, isUpperCase, isUseSymbol) {
-    var dates = DateDetailStrToObj(dateStr ? dateStr.toString() : "", true);
-    var s = "";
+function DateDetailStrToString(dateStr, isUseSymbol, format = 'y') {
+    const dates = DateDetailStrToObj(dateStr ? dateStr.toString() : "", true);
+    let s = "";
     if (!dates) {
         return s;
     }
-    if (dates.v == "bet") {
-        if (dates[1].y && dates[2].y && ((dates[2].y - dates[1].y) == 1) && (!dates[1].m) && (!dates[2].m)) {
-            var s = FCT(dates[1].y, dates[2].y);
+    if (dates.v === "bet") {
+        if (dates[1].y && dates[2].y && (dates[2].y - dates[1].y) === 1 && !dates[1].m && !dates[2].m) {
+            s = FCT(dates[1].y, dates[2].y);
         } else {
-            var sy = (dates[1].y === dates[2].y);
-            var us = false;
-            if (dates[1].m && dates[2].m && sy) {
+            var isSameYear = dates[1].y === dates[2].y;
+            var us;
+            if (dates[1].m && dates[2].m && isSameYear) {
                 dates[1].y = "";
-            } else {
-                if ((dates[1].y < 0) && (dates[2].y < 0) && (!dates[1].m) && (!dates[2].m)) {
-                    dates[1].y = -dates[2].y;
-                }
+            } else if (dates[1].y < 0 && dates[2].y < 0 && !dates[1].m && !dates[2].m) {
+                dates[1].y = -dates[2].y;
             }
-            if (sy && (dates[1].m == dates[2].m) && dates[1].d && dates[2].d) {
+            if (isSameYear && dates[1].m === dates[2].m && dates[1].d && dates[2].d) {
                 var s1 = dates[1].d;
-                us = ((dates[2].d - dates[1].d) == 1);
+                us = dates[2].d - dates[1].d === 1;
             } else {
                 var s1 = DateToString(dates[1].d, dates[1].m, dates[1].y);
-                us = sy && dates[1].m && dates[2].m && ((dates[2].m - dates[1].m) == 1) && (!dates[1].d) && (!dates[2].d);
+                us = isSameYear && dates[1].m && dates[2].m && ((dates[2].m - dates[1].m) == 1) && (!dates[1].d) && (!dates[2].d);
             }
             var s2 = DateToString(dates[2].d, dates[2].m, dates[2].y);
             if (s1 && s2) {
-                var s = s1 + (((s1 + "").indexOf(" ") > 0) ? " ~ " : (us ? "/" : "~")) + s2;
-            } else {
-                if (s1 || s2) {
-                    var s = (isUseSymbol ? ("~ " + s1 + s2) : (isUpperCase ? _t("Approx $", s1 + s2) : _t("approx $", s1 + s2)));
-                }
+                s = s1 + (((s1 + "").indexOf(" ") > 0) ? " ~ " : (us ? "/" : "~")) + s2;
+            } else if (s1 || s2) {
+                s = isUseSymbol ? ("~ " + s1 + s2) : _t("大约$", s1 + s2);
             }
         }
     } else {
-        s += DateToString(dates[1].d, dates[1].m, dates[1].y);
+        s += DateToString(dates[1].d, dates[1].m, format.includes('y') && dates[1].y);
         if (s) {
             if (isUseSymbol) {
                 var es = {"app": "~ ", "bef": "< ", "aft": "> "};
                 s = (es[dates.v] || "") + s;
             } else {
                 var ts = {
-                    "app": isUpperCase ? _i("Approx $") : _i("approx $"),
-                    "bef": isUpperCase ? _i("Before $") : _i("before $"),
-                    "aft": isUpperCase ? _i("After $") : _i("after $")
+                    "app": '大约$',
+                    "bef": '$之前',
+                    "aft": '$之后'
                 };
                 if (ts[dates.v]) {
                     s = _t(ts[dates.v], s);
@@ -566,7 +561,7 @@ function DateDetailStrToString(dateStr, isUpperCase, isUseSymbol) {
             }
         }
     }
-    if (dates.type === 'L') s += ' (农历)';
+    if (dates.type === 'L') s += ' 农历';
     return s;
 }
 
@@ -607,7 +602,7 @@ function FCT(y1, y2) {
     if (Math.floor(y1 / 100) == Math.floor(y2 / 100)) {
         d = (Math.floor(y1 / 10) == Math.floor(y2 / 10)) ? 10 : 100;
     }
-    var s = y1 + "/" + (y2 % d);
+    var s = y1 + "-" + y2;
     if (bce) {
         s = _t("$ BCE", s);
     }
@@ -661,7 +656,7 @@ function BuildDateDetailStr(decorate, type, d1, m1, y1, d2, m2, y2) {
     return (type || '') + s;
 }
 
-function FDN(p, mn, sn, isFamilyNameFirst, bn, ah, ni, ti, su) {
+function FDN(p, mn, sn, isFamilyNameFirst, ah, ni, ti, su) {
     if (!p) {
         return _t("Unknown");
     }
@@ -675,17 +670,7 @@ function FDN(p, mn, sn, isFamilyNameFirst, bn, ah, ni, ti, su) {
         personName += (personName ? " " : "") + "\"" + p.N + "\"";
     }
     if (personName && sn) {
-        var familyName = bn ? p.q : p.l;
-        if (!familyName) {
-            familyName = bn ? p.l : p.q;
-        } else {
-            if (sn >= 2) {
-                var cn = bn ? p.l : p.q;
-                if (cn && (cn != familyName)) {
-                    familyName += "/" + cn;
-                }
-            }
-        }
+        const familyName = p.l;
         if (familyName) {
             if (personName) {
                 if (isFamilyNameFirst) {
