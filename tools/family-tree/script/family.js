@@ -809,30 +809,27 @@ function FCC(p1, p2) {
     }
     if (b1 < b2) {
         return -1;
-    } else {
-        if (b2 < b1) {
-            return 1;
-        }
+    } else if (b2 < b1) {
+        return 1;
     }
     if (p1.ai < p2.ai) {
         return -1;
-    } else {
-        if (p1.ai > p2.ai) {
-            return 1;
-        }
+    } else if (p1.ai > p2.ai) {
+        return 1;
     }
     return 0;
 }
 
-function FSC(f, ci) {
+// FSC
+function FamilySortChildrens(family, childrenIds) {
     var cp = [];
-    for (var j = 0; j < ci.length; j++) {
-        cp[cp.length] = f[ci[j]];
+    for (var j = 0; j < childrenIds.length; j++) {
+        cp[cp.length] = family[childrenIds[j]];
     }
     cp.sort(FCC);
-    ci.length = 0;
+    childrenIds.length = 0;
     for (var j = 0; j < cp.length; j++) {
-        ci[ci.length] = cp[j].i;
+        childrenIds[childrenIds.length] = cp[j].i;
     }
 }
 
@@ -920,7 +917,7 @@ function FLA(family, id) {
             ArrayPush(ac, c[j]);
         }
     }
-    FSC(family, ac);
+    FamilySortChildrens(family, ac);
     return ac;
 }
 
@@ -934,37 +931,37 @@ function FLP(f, i, pi) {
             ArrayPush(tc, c[j]);
         }
     }
-    FSC(f, tc);
+    FamilySortChildrens(f, tc);
     return tc;
 }
 
-function FLS(f, i, s, t) {
+function FLS(family, id, s, t) {
     var bs = [];
-    var mi = f[i]["m" + s];
-    var fi = f[i]["f" + s];
+    var motherId = family[id]["m" + s];
+    var fatherId = family[id]["f" + s];
     var cs = {};
-    if (mi && f[mi]) {
-        var c = f[mi].c;
+    if (motherId && family[motherId]) {
+        var c = family[motherId].c;
         for (var j = 0; j < c.length; j++) {
             cs[c[j]] = true;
         }
     }
-    if (fi && f[fi]) {
-        var c = f[fi].c;
+    if (fatherId && family[fatherId]) {
+        var c = family[fatherId].c;
         for (var j = 0; j < c.length; j++) {
             cs[c[j]] = true;
         }
     }
     for (var j in cs) {
-        if (j != i) {
-            if (FTM(f[j], mi, fi)) {
-                if ((!t) || (f[i].b == f[j].b)) {
+        if (j != id) {
+            if (FTM(family[j], motherId, fatherId)) {
+                if ((!t) || (family[id].b == family[j].b)) {
                     ArrayPush(bs, j);
                 }
             }
         }
     }
-    FSC(f, bs);
+    FamilySortChildrens(family, bs);
     return bs;
 }
 

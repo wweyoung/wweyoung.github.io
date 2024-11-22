@@ -1046,8 +1046,9 @@ function PersonOperate(operation, v) {
     } else if ((operation == "moveleft") || (operation == "moveright")) {
         var ot = person.b && DateStrToObj(person.b).y;
         var bs = FLS(f, SidebarPersonId, 1, ot);
-        for (var si = 0; si < bs.length; si++) {
-            if (FCC(f[bs[si]], person) >= 0) {
+        let index = 0;
+        for (; index < bs.length; index++) {
+            if (FCC(f[bs[index]], person) >= 0) {
                 break;
             }
         }
@@ -1058,12 +1059,12 @@ function PersonOperate(operation, v) {
         }
         var d = (operation == "moveleft") ? -1 : 1;
         while (true) {
-            spouseId += d;
-            if ((spouseId < 0) || (spouseId > bs.length)) {
+            index += d;
+            if ((index < 0) || (index > bs.length)) {
                 break;
             }
-            if ((spouseId == 0) || (spouseId == bs.length) || (FPO(f[bs[spouseId - 1]], ot) != FPO(f[bs[spouseId]], ot))) {
-                UpdatePerson(SidebarPersonId, {O: FBO(f, bs.slice(0, spouseId), bs.slice(spouseId), ot)});
+            if ((index == 0) || (index == bs.length) || (FPO(f[bs[index - 1]], ot) != FPO(f[bs[index]], ot))) {
+                UpdatePerson(SidebarPersonId, {O: FBO(f, bs.slice(0, index), bs.slice(index), ot)});
                 break;
             }
         }
