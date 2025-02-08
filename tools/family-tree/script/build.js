@@ -372,12 +372,12 @@ function BGA(f, i, h, dr, da, fl, pg, dp) {
     return d;
 }
 
-function BGD(f, i, h, fl, pg, dp) {
+function BGD(f, i, h, maleLeftConfig, pg, dp) {
     var p = f[i];
     var d = TND();
     var sr = FSM(f, i, p.es);
     var g = BMG(f, i, p.es, pg);
-    if (fl) {
+    if (maleLeftConfig) {
         sr = !sr;
     }
     var sx = sr ? g : -g;
@@ -401,29 +401,21 @@ function BGD(f, i, h, fl, pg, dp) {
                 if (p.es) {
                     if ((cp.m2 == p.es) || (cp.f2 == p.es)) {
                         _e6[_e6.length] = {j: 2, i: ci};
-                    } else {
-                        if ((cp.m3 == p.es) || (cp.f3 == p.es)) {
-                            _e6[_e6.length] = {j: 3, i: ci};
-                        }
+                    } else if ((cp.m3 == p.es) || (cp.f3 == p.es)) {
+                        _e6[_e6.length] = {j: 3, i: ci};
                     }
                 }
+            } else if ((cp.m1 == p.es) || (cp.f1 == p.es)) {
+                _e3[_e3.length] = ci;
+                if ((cp.m2 == i) || (cp.f2 == i)) {
+                    _e5[_e5.length] = {j: 2, i: ci};
+                } else if ((cp.m3 == i) || (cp.f3 == i)) {
+                    _e5[_e5.length] = {j: 3, i: ci};
+                }
+            } else if ((cp.m2 == i) || (cp.f2 == i) || (cp.m3 == i) || (cp.f3 == i)) {
+                _e4[_e4.length] = ci;
             } else {
-                if ((cp.m1 == p.es) || (cp.f1 == p.es)) {
-                    _e3[_e3.length] = ci;
-                    if ((cp.m2 == i) || (cp.f2 == i)) {
-                        _e5[_e5.length] = {j: 2, i: ci};
-                    } else {
-                        if ((cp.m3 == i) || (cp.f3 == i)) {
-                            _e5[_e5.length] = {j: 3, i: ci};
-                        }
-                    }
-                } else {
-                    if ((cp.m2 == i) || (cp.f2 == i) || (cp.m3 == i) || (cp.f3 == i)) {
-                        _e4[_e4.length] = ci;
-                    } else {
-                        _e3[_e3.length] = ci;
-                    }
-                }
+                _e3[_e3.length] = ci;
             }
         }
         var ac = FLA(f, i);
@@ -434,7 +426,7 @@ function BGD(f, i, h, fl, pg, dp) {
                 BAC(d, f, i, 0, 0);
             } else {
                 dp.c[i] = true;
-                var ds = BGC(f, i, ac, h - 1, fl, pg, dp, p.es);
+                var ds = BGC(f, i, ac, h - 1, maleLeftConfig, pg, dp, p.es);
                 BDC(d, ds, 0, 1, 0, 0, 0);
             }
         }
@@ -447,7 +439,7 @@ function BGD(f, i, h, fl, pg, dp) {
                 var tc = FLP(f, i, p.es);
                 ArrayRemoveAll(tc, _e3);
                 if (tc.length) {
-                    var ds = BGC(f, i, tc, h - 1, fl, pg, dp);
+                    var ds = BGC(f, i, tc, h - 1, maleLeftConfig, pg, dp);
                     if (ac.length) {
                         sx = sr ? Math.max(g, (d.r + (ds.tw - ds.fl - ds.lr) / 2 + 0.5)) : Math.min(-g, (d.l - (ds.tw + ds.lr + ds.fl) / 2 - 0.5));
                         var cx = sr ? (sx - 0.5) : (sx + 0.5);
@@ -469,14 +461,14 @@ function BGD(f, i, h, fl, pg, dp) {
                         BAC(d, f, p.es, sx, 0);
                     } else {
                         dp.c[p.es] = true;
-                        var ds = BGC(f, p.es, pac, h - 1, fl, pg, dp);
+                        var ds = BGC(f, p.es, pac, h - 1, maleLeftConfig, pg, dp);
                         BDC(d, ds, sr ? (d.r + (ds.tw - ds.fl - ds.lr) / 2) : (d.l - (ds.tw + ds.lr + ds.fl) / 2), 1, sx, 0, -0.15);
                     }
                 }
-                BDA(d, f, p.es, i, h - 1, sr, sx, 0, fl, pg, dp, _e4, _e8, i);
+                BDA(d, f, p.es, i, h - 1, sr, sx, 0, maleLeftConfig, pg, dp, _e4, _e8, i);
             }
         }
-        BDA(d, f, i, p.es, h - 1, !sr, 0, 0, fl, pg, dp, _e3, _e7, p.es);
+        BDA(d, f, i, p.es, h - 1, !sr, 0, 0, maleLeftConfig, pg, dp, _e3, _e7, p.es);
         for (k = 2; k <= 3; k++) {
             var oxy = (k - 1) * 0.05;
             for (var j = 0; j < _e5.length; j++) {

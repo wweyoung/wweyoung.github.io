@@ -206,7 +206,8 @@ function TRD(d, y, ad, sf, c, ls, o, oi, wp, pr, zoom, wf, ts) {
         var sx = ox + (e.x) * (sz.Tew + sz.Ths);
         var sy = oy + (e.y) * (sz.Teh + sz.Tvs);
         height = Math.max(height, sz.minHeight);
-        TreeCreateDbox(o, sx - (sz.Tew / 2), sy - (height / 2), sz.Tew, height, e.k ? 3 : 1, (e.p.g === "f") ? c.female : ((e.p.g === "m") ? c.male : (((e.p.g || "").charAt(0) === "o") ? c.other : "#FFFFFF")));
+        let background = (e.p.g === "f") ? c.female : ((e.p.g === "m") ? c.male : (((e.p.g || "").charAt(0) === "o") ? c.other : "#FFFFFF"));
+        TreeCreateDbox(o, sx - (sz.Tew / 2), sy - (height / 2), sz.Tew, height, e.k ? 4 : 1, background, e.k ? '#3F51B5' : undefined);
         var diElement = document.createElement("div");
         diElement.className = "di";
         if (locale_rtl) {
@@ -438,17 +439,18 @@ function TreeFocusOnPerson(id, time = 250) {
     }
 }
 
-function TreeCreateDbox(parent, l, t, width, height, k, background) {
+function TreeCreateDbox(parent, l, t, width, height, borderWidth, background, borderColor) {
     let v = document.createElement("div");
     v.className = "dbox";
     var style = v.style;
     style.position = "absolute";
     style.width = (width) + "px";
     style.height = (height) + "px";
-    style.left = (l - k) + "px";
-    style.top = (t - k) + "px";
+    style.left = (l - borderWidth) + "px";
+    style.top = (t - borderWidth) + "px";
     style.background = background;
-    style.borderWidth = k + "px";
+    style.borderWidth = borderWidth + "px";
+    style.borderColor = borderColor;
     parent.appendChild(v);
 }
 
@@ -587,6 +589,7 @@ function TreeSetOffset(x, y) {
 // TCT
 function OnTreeDiMouseDown() {
     ESP(this.pid, true);
+    TreeFocusOnPerson(this.pid, 200)
 }
 
 function TreeBgPsOf(i) {
