@@ -199,7 +199,7 @@
         }
 
         .coord-display span {
-            font-family: monospace;
+            font-family: Consolas, monospace;
             color: #b45f4c;
         }
 
@@ -470,8 +470,13 @@
             {code: 'M13', r: 0xD1, g: 0x90, b: 0x66}, {code: 'M14', r: 0xC7, g: 0x73, b: 0x62},
             {code: 'M15', r: 0x75, g: 0x7D, b: 0x78}
         ];
+        PALETTE_211.forEach(c => {
+            const [L, A, B] = rgb2lab(c.r, c.g, c.b);
+            c.L = L; c.A = A; c.B = B;
+        });
         const palette_96_codes = ["A4", "A6", "A7", "A13", "A11", "A10", "A3", "A14", "B3", "B5", "B8", "B12", "B20", "B18", "B10", "B14", "B19", "B17", "B7", "C3", "C5", "C8", "C2", "C13", "C10", "C6", "C11", "C7", "C16", "D9", "D6", "D7", "D19", "D18", "D21", "D13", "D3", "D15", "D16", "D8", "D11", "D12", "D2", "D20", "D14", "D5", "E2", "E4", "E8", "E3", "E7", "E1", "E12", "E5", "E13", "E11", "E14", "E15", "E9", "E6", "E10", "F5", "F13", "F8", "F10", "F7", "F1", "F14", "F9", "F2", "F12", "F3", "F11", "F4", "F6", "G1", "G5", "G7", "G9", "G13", "G8", "G2", "G3", "G14", "G17", "H1", "H2", "H3", "H4", "H5", "H7", "H6", "M6", "M5", "M9", "M12"]
         const PALETTE_96 = PALETTE_211.filter(palette => palette_96_codes.includes(palette.code))
+        const colorCache = new Map();
 
         // localStorage 读写
         function saveSettings() {
@@ -506,29 +511,68 @@
             canvas.height = wrapper.clientHeight;
         }
 
-        function colorDistance(r1, g1, b1, r2, g2, b2) {
-            const dr = r1 - r2;
-            const dg = g1 - g2;
-            const db = b1 - b2;
-
-            const rMean = (r1 + r2) / 2;
-
-            return Math.sqrt(
-                (2 + rMean / 256) * dr * dr +
-                4 * dg * dg +
-                (1 + (255 - rMean) / 512) * db * db  // 蓝色权重降低
-            );
+        function getColorCacheKey(r, g, b) {
+            // 量化颜色，相近颜色共享缓存
+            return (Math.round(r / 2) << 12) | (Math.round(g / 2) << 6) | Math.round(b / 2);
         }
 
+        function colorDistance(L1, a1, b1_, L2, a2, b2_) {
+            // CIEDE2000 计算
+            const C1 = Math.sqrt(a1**2 + b1_**2);
+            const C2 = Math.sqrt(a2**2 + b2_**2);
+            const Cbar = (C1 + C2) / 2;
+            const G = 0.5 * (1 - Math.sqrt(Cbar**7 / (Cbar**7 + 25**7)));
+            const a1p = a1 * (1 + G);
+            const a2p = a2 * (1 + G);
+            const C1p = Math.sqrt(a1p**2 + b1_**2);
+            const C2p = Math.sqrt(a2p**2 + b2_**2);
+            const h1p = Math.atan2(b1_, a1p) * 180 / Math.PI + (b1_>=0 ? 0 : 360);
+            const h2p = Math.atan2(b2_, a2p) * 180 / Math.PI + (b2_>=0 ? 0 : 360);
+            const dL = L2 - L1;
+            const dC = C2p - C1p;
+            let dh = h2p - h1p;
+            if (Math.abs(dh) > 180) dh = dh>0 ? dh-360 : dh+360;
+            const dH = 2 * Math.sqrt(C1p*C2p) * Math.sin(dh*Math.PI/360);
+            const Lbar = (L1 + L2) / 2;
+            const Cbarp = (C1p + C2p) / 2;
+            let hbarp = (h1p + h2p) / 2;
+            if (Math.abs(h1p-h2p) > 180) hbarp = hbarp<180 ? hbarp+180 : hbarp-180;
+            const T = 1 - 0.17*Math.cos((hbarp-30)*Math.PI/180) + 0.24*Math.cos((2*hbarp)*Math.PI/180) + 0.32*Math.cos((3*hbarp+6)*Math.PI/180) - 0.20*Math.cos((4*hbarp-63)*Math.PI/180);
+            const SL = 1 + 0.015*(Lbar-50)**2 / Math.sqrt(20+(Lbar-50)**2);
+            const SC = 1 + 0.045*Cbarp;
+            const SH = 1 + 0.015*Cbarp*T;
+            const RT = -2*Math.sqrt(Cbarp**7/(Cbarp**7+25**7)) * Math.sin((60*Math.exp(0-((hbarp-275)/25)**2))*Math.PI/180);
+
+            return Math.sqrt((dL/SL)**2 + (dC/SC)**2 + (dH/SH)**2 + RT*(dC/SC)*(dH/SH));
+        }
+
+        function rgb2lab (r, g, b) {
+            let R = r/255, G = g/255, B = b/255;
+            R = R>0.04045 ? ((R+0.055)/1.055)**2.4 : R/12.92;
+            G = G>0.04045 ? ((G+0.055)/1.055)**2.4 : G/12.92;
+            B = B>0.04045 ? ((B+0.055)/1.055)**2.4 : B/12.92;
+            const X = (R*0.4124564+G*0.3575761+B*0.1804375)/0.95047;
+            const Y = R*0.2126729+G*0.7151522+B*0.0721750;
+            const Z = (R*0.0193339+G*0.1191920+B*0.9503041)/1.08883;
+            const f = t => t>0.008856 ? t**(1/3) : 7.787*t+16/116;
+            return [116*f(Y)-16, 500*(f(X)-f(Y)), 200*(f(Y)-f(Z))];
+        }
+
+
         function findClosestColor(r, g, b, palette) {
+            const key = getColorCacheKey(r, g, b);
+            const cache = colorCache.get(key)
+            if (cache) return cache;
             let minDist = Infinity, closest = palette[0];
+            const [L, A, B] = rgb2lab(r,g,b)
             for (const c of palette) {
-                const d = colorDistance(r, g, b, c.r, c.g, c.b);
+                const d = colorDistance(L, A, B, c.L, c.A, c.B);
                 if (d < minDist) {
                     minDist = d;
                     closest = c;
                 }
             }
+            colorCache.set(key, closest)
             return closest;
         }
 
@@ -781,7 +825,7 @@
 // 在 drawGrid 函数末尾，10px实线之后添加坐标绘制
             if (scale >= 16) {
                 const coordFontSize = 12 / scale;
-                ctx.font = `${coordFontSize}px monospace`;
+                ctx.font = `${coordFontSize}px Consolas, monospace`;
 
                 // 顶部坐标（X轴）
                 ctx.textAlign = 'center';
@@ -843,11 +887,11 @@
 
         function drawColorCodes(vx, vy, vw, vh) {
             if (!displayColorCodeMap || displayColorCodeMap.length === 0) return;
-            if (scale < 16) return;
+            // if (scale < 16) return;
 
-            const fontSize = 12 / scale;
+            const fontSize = Math.max(7 / scale, 0.5);
             ctx.save();
-            ctx.font = `${fontSize}px monospace`;
+            ctx.font = `${fontSize}px Consolas, monospace`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             const palette = colorMode === '211' ? PALETTE_211 : PALETTE_96;
@@ -915,6 +959,7 @@
 
         function loadImageFromFile(file) {
             if (!file) return;
+            colorCache.clear();
             originalFileName = file.name.replace(/\.[^/.]+$/, ''); // 去掉扩展名
             const r = new FileReader();
             r.onload = e => {
@@ -1031,7 +1076,7 @@
             let tempX = 15 * STAT_SCALE, rowCount = 1;
             for (const [code, count] of sorted) {
                 const countText = `${count}`;
-                const tempFont = `bold ${fontSize}px monospace`;
+                const tempFont = `bold ${fontSize}px Consolas, monospace`;
                 const ex2 = document.createElement('canvas').getContext('2d');
                 ex2.font = tempFont;
                 const codeWidth = ex2.measureText(code).width + 10 * STAT_SCALE;
@@ -1102,7 +1147,7 @@
             }
 
             if (displayColorCodeMap) {
-                ex.font = '0.5px monospace';
+                ex.font = '0.5px Consolas, monospace';
                 ex.textAlign = 'center';
                 ex.textBaseline = 'middle';
                 for (let y = 0; y < displayHeight; y++) {
@@ -1120,7 +1165,7 @@
 
             // 坐标边框
             // 顶部坐标
-            ex.font = `${0.5 * effectivePixelSize / ps}px monospace`;
+            ex.font = `${0.5 * effectivePixelSize / ps}px Consolas, monospace`;
             ex.textAlign = 'center';
             ex.textBaseline = 'middle';
             for (let x = 0; x < displayWidth; x += ps) {
@@ -1170,7 +1215,7 @@
                     const colorHex = ci ? `#${ci.r.toString(16).padStart(2,'0')}${ci.g.toString(16).padStart(2,'0')}${ci.b.toString(16).padStart(2,'0')}` : '#ccc';
                     const countText = `${count}`;
 
-                    ex.font = `bold ${fontSize}px monospace`;
+                    ex.font = `bold ${fontSize}px Consolas, monospace`;
                     const codeWidth = ex.measureText(code).width + 10 * STAT_SCALE;
                     const countWidth = ex.measureText(countText).width + 10 * STAT_SCALE;
                     const tagWidth = codeWidth + countWidth;
@@ -1482,14 +1527,19 @@
                 dragStartOffsetY = offsetY;
             } else if (e.touches.length === 2) {
                 isDragging = false;
-                const dx = e.touches[0].clientX - e.touches[1].clientX,
-                    dy = e.touches[0].clientY - e.touches[1].clientY;
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
                 td = Math.hypot(dx, dy);
                 ts = scale;
                 tox = offsetX;
                 toy = offsetY;
+                // 记录初始两指中点相对于画布的位置
+                const rect = canvas.getBoundingClientRect();
+                touchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+                touchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
             }
         });
+
         canvas.addEventListener('touchmove', e => {
             if (!currentImage) return;
             e.preventDefault();
@@ -1498,14 +1548,14 @@
                 offsetY = dragStartOffsetY + (e.touches[0].clientY - dragStartY);
                 redrawCanvas();
             } else if (e.touches.length === 2) {
-                const dx = e.touches[0].clientX - e.touches[1].clientX,
-                    dy = e.touches[0].clientY - e.touches[1].clientY, d = Math.hypot(dx, dy),
-                    ns = Math.max(0.1, Math.min(50, ts * (d / td)));
-                const rect = canvas.getBoundingClientRect(),
-                    mx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left,
-                    my = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
-                offsetX = mx - (mx - tox) * (ns / ts);
-                offsetY = my - (my - toy) * (ns / ts);
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                const d = Math.hypot(dx, dy);
+                const ns = Math.max(0.1, Math.min(50, ts * (d / td)));
+
+                // 以初始两指中点为中心缩放
+                offsetX = touchMidX - (touchMidX - tox) * (ns / ts);
+                offsetY = touchMidY - (touchMidY - toy) * (ns / ts);
                 scale = ns;
                 redrawCanvas();
             }
