@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>KX拼豆像素图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f2eb;
+            font-family: 'Segoe UI', 'Fredoka', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+            padding: 0;
+        }
+
+        .container {
+            background: #ffffff;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 100vw;
+            border: 1px solid #ffe8d6;
+            height: 100vh;
+            height: 100 dvh;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0.5rem 0.8rem;
+            background: #fefaf5;
+            border-bottom: 1px solid #eddcd2;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .top-bar h1 {
+            font-weight: 500;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: #5e4b3c;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            white-space: nowrap;
+        }
+
+        .top-bar h1 span {
+            background: #fce4d6;
+            padding: 0.1rem 0.6rem;
+            border-radius: 2rem;
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            font-weight: 600;
+            color: #9c7e6b;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #eddcd2;
+            background: #fefaf5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            flex: 1;
+            width: 100%;
+            min-height: 0;
+        }
+
+        .canvas-wrapper:active {
+            cursor: grabbing;
+        }
+
+        .canvas-wrapper.grabbing {
+            cursor: grabbing;
+        }
+
+        canvas {
+            display: block;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+        }
+
+        .bottom-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.5rem;
+            background: #fefaf5;
+            border-top: 1px solid #eddcd2;
+            width: 100%;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.3rem;
+            background: #f3ede7;
+            padding: 0.25rem;
+            border-radius: 2rem;
+            border: 1px solid #e2d4c8;
+        }
+
+        .icon-btn {
+            background: white;
+            border: 1px solid #e7cfbc;
+            width: clamp(2rem, 6vw, 2.3rem);
+            height: clamp(2rem, 6vw, 2.3rem);
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5e4b3c;
+            transition: 0.2s;
+            padding: 0;
+        }
+
+        .icon-btn:active {
+            background: #f8dcc9;
+            border-color: #d4aa8c;
+        }
+
+        .text-btn {
+            background: white;
+            border: 1px solid #e7cfbc;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            color: #6b5a4b;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .text-btn.active {
+            background: #f0ddd0;
+            color: #b45f4c;
+            border-color: #f0d3c1;
+        }
+
+        .text-btn:active {
+            background: #f8dcc9;
+        }
+
+        .color-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            background: #f3ede7;
+            padding: 0.2rem 0.5rem;
+            border-radius: 2rem;
+            border: 1px solid #e2d4c8;
+            font-size: clamp(0.6rem, 1.8vw, 0.75rem);
+            color: #5e4b3c;
+            font-weight: 600;
+        }
+
+        .color-input-wrapper input[type="color"] {
+            width: clamp(1.5rem, 4vw, 1.8rem);
+            height: clamp(1.5rem, 4vw, 1.8rem);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+            background: transparent;
+        }
+
+        .coord-display {
+            font-size: clamp(0.6rem, 1.8vw, 0.75rem);
+            color: #5e4b3c;
+            font-weight: 600;
+            background: #f3ede7;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+            border: 1px solid #e2d4c8;
+            white-space: nowrap;
+        }
+
+        .coord-display span {
+            font-family: monospace;
+            color: #b45f4c;
+        }
+
+        .color-mode-select {
+            display: flex;
+            gap: 0.3rem;
+            background: #f3ede7;
+            padding: 0.25rem;
+            border-radius: 2rem;
+            border: 1px solid #e2d4c8;
+        }
+
+        .color-mode-option {
+            background: transparent;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: clamp(0.6rem, 1.8vw, 0.75rem);
+            color: #6b5a4b;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .color-mode-option.active {
+            background: white;
+            color: #b45f4c;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 600px) {
+            .bottom-bar {
+                gap: 0.3rem;
+                padding: 0.4rem;
+            }
+
+            .text-btn {
+                padding: 0.25rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <div class="left-group">
+            <h1>🧩 KX拼豆图<span></span></h1>
+            <div class="color-mode-select" id="colorModeSelect">
+                <button class="color-mode-option active" data-mode="original">原图</button>
+                <button class="color-mode-option" data-mode="211">211色</button>
+                <button class="color-mode-option" data-mode="96">96色</button>
+            </div>
+        </div>
+
+        <div class="right-group">
+            <div class="coord-display" id="coordDisplay">
+                📍 坐标 <span id="coordValue">— , —</span>
+            </div>
+
+            <div class="action-group">
+                <label class="text-btn" title="导入图片">
+                    📁 导入
+                    <input type="file" id="fileInput" accept="image/png, image/webp, image/jpeg, image/gif" style="display:none">
+                </label>
+                <button id="exportBtn" class="text-btn" title="导出图片">💾 导出</button>
+            </div>
+
+            <div class="coord-display" id="statsDisplay">
+                📊 <span id="statsTotalBar">—</span>
+            </div>
+        </div>
+    </div>
+    <div class="canvas-wrapper" id="canvasWrapper">
+        <canvas id="pixelCanvas"></canvas>
+    </div>
+    <div id="statsBar"
+         style="width:100%;max-width:700px;display:flex;flex-wrap:wrap;gap:0.2rem;padding:0.4rem 0.5rem;background:#fefaf5;border-top:1px solid #eddcd2;overflow-y:auto;max-height:80px;font-size:0.7rem;align-items:center;flex-shrink:0;">
+        <span id="statsContentBar" style="display:flex;flex-wrap:wrap;gap:0.15rem;"></span>
+    </div>
+    <div class="bottom-bar">
+        <button id="toggleGridBtn" class="text-btn active" title="网格">🔲 网格</button>
+        <button id="toggleColorCodeBtn" class="text-btn" title="显示色号">#️⃣ 色号</button>
+        <button id="mirrorBtn" class="text-btn" title="左右镜像">🪞 镜像</button>
+        <button id="settingsBtn" class="text-btn" title="设置">⚙️ 设置</button>
+
+        <div id="settingsPanel" style="display:none;position:absolute;bottom:50px;left:50%;transform:translateX(-50%);background:white;border:1px solid #eddcd2;border-radius:1rem;padding:0.6rem;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,0.1);flex-direction:column;gap:0.4rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+                <span style="font-size:0.7rem;color:#5e4b3c;">像素</span>
+                <button class="icon-btn" id="pixelScaleDown" title="减小" style="width:1.6rem;height:1.6rem;font-size:0.8rem;">−</button>
+                <span style="font-size:0.7rem;font-weight:700;color:#b45f4c;" id="pixelScaleValue">1x</span>
+                <button class="icon-btn" id="pixelScaleUp" title="增大" style="width:1.6rem;height:1.6rem;font-size:0.8rem;">+</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+                <span style="font-size:0.7rem;color:#5e4b3c;">背景</span>
+                <input type="color" id="bgColorInput" value="#fefaf5" title="背景色" style="width:1.6rem;height:1.6rem;border:none;border-radius:50%;cursor:pointer;padding:0;">
+            </div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+                <span style="font-size:0.7rem;color:#5e4b3c;">网格</span>
+                <input type="color" id="gridColorInput" value="#b5a595" title="网格颜色" style="width:1.6rem;height:1.6rem;border:none;border-radius:50%;cursor:pointer;padding:0;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const canvas = document.getElementById('pixelCanvas');
+        const ctx = canvas.getContext('2d');
+        const wrapper = document.getElementById('canvasWrapper');
+        const fileInput = document.getElementById('fileInput');
+        const toggleGridBtn = document.getElementById('toggleGridBtn');
+        const toggleColorCodeBtn = document.getElementById('toggleColorCodeBtn');
+        const pixelScaleUpBtn = document.getElementById('pixelScaleUp');
+        const pixelScaleDownBtn = document.getElementById('pixelScaleDown');
+        const mirrorBtn = document.getElementById('mirrorBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const bgColorInput = document.getElementById('bgColorInput');
+        const gridColorInput = document.getElementById('gridColorInput');
+        const pixelScaleValueSpan = document.getElementById('pixelScaleValue');
+        const coordValueSpan = document.getElementById('coordValue');
+        const statsTotalBar = document.getElementById('statsTotalBar');
+        const statsContentBar = document.getElementById('statsContentBar');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
+
+        let originalFileName = 'pixel-art';
+        let currentImage = null;
+        let imageWidth = 0;
+        let imageHeight = 0;
+        let showGrid = true;
+        let showColorCode = false;
+        let colorMode = 'original';
+        let scale = 1.0;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+        let dragStartX = 0, dragStartY = 0, dragStartOffsetX = 0, dragStartOffsetY = 0;
+
+        // 像素缩放
+        let pixelScale = 1;
+        let displayImageCache = null;
+        let displayWidth = 0;
+        let displayHeight = 0;
+        let displayColorCodeMap = null;
+
+        let gridColor = '#b5a595';
+        let bgColor = '#fefaf5';
+        const GRID_LINE_WIDTH_MAJOR = 0.1;
+        const GRID_LINE_WIDTH_MINOR = 0.1;
+        const GRID_BASE_MAJOR = 10;
+        const GRID_BASE_MINOR = 5;
+
+        let processedImageCache = null;
+        let originalColorCodeMap = null;
+        let highlightCode = null; // 高亮的色号
+
+        const PALETTE_211 = [
+            {code: 'A1', r: 0xFA, g: 0xF4, b: 0xC8}, {code: 'A2', r: 0xFF, g: 0xFF, b: 0xD5},
+            {code: 'A3', r: 0xFE, g: 0xFF, b: 0x8B}, {code: 'A4', r: 0xFB, g: 0xED, b: 0x56},
+            {code: 'A5', r: 0xF4, g: 0xD7, b: 0x38}, {code: 'A6', r: 0xFE, g: 0xAC, b: 0x4C},
+            {code: 'A7', r: 0xFE, g: 0x8B, b: 0x4C}, {code: 'A8', r: 0xFF, g: 0xDA, b: 0x45},
+            {code: 'A9', r: 0xFF, g: 0x99, b: 0x5B}, {code: 'A10', r: 0xF7, g: 0x7C, b: 0x31},
+            {code: 'A11', r: 0xFF, g: 0xDD, b: 0x99}, {code: 'A12', r: 0xFE, g: 0x9F, b: 0x72},
+            {code: 'A13', r: 0xFF, g: 0xC3, b: 0x65}, {code: 'A14', r: 0xFD, g: 0x54, b: 0x3D},
+            {code: 'A15', r: 0xFF, g: 0xF3, b: 0x65}, {code: 'A16', r: 0xFF, g: 0xFF, b: 0x9F},
+            {code: 'A17', r: 0xFF, g: 0xE3, b: 0x6E}, {code: 'A18', r: 0xFE, g: 0xBE, b: 0x7D},
+            {code: 'A19', r: 0xFD, g: 0x7C, b: 0x72}, {code: 'A20', r: 0xFF, g: 0xD5, b: 0x68},
+            {code: 'A21', r: 0xFF, g: 0xE3, b: 0x95}, {code: 'A22', r: 0xF4, g: 0xF5, b: 0x7D},
+            {code: 'A23', r: 0xE6, g: 0xC9, b: 0xB7}, {code: 'A24', r: 0xF7, g: 0xF8, b: 0xA2},
+            {code: 'A25', r: 0xFF, g: 0xD6, b: 0x7D}, {code: 'A26', r: 0xFF, g: 0xC8, b: 0x30},
+            {code: 'B1', r: 0xE6, g: 0xEE, b: 0x31}, {code: 'B2', r: 0x63, g: 0xF3, b: 0x47},
+            {code: 'B3', r: 0x9E, g: 0xF7, b: 0x80}, {code: 'B4', r: 0x5D, g: 0xE0, b: 0x35},
+            {code: 'B5', r: 0x35, g: 0xE3, b: 0x52}, {code: 'B6', r: 0x65, g: 0xE2, b: 0xA6},
+            {code: 'B7', r: 0x3D, g: 0xAF, b: 0x80}, {code: 'B8', r: 0x1C, g: 0x9C, b: 0x4F},
+            {code: 'B9', r: 0x27, g: 0x52, b: 0x3A}, {code: 'B10', r: 0x95, g: 0xD3, b: 0xC2},
+            {code: 'B11', r: 0x5D, g: 0x72, b: 0x2A}, {code: 'B12', r: 0x16, g: 0x6F, b: 0x41},
+            {code: 'B13', r: 0xCA, g: 0xEB, b: 0x7B}, {code: 'B14', r: 0xAD, g: 0xE9, b: 0x46},
+            {code: 'B15', r: 0x2E, g: 0x51, b: 0x32}, {code: 'B16', r: 0xC5, g: 0xED, b: 0x9C},
+            {code: 'B17', r: 0x9B, g: 0xB1, b: 0x3A}, {code: 'B18', r: 0xE6, g: 0xEE, b: 0x49},
+            {code: 'B19', r: 0x24, g: 0xB8, b: 0x8C}, {code: 'B20', r: 0xC2, g: 0xF0, b: 0xCC},
+            {code: 'B21', r: 0x15, g: 0x6A, b: 0x6B}, {code: 'B22', r: 0x0B, g: 0x3C, b: 0x43},
+            {code: 'B23', r: 0x30, g: 0x3A, b: 0x21}, {code: 'B24', r: 0xEE, g: 0xFC, b: 0xA5},
+            {code: 'B25', r: 0x4E, g: 0x84, b: 0x6D}, {code: 'B26', r: 0x8D, g: 0x7A, b: 0x35},
+            {code: 'B27', r: 0xCC, g: 0xE1, b: 0xAF}, {code: 'B28', r: 0x9E, g: 0xE5, b: 0xB9},
+            {code: 'B29', r: 0xC5, g: 0xE2, b: 0x54}, {code: 'B30', r: 0xE2, g: 0xFC, b: 0xB1},
+            {code: 'B31', r: 0xB0, g: 0xE7, b: 0x92}, {code: 'B32', r: 0x9C, g: 0xAB, b: 0x5A},
+            {code: 'C1', r: 0xE8, g: 0xFF, b: 0xE7}, {code: 'C2', r: 0xA9, g: 0xF9, b: 0xFC},
+            {code: 'C3', r: 0xA0, g: 0xE2, b: 0xFB}, {code: 'C4', r: 0x41, g: 0xCC, b: 0xFF},
+            {code: 'C5', r: 0x01, g: 0xAC, b: 0xEB}, {code: 'C6', r: 0x50, g: 0xAA, b: 0xF0},
+            {code: 'C7', r: 0x36, g: 0x77, b: 0xD2}, {code: 'C8', r: 0x0F, g: 0x54, b: 0xC0},
+            {code: 'C9', r: 0x32, g: 0x4B, b: 0xCA}, {code: 'C10', r: 0x3E, g: 0xBC, b: 0xE2},
+            {code: 'C11', r: 0x28, g: 0xDD, b: 0xDE}, {code: 'C12', r: 0x1C, g: 0x33, b: 0x4D},
+            {code: 'C13', r: 0xCD, g: 0xE8, b: 0xFF}, {code: 'C14', r: 0xD5, g: 0xFD, b: 0xFF},
+            {code: 'C15', r: 0x22, g: 0xC4, b: 0xC6}, {code: 'C16', r: 0x15, g: 0x57, b: 0xA8},
+            {code: 'C17', r: 0x04, g: 0xD1, b: 0xF6}, {code: 'C18', r: 0x1D, g: 0x33, b: 0x44},
+            {code: 'C19', r: 0x18, g: 0x87, b: 0xA2}, {code: 'C20', r: 0x17, g: 0x6D, b: 0xAF},
+            {code: 'C21', r: 0xBE, g: 0xDD, b: 0xFF}, {code: 'C22', r: 0x67, g: 0xB4, b: 0xBE},
+            {code: 'C23', r: 0xC8, g: 0xE2, b: 0xFF}, {code: 'C24', r: 0x7C, g: 0xC4, b: 0xFF},
+            {code: 'C25', r: 0xA9, g: 0xE5, b: 0xE5}, {code: 'C26', r: 0x3C, g: 0xAE, b: 0xD8},
+            {code: 'C27', r: 0xD3, g: 0xDF, b: 0xFA}, {code: 'C28', r: 0xBB, g: 0xCF, b: 0xED},
+            {code: 'C29', r: 0x34, g: 0x48, b: 0x8E}, {code: 'D1', r: 0xAE, g: 0xB4, b: 0xF2},
+            {code: 'D2', r: 0x85, g: 0x8E, b: 0xDD}, {code: 'D3', r: 0x2F, g: 0x54, b: 0xAF},
+            {code: 'D4', r: 0x18, g: 0x2A, b: 0x84}, {code: 'D5', r: 0xB8, g: 0x43, b: 0xC5},
+            {code: 'D6', r: 0xAC, g: 0x7B, b: 0xDE}, {code: 'D7', r: 0x88, g: 0x54, b: 0xB3},
+            {code: 'D8', r: 0xE2, g: 0xD3, b: 0xFF}, {code: 'D9', r: 0xD5, g: 0xB9, b: 0xF8},
+            {code: 'D10', r: 0x36, g: 0x18, b: 0x51}, {code: 'D11', r: 0xB9, g: 0xBA, b: 0xE1},
+            {code: 'D12', r: 0xDE, g: 0x9A, b: 0xD4}, {code: 'D13', r: 0xB9, g: 0x00, b: 0x95},
+            {code: 'D14', r: 0x8B, g: 0x27, b: 0x9B}, {code: 'D15', r: 0x2F, g: 0x1F, b: 0x90},
+            {code: 'D16', r: 0xE3, g: 0xE1, b: 0xEE}, {code: 'D17', r: 0xC4, g: 0xD4, b: 0xF6},
+            {code: 'D18', r: 0xA4, g: 0x5E, b: 0xC7}, {code: 'D19', r: 0xD8, g: 0xC3, b: 0xD7},
+            {code: 'D20', r: 0x9C, g: 0x32, b: 0xB2}, {code: 'D21', r: 0x9A, g: 0x00, b: 0x9B},
+            {code: 'D22', r: 0x33, g: 0x3A, b: 0x95}, {code: 'D23', r: 0xEB, g: 0xDA, b: 0xFC},
+            {code: 'D24', r: 0x77, g: 0x86, b: 0xE5}, {code: 'D25', r: 0x49, g: 0x4F, b: 0xC7},
+            {code: 'D26', r: 0xDF, g: 0xC2, b: 0xF8}, {code: 'E1', r: 0xFD, g: 0xD3, b: 0xCC},
+            {code: 'E2', r: 0xFE, g: 0xC0, b: 0xDF}, {code: 'E3', r: 0xFF, g: 0xB7, b: 0xE7},
+            {code: 'E4', r: 0xE8, g: 0x64, b: 0x9E}, {code: 'E5', r: 0xF5, g: 0x51, b: 0xA2},
+            {code: 'E6', r: 0xF1, g: 0x3D, b: 0x74}, {code: 'E7', r: 0xC6, g: 0x34, b: 0x78},
+            {code: 'E8', r: 0xFF, g: 0xDB, b: 0xE9}, {code: 'E9', r: 0xE9, g: 0x70, b: 0xCC},
+            {code: 'E10', r: 0xD3, g: 0x37, b: 0x93}, {code: 'E11', r: 0xFC, g: 0xDD, b: 0xD2},
+            {code: 'E12', r: 0xF7, g: 0x8F, b: 0xC3}, {code: 'E13', r: 0xB5, g: 0x00, b: 0x6D},
+            {code: 'E14', r: 0xFF, g: 0xD1, b: 0xBA}, {code: 'E15', r: 0xF8, g: 0xC7, b: 0xC9},
+            {code: 'E16', r: 0xFF, g: 0xF3, b: 0xEB}, {code: 'E17', r: 0xFF, g: 0xE2, b: 0xEA},
+            {code: 'E18', r: 0xFF, g: 0xC7, b: 0xDB}, {code: 'E19', r: 0xFE, g: 0xBA, b: 0xD5},
+            {code: 'E20', r: 0xD8, g: 0xC7, b: 0xD1}, {code: 'E21', r: 0xBD, g: 0x9D, b: 0xA1},
+            {code: 'E22', r: 0xB7, g: 0x85, b: 0xA1}, {code: 'E23', r: 0x93, g: 0x7A, b: 0x8D},
+            {code: 'E24', r: 0xE1, g: 0xBC, b: 0xE8}, {code: 'F1', r: 0xFD, g: 0x95, b: 0x7B},
+            {code: 'F2', r: 0xFC, g: 0x3D, b: 0x46}, {code: 'F3', r: 0xF7, g: 0x49, b: 0x41},
+            {code: 'F4', r: 0xFC, g: 0x28, b: 0x3C}, {code: 'F5', r: 0xE7, g: 0x00, b: 0x2F},
+            {code: 'F6', r: 0x94, g: 0x36, b: 0x30}, {code: 'F7', r: 0x97, g: 0x19, b: 0x37},
+            {code: 'F8', r: 0xBC, g: 0x00, b: 0x28}, {code: 'F9', r: 0xE2, g: 0x67, b: 0x7A},
+            {code: 'F10', r: 0x8A, g: 0x45, b: 0x26}, {code: 'F11', r: 0x5A, g: 0x21, b: 0x21},
+            {code: 'F12', r: 0xFD, g: 0x4E, b: 0x6A}, {code: 'F13', r: 0xF3, g: 0x57, b: 0x44},
+            {code: 'F14', r: 0xFF, g: 0xA9, b: 0xAD}, {code: 'F15', r: 0xD3, g: 0x00, b: 0x22},
+            {code: 'F16', r: 0xFE, g: 0xC2, b: 0xA6}, {code: 'F17', r: 0xE6, g: 0x9C, b: 0x79},
+            {code: 'F18', r: 0xD3, g: 0x7C, b: 0x46}, {code: 'F19', r: 0xC1, g: 0x44, b: 0x4A},
+            {code: 'F20', r: 0xCD, g: 0x93, b: 0x91}, {code: 'F21', r: 0xF7, g: 0xB4, b: 0xC6},
+            {code: 'F22', r: 0xFD, g: 0xC0, b: 0xD0}, {code: 'F23', r: 0xF6, g: 0x7E, b: 0x66},
+            {code: 'F24', r: 0xE6, g: 0x98, b: 0xAA}, {code: 'F25', r: 0xE5, g: 0x4B, b: 0x4F},
+            {code: 'G1', r: 0xFF, g: 0xE2, b: 0xCE}, {code: 'G2', r: 0xFF, g: 0xC4, b: 0xAA},
+            {code: 'G3', r: 0xF4, g: 0xC3, b: 0xA5}, {code: 'G4', r: 0xE1, g: 0xB3, b: 0x83},
+            {code: 'G5', r: 0xED, g: 0xB0, b: 0x45}, {code: 'G6', r: 0xE9, g: 0x9C, b: 0x17},
+            {code: 'G7', r: 0x9D, g: 0x5B, b: 0x3E}, {code: 'G8', r: 0x75, g: 0x38, b: 0x32},
+            {code: 'G9', r: 0xE6, g: 0xB4, b: 0x83}, {code: 'G10', r: 0xD9, g: 0x8C, b: 0x39},
+            {code: 'G11', r: 0xE0, g: 0xC5, b: 0x93}, {code: 'G12', r: 0xFF, g: 0xC8, b: 0x90},
+            {code: 'G13', r: 0xB7, g: 0x71, b: 0x4A}, {code: 'G14', r: 0x8D, g: 0x61, b: 0x4C},
+            {code: 'G15', r: 0xFC, g: 0xF9, b: 0xE0}, {code: 'G16', r: 0xF2, g: 0xD9, b: 0xBA},
+            {code: 'G17', r: 0x78, g: 0x52, b: 0x4B}, {code: 'G18', r: 0xFF, g: 0xE4, b: 0xCC},
+            {code: 'G19', r: 0xE0, g: 0x79, b: 0x35}, {code: 'G20', r: 0xA9, g: 0x40, b: 0x23},
+            {code: 'G21', r: 0xB8, g: 0x85, b: 0x58}, {code: 'H1', r: 0xFD, g: 0xFB, b: 0xFF},
+            {code: 'H2', r: 0xFE, g: 0xFF, b: 0xFF}, {code: 'H3', r: 0xB6, g: 0xB1, b: 0xBA},
+            {code: 'H4', r: 0x89, g: 0x85, b: 0x8C}, {code: 'H5', r: 0x48, g: 0x46, b: 0x4E},
+            {code: 'H6', r: 0x2F, g: 0x2B, b: 0x2F}, {code: 'H7', r: 0x00, g: 0x00, b: 0x00},
+            {code: 'H8', r: 0xE7, g: 0xD6, b: 0xDB}, {code: 'H9', r: 0xED, g: 0xED, b: 0xED},
+            {code: 'H10', r: 0xEE, g: 0xE9, b: 0xEA}, {code: 'H11', r: 0xCE, g: 0xCD, b: 0xD5},
+            {code: 'H12', r: 0xFF, g: 0xF5, b: 0xED}, {code: 'H13', r: 0xF5, g: 0xEC, b: 0xD2},
+            {code: 'H14', r: 0xCF, g: 0xD7, b: 0xD3}, {code: 'H15', r: 0x98, g: 0xA6, b: 0xA8},
+            {code: 'H16', r: 0x1D, g: 0x14, b: 0x14}, {code: 'H17', r: 0xF1, g: 0xED, b: 0xED},
+            {code: 'H18', r: 0xFF, g: 0xFD, b: 0xF0}, {code: 'H19', r: 0xF6, g: 0xEF, b: 0xE2},
+            {code: 'H20', r: 0x94, g: 0x9F, b: 0xA3}, {code: 'H21', r: 0xFF, g: 0xFB, b: 0xE1},
+            {code: 'H22', r: 0xCA, g: 0xCA, b: 0xD4}, {code: 'H23', r: 0x9A, g: 0x9D, b: 0x94},
+            {code: 'M1', r: 0xBC, g: 0xC6, b: 0xB8}, {code: 'M2', r: 0x8A, g: 0xA3, b: 0x86},
+            {code: 'M3', r: 0x69, g: 0x7D, b: 0x80}, {code: 'M4', r: 0xE3, g: 0xD2, b: 0xBC},
+            {code: 'M5', r: 0xD0, g: 0xCC, b: 0xAA}, {code: 'M6', r: 0xB0, g: 0xA7, b: 0x82},
+            {code: 'M7', r: 0xB4, g: 0xA4, b: 0x97}, {code: 'M8', r: 0xB3, g: 0x82, b: 0x81},
+            {code: 'M9', r: 0xA5, g: 0x87, b: 0x67}, {code: 'M10', r: 0xC5, g: 0xB2, b: 0xBC},
+            {code: 'M11', r: 0x9F, g: 0x75, b: 0x94}, {code: 'M12', r: 0x64, g: 0x47, b: 0x49},
+            {code: 'M13', r: 0xD1, g: 0x90, b: 0x66}, {code: 'M14', r: 0xC7, g: 0x73, b: 0x62},
+            {code: 'M15', r: 0x75, g: 0x7D, b: 0x78}
+        ];
+        const palette_96_codes = ["A4", "A6", "A7", "A13", "A11", "A10", "A3", "A14", "B3", "B5", "B8", "B12", "B20", "B18", "B10", "B14", "B19", "B17", "B7", "C3", "C5", "C8", "C2", "C13", "C10", "C6", "C11", "C7", "C16", "D9", "D6", "D7", "D19", "D18", "D21", "D13", "D3", "D15", "D16", "D8", "D11", "D12", "D2", "D20", "D14", "D5", "E2", "E4", "E8", "E3", "E7", "E1", "E12", "E5", "E13", "E11", "E14", "E15", "E9", "E6", "E10", "F5", "F13", "F8", "F10", "F7", "F1", "F14", "F9", "F2", "F12", "F3", "F11", "F4", "F6", "G1", "G5", "G7", "G9", "G13", "G8", "G2", "G3", "G14", "G17", "H1", "H2", "H3", "H4", "H5", "H7", "H6", "M6", "M5", "M9", "M12"]
+        const PALETTE_96 = PALETTE_211.filter(palette => palette_96_codes.includes(palette.code))
+
+        // localStorage 读写
+        function saveSettings() {
+            const settings = {
+                bgColor, gridColor, showGrid
+            };
+            localStorage.setItem('pixelArtSettings', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('pixelArtSettings');
+            if (saved) {
+                try {
+                    const s = JSON.parse(saved);
+                    bgColor = s.bgColor || '#fefaf5';
+                    gridColor = s.gridColor || '#b5a595';
+                    showGrid = s.showGrid !== false;
+                    bgColorInput.value = bgColor;
+                    gridColorInput.value = gridColor;
+                    toggleGridBtn.classList.toggle('active', showGrid);
+                    updatePixelScaleDisplay();
+
+                    return true;
+                } catch (e) {
+                }
+            }
+            return false;
+        }
+
+        function initCanvas() {
+            canvas.width = wrapper.clientWidth;
+            canvas.height = wrapper.clientHeight;
+        }
+
+        function colorDistance(r1, g1, b1, r2, g2, b2) {
+            return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
+        }
+
+        function findClosestColor(r, g, b, palette) {
+            let minDist = Infinity, closest = palette[0];
+            for (const c of palette) {
+                const d = colorDistance(r, g, b, c.r, c.g, c.b);
+                if (d < minDist) {
+                    minDist = d;
+                    closest = c;
+                }
+            }
+            return closest;
+        }
+
+        function processImageWithPalette() {
+            if (!currentImage) return;
+            const oc = document.createElement('canvas');
+            oc.width = imageWidth;
+            oc.height = imageHeight;
+            const octx = oc.getContext('2d');
+            octx.drawImage(currentImage, 0, 0);
+            const idata = octx.getImageData(0, 0, imageWidth, imageHeight);
+            const d = idata.data;
+            originalColorCodeMap = [];
+
+            return new Promise((resolve) => {
+                if (colorMode === 'original') {
+                    processedImageCache = currentImage;
+                    for (let i = 0; i < d.length; i += 4) originalColorCodeMap.push(null);
+                    rebuildDisplayImage();
+                    redrawCanvas();
+                    resolve();
+                    return;
+                }
+
+                const palette = colorMode === '211' ? PALETTE_211 : PALETTE_96;
+                for (let i = 0; i < d.length; i += 4) {
+                    const r = d[i], g = d[i + 1], b = d[i + 2], a = d[i + 3];
+                    if (a === 0) {
+                        originalColorCodeMap.push(null);
+                        continue;
+                    }
+                    const closest = findClosestColor(r, g, b, palette);
+                    d[i] = closest.r;
+                    d[i + 1] = closest.g;
+                    d[i + 2] = closest.b;
+                    originalColorCodeMap.push(closest.code);
+                }
+                octx.putImageData(idata, 0, 0);
+                processedImageCache = new Image();
+                processedImageCache.onload = () => {
+                    rebuildDisplayImage();
+                    redrawCanvas();
+                    resolve();
+                };
+                processedImageCache.src = oc.toDataURL();
+            })
+        }
+
+        function rebuildDisplayImage() {
+            const srcImg = (colorMode === 'original') ? currentImage : processedImageCache;
+            if (!srcImg) return;
+            if (!srcImg.complete) {
+                // 图片还没加载完，等加载完后再重建
+                srcImg.onload = () => {
+                    rebuildDisplayImage();
+                    redrawCanvas();
+                };
+                return;
+            }
+
+            if (pixelScale === 1) {
+                const dc = document.createElement('canvas');
+                dc.width = imageWidth;
+                dc.height = imageHeight;
+                const dctx = dc.getContext('2d');
+                dctx.drawImage(srcImg, 0, 0);
+                displayImageCache = dc;
+                displayWidth = imageWidth;
+                displayHeight = imageHeight;
+                displayColorCodeMap = [...originalColorCodeMap];
+                redrawCanvas();
+                return;
+            }
+
+            const sc = document.createElement('canvas');
+            sc.width = imageWidth;
+            sc.height = imageHeight;
+            const sctx = sc.getContext('2d');
+            sctx.drawImage(srcImg, 0, 0);
+            const sd = sctx.getImageData(0, 0, imageWidth, imageHeight);
+
+            if (pixelScale > 1) {
+                const ps = Math.round(pixelScale);
+                displayWidth = imageWidth * ps;
+                displayHeight = imageHeight * ps;
+                const dc = document.createElement('canvas');
+                dc.width = displayWidth;
+                dc.height = displayHeight;
+                const dctx = dc.getContext('2d');
+                dctx.imageSmoothingEnabled = false;
+                const dd = dctx.createImageData(displayWidth, displayHeight);
+                displayColorCodeMap = [];
+                for (let y = 0; y < imageHeight; y++) {
+                    for (let dy = 0; dy < ps; dy++) {
+                        for (let x = 0; x < imageWidth; x++) {
+                            const si = (y * imageWidth + x) * 4;
+                            const code = originalColorCodeMap[y * imageWidth + x];
+                            for (let dx = 0; dx < ps; dx++) {
+                                const di = ((y * ps + dy) * displayWidth + (x * ps + dx)) * 4;
+                                dd.data[di] = sd.data[si];
+                                dd.data[di + 1] = sd.data[si + 1];
+                                dd.data[di + 2] = sd.data[si + 2];
+                                dd.data[di + 3] = sd.data[si + 3];
+                                displayColorCodeMap.push(code);
+                            }
+                        }
+                    }
+                }
+                dctx.putImageData(dd, 0, 0);
+                displayImageCache = dc;
+                redrawCanvas();
+                console.log('original codes first:', originalColorCodeMap.slice(0, 10));
+                console.log('display codes first:', displayColorCodeMap.slice(0, 32));
+            } else {
+                const ratio = Math.round(1 / pixelScale);
+                displayWidth = Math.ceil(imageWidth / ratio);
+                displayHeight = Math.ceil(imageHeight / ratio);
+                const dc = document.createElement('canvas');
+                dc.width = displayWidth;
+                dc.height = displayHeight;
+                const dctx = dc.getContext('2d');
+                dctx.imageSmoothingEnabled = false;
+
+                // 直接用drawImage缩放
+                dctx.drawImage(sc, 0, 0, imageWidth, imageHeight, 0, 0, displayWidth, displayHeight);
+
+                // 从缩放后的图片取色，匹配色板
+                const scaledData = dctx.getImageData(0, 0, displayWidth, displayHeight);
+                displayColorCodeMap = [];
+                const palette = colorMode === '211' ? PALETTE_211 : PALETTE_96;
+
+                for (let i = 0; i < scaledData.data.length; i += 4) {
+                    const r = scaledData.data[i];
+                    const g = scaledData.data[i + 1];
+                    const b = scaledData.data[i + 2];
+                    const a = scaledData.data[i + 3];
+
+                    if (a > 0 && colorMode !== 'original') {
+                        const closest = findClosestColor(r, g, b, palette);
+                        displayColorCodeMap.push(closest.code);
+                        scaledData.data[i] = closest.r;
+                        scaledData.data[i + 1] = closest.g;
+                        scaledData.data[i + 2] = closest.b;
+                    } else {
+                        displayColorCodeMap.push(null);
+                    }
+                }
+
+                dctx.putImageData(scaledData, 0, 0);
+                displayImageCache = dc;
+                redrawCanvas();
+            }
+        }
+
+        function redrawCanvas() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if (!currentImage || !displayImageCache) return;
+
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+            ctx.imageSmoothingEnabled = false;
+
+            // 计算可见区域（图片坐标系）
+            const invScale = 1 / scale;
+            const visibleX = Math.max(0, Math.floor(-offsetX * invScale));
+            const visibleY = Math.max(0, Math.floor(-offsetY * invScale));
+            const visibleW = Math.min(displayWidth - visibleX, Math.ceil(canvas.width * invScale) + 1);
+            const visibleH = Math.min(displayHeight - visibleY, Math.ceil(canvas.height * invScale) + 1);
+
+            // 只绘制可见部分
+            ctx.drawImage(
+                displayImageCache,
+                visibleX, visibleY, visibleW, visibleH,
+                visibleX, visibleY, visibleW, visibleH
+            );
+
+            // 网格也只画可见部分
+            if (showGrid) {
+                drawGrid(visibleX, visibleY, visibleW, visibleH);
+            }
+            if (showColorCode && colorMode !== 'original') {
+                drawColorCodes(visibleX, visibleY, visibleW, visibleH);
+            }
+            if (highlightCode && colorMode !== 'original') {
+                drawHighlightMask(visibleX, visibleY, visibleW, visibleH);
+            }
+
+            ctx.restore();
+            updateStatsBar();
+        }
+
+        function drawGrid(vx, vy, vw, vh) {
+            if (displayWidth === 0 || displayHeight === 0) return;
+
+            const ms = GRID_BASE_MAJOR;
+            const mis = GRID_BASE_MINOR;
+            const ps = pixelScale >= 1 ? pixelScale : 1;
+
+            const baseWidth = Math.max(displayWidth, displayHeight);
+            const scaleFactor = Math.max(0.3, Math.min(1.5, baseWidth / 50));
+            const lineWidthMajor = GRID_LINE_WIDTH_MAJOR * scaleFactor;
+            const lineWidthMinor = GRID_LINE_WIDTH_MINOR * scaleFactor;
+            const dashPattern = [scaleFactor, scaleFactor];
+
+            const endX = vx + vw;
+            const endY = vy + vh;
+
+            // 1px极细网格
+            ctx.strokeStyle = 'rgba(180,170,160,0.15)';
+            ctx.lineWidth = 0.05 * scaleFactor;
+            ctx.setLineDash([]);
+            const xStart1 = Math.floor(vx / ps) * ps;
+            for (let x = xStart1; x <= endX; x += ps) {
+                ctx.beginPath(); ctx.moveTo(x, vy); ctx.lineTo(x, endY); ctx.stroke();
+            }
+            const yStart1 = Math.floor(vy / ps) * ps;
+            for (let y = yStart1; y <= endY; y += ps) {
+                ctx.beginPath(); ctx.moveTo(vx, y); ctx.lineTo(endX, y); ctx.stroke();
+            }
+
+            // 5px虚线
+            ctx.strokeStyle = gridColor;
+            ctx.lineWidth = lineWidthMinor;
+            ctx.setLineDash(dashPattern);
+            const xStart2 = Math.ceil(vx / (ms * ps)) * ms * ps + mis * ps;
+            for (let x = xStart2; x < endX; x += ms * ps) {
+                ctx.beginPath(); ctx.moveTo(x, vy); ctx.lineTo(x, endY); ctx.stroke();
+            }
+            const yStart2 = Math.ceil(vy / (ms * ps)) * ms * ps + mis * ps;
+            for (let y = yStart2; y < endY; y += ms * ps) {
+                ctx.beginPath(); ctx.moveTo(vx, y); ctx.lineTo(endX, y); ctx.stroke();
+            }
+
+            // 10px实线
+            ctx.strokeStyle = gridColor;
+            ctx.lineWidth = lineWidthMajor;
+            ctx.setLineDash([]);
+            const xStart3 = Math.floor(vx / (ms * ps)) * ms * ps;
+            for (let x = xStart3; x <= endX; x += ms * ps) {
+                ctx.beginPath(); ctx.moveTo(x, vy); ctx.lineTo(x, endY); ctx.stroke();
+            }
+            const yStart3 = Math.floor(vy / (ms * ps)) * ms * ps;
+            for (let y = yStart3; y <= endY; y += ms * ps) {
+                ctx.beginPath(); ctx.moveTo(vx, y); ctx.lineTo(endX, y); ctx.stroke();
+            }
+// 在 drawGrid 函数末尾，10px实线之后添加坐标绘制
+            if (scale >= 16) {
+                const coordFontSize = 12 / scale;
+                ctx.font = `${coordFontSize}px monospace`;
+
+                // 顶部坐标（X轴）
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                for (let x = 0; x < displayWidth; x += ps) {
+                    if (x >= vx && x <= endX) {
+                        const text = `${x + 1}`;
+                        const cx = x + ps / 2;
+                        const cy = -ps / 2;
+                        ctx.fillStyle = 'rgba(170,170,170,0.5)';
+                        ctx.fillRect(x, -ps, ps, ps);
+                        ctx.fillStyle = "#000";
+                        ctx.fillText(text, cx, cy);
+                    }
+                }
+
+                // 底部坐标（X轴）
+                for (let x = 0; x < displayWidth; x += ps) {
+                    if (x >= vx && x <= endX) {
+                        const text = `${x + 1}`;
+                        const cx = x + ps / 2;
+                        const cy = displayHeight + ps / 2;
+                        ctx.fillStyle = 'rgba(170,170,170,0.5)';
+                        ctx.fillRect(x, displayHeight, ps, ps);
+                        ctx.fillStyle = "#000";
+                        ctx.fillText(text, cx, cy);
+                    }
+                }
+
+                // 左侧坐标（Y轴）
+                ctx.textAlign = 'center';
+                for (let y = 0; y < displayHeight; y += ps) {
+                    if (y >= vy && y <= endY) {
+                        const text = `${y + 1}`;
+                        const cx = -ps / 2;
+                        const cy = y + ps / 2;
+                        ctx.fillStyle = 'rgba(170,170,170,0.5)';
+                        ctx.fillRect(-ps, y, ps, ps);
+                        ctx.fillStyle = "#000";
+                        ctx.fillText(text, cx, cy);
+                    }
+                }
+
+                // 右侧坐标（Y轴）
+                for (let y = 0; y < displayHeight; y += ps) {
+                    if (y >= vy && y <= endY) {
+                        const text = `${y + 1}`;
+                        const cx = displayWidth + ps / 2;
+                        const cy = y + ps / 2;
+                        ctx.fillStyle = 'rgba(170,170,170,0.5)';
+                        ctx.fillRect(displayWidth, y, ps, ps);
+                        ctx.fillStyle = "#000";
+                        ctx.fillText(text, cx, cy);
+                    }
+                }
+            }
+        }
+
+
+        function drawColorCodes(vx, vy, vw, vh) {
+            if (!displayColorCodeMap || displayColorCodeMap.length === 0) return;
+            if (scale < 16) return;
+
+            const fontSize = 12 / scale;
+            ctx.save();
+            ctx.font = `${fontSize}px monospace`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const palette = colorMode === '211' ? PALETTE_211 : PALETTE_96;
+
+            const endX = vx + vw;
+            const endY = vy + vh;
+
+            for (let y = vy; y < endY; y++) {
+                for (let x = vx; x < endX; x++) {
+                    const code = displayColorCodeMap[y * displayWidth + x];
+                    if (!code) continue;
+                    const ci = palette.find(c => c.code === code);
+                    ctx.fillStyle = '#000';
+                    if (ci) {
+                        const br = (ci.r * 299 + ci.g * 587 + ci.b * 114) / 1000;
+                        ctx.fillStyle = br < 128 ? '#fff' : '#000';
+                    }
+                    ctx.fillText(code, x + 0.5, y + 0.5);
+                }
+            }
+            ctx.restore();
+        }
+
+        function lightenColor(hex, factor) {
+            const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16),
+                b = parseInt(hex.slice(5, 7), 16);
+            const lr = Math.min(255, Math.round(r + (255 - r) * factor)),
+                lg = Math.min(255, Math.round(g + (255 - g) * factor)),
+                lb = Math.min(255, Math.round(b + (255 - b) * factor));
+            return `#${lr.toString(16).padStart(2, '0')}${lg.toString(16).padStart(2, '0')}${lb.toString(16).padStart(2, '0')}`;
+        }
+
+        function updatePixelScaleDisplay() {
+            if (pixelScale >= 1) {
+                pixelScaleValueSpan.textContent = `${pixelScale}x`;
+            } else {
+                const denominator = Math.round(1 / pixelScale);
+                pixelScaleValueSpan.textContent = `1/${denominator}x`;
+            }
+        }
+
+        function increasePixelScale() {
+            if (pixelScale < 1) pixelScale = 1 / Math.max(1, Math.round(1 / pixelScale) - 1);
+            else pixelScale = Math.min(10, pixelScale + 1);
+            updatePixelScaleDisplay();
+            rebuildDisplayImage();
+            resetView();
+        }
+
+        function decreasePixelScale() {
+            if (pixelScale > 1) pixelScale = Math.max(1, pixelScale - 1);
+            else pixelScale = 1 / (Math.round(1 / pixelScale) + 1);
+            updatePixelScaleDisplay();
+            rebuildDisplayImage();
+            resetView();
+        }
+
+        async function setColorMode(mode) {
+            highlightCode = null;
+            colorMode = mode;
+            document.querySelectorAll('.color-mode-option').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+            processedImageCache = null;
+            await processImageWithPalette();
+        }
+
+        function loadImageFromFile(file) {
+            if (!file) return;
+            originalFileName = file.name.replace(/\.[^/.]+$/, ''); // 去掉扩展名
+            const r = new FileReader();
+            r.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    currentImage = img;
+                    imageWidth = img.naturalWidth;
+                    imageHeight = img.naturalHeight;
+                    pixelScale = 1;
+                    updatePixelScaleDisplay();
+                    processImageWithPalette();
+                    resetView();
+                };
+                img.onerror = () => alert('无法加载图片');
+                img.src = e.target.result;
+            };
+            r.readAsDataURL(file);
+        }
+
+        function resetView() {
+            if (!currentImage) return;
+            initCanvas();
+            const ww = wrapper.clientWidth, wh = wrapper.clientHeight;
+            const sx = (ww * 0.9) / displayWidth, sy = (wh * 0.9) / displayHeight;
+            scale = Math.min(sx, sy, 50);
+            scale = Math.max(0.1, scale);
+            offsetX = (ww - displayWidth * scale) / 2;
+            offsetY = (wh - displayHeight * scale) / 2;
+            redrawCanvas();
+        }
+
+        function toggleMirror() {
+
+            if (!displayImageCache || !displayColorCodeMap) {
+                redrawCanvas();
+                return;
+            }
+
+            // 创建镜像画布
+            const mirroredCanvas = document.createElement('canvas');
+            mirroredCanvas.width = displayWidth;
+            mirroredCanvas.height = displayHeight;
+            const mctx = mirroredCanvas.getContext('2d');
+            mctx.imageSmoothingEnabled = false;
+            mctx.translate(displayWidth, 0);
+            mctx.scale(-1, 1);
+            mctx.drawImage(displayImageCache, 0, 0);
+
+            // 镜像色号数组
+            const mirroredCodes = [];
+            for (let y = 0; y < displayHeight; y++) {
+                for (let x = displayWidth - 1; x >= 0; x--) {
+                    mirroredCodes.push(displayColorCodeMap[y * displayWidth + x]);
+                }
+            }
+
+            displayImageCache = mirroredCanvas;
+            displayColorCodeMap = mirroredCodes;
+
+            redrawCanvas();
+        }
+
+        async function toggleColorCode(show) {
+            if (colorMode === 'original') {
+                await setColorMode('211');
+            }
+            console.log(showColorCode)
+            showColorCode = show ?? (!showColorCode);
+            toggleColorCodeBtn.classList.toggle('active', showColorCode);
+            saveSettings();
+            if (showColorCode && scale < 16) {
+                scale = 16;
+                offsetX = (canvas.width - displayWidth * scale) / 2;
+                offsetY = (canvas.height - displayHeight * scale) / 2;
+            }
+            redrawCanvas();
+        }
+
+        async function exportImage() {
+            await toggleColorCode(true)
+            if (!currentImage || !displayImageCache) return;
+            const artworkName = prompt('请输入作品名称：', originalFileName || 'pixel-art');
+            if (artworkName === null) return;
+
+            let totalCount = 0, colorKind = 0;
+            const colorCount = {};
+            if (displayColorCodeMap) {
+                for (const code of displayColorCodeMap) {
+                    if (code) { colorCount[code] = (colorCount[code] || 0) + 1; totalCount++; }
+                }
+                colorKind = Object.keys(colorCount).length;
+            }
+
+            const MIN_PIXEL_SIZE = 40;
+            const ps = pixelScale >= 1 ? pixelScale : 1;
+            const effectivePixelSize = ps * MIN_PIXEL_SIZE;
+            const COORD_BORDER = MIN_PIXEL_SIZE * ps; // 坐标边框宽度
+
+            const imgExportWidth = displayWidth * effectivePixelSize;
+            const imgExportHeight = displayHeight * effectivePixelSize;
+
+            const BASE_SCALE = imgExportWidth / 800;
+            const TITLE_SCALE = Math.max(1, BASE_SCALE);
+            const STAT_SCALE = Math.max(1, BASE_SCALE);
+            const headerHeight = Math.round(50 * TITLE_SCALE);
+
+            const palette = colorMode === '211' ? PALETTE_211 : PALETTE_96;
+            const sorted = Object.entries(colorCount).sort((a, b) => b[1] - a[1]);
+            const tagHeight = Math.round(18 * STAT_SCALE);
+            const lineHeight = Math.round(22 * STAT_SCALE);
+            const gap = Math.round(6 * STAT_SCALE);
+            const fontSize = Math.round(14 * STAT_SCALE);
+
+            let tempX = 15 * STAT_SCALE, rowCount = 1;
+            for (const [code, count] of sorted) {
+                const countText = `${count}`;
+                const tempFont = `bold ${fontSize}px monospace`;
+                const ex2 = document.createElement('canvas').getContext('2d');
+                ex2.font = tempFont;
+                const codeWidth = ex2.measureText(code).width + 10 * STAT_SCALE;
+                const countWidth = ex2.measureText(countText).width + 10 * STAT_SCALE;
+                const tagWidth = codeWidth + countWidth;
+                if (tempX + tagWidth > imgExportWidth - 20 * STAT_SCALE) { tempX = 15 * STAT_SCALE; rowCount++; }
+                tempX += tagWidth + gap;
+            }
+            const footerHeight = rowCount * lineHeight + 10 * STAT_SCALE;
+
+            // 导出尺寸加上坐标边框
+            const exportWidth = imgExportWidth + COORD_BORDER * 2;
+            const exportHeight = imgExportHeight + headerHeight + footerHeight + COORD_BORDER * 2;
+
+            const MAX_CANVAS_SIZE = 16384; // 浏览器最大Canvas尺寸
+            let finalExportWidth = exportWidth;
+            let finalExportHeight = exportHeight;
+            let exportScaleDown = 1;
+
+            if (exportWidth > MAX_CANVAS_SIZE || exportHeight > MAX_CANVAS_SIZE) {
+                exportScaleDown = MAX_CANVAS_SIZE / Math.max(exportWidth, exportHeight);
+                finalExportWidth = Math.round(exportWidth * exportScaleDown);
+                finalExportHeight = Math.round(exportHeight * exportScaleDown);
+            }
+
+            const ec = document.createElement('canvas');
+            ec.width = finalExportWidth;
+            ec.height = finalExportHeight;
+            const ex = ec.getContext('2d');
+
+// 缩放整个绘制
+            if (exportScaleDown < 1) {
+                ex.scale(exportScaleDown, exportScaleDown);
+                ex.imageSmoothingEnabled = true;
+            } else {
+                ex.imageSmoothingEnabled = false;
+            }
+
+            ex.fillStyle = bgColor;
+            ex.fillRect(0, 0, exportWidth, exportHeight);
+            ex.imageSmoothingEnabled = false;
+
+            // 顶部标题
+            ex.fillStyle = '#5e4b3c';
+            const titleFontSize = Math.round(18 * TITLE_SCALE);
+            ex.font = `bold ${titleFontSize}px "Segoe UI", sans-serif`;
+            ex.textAlign = 'left';
+            ex.textBaseline = 'middle';
+            ex.fillText(`${artworkName}  [${displayWidth}×${displayHeight} / ${colorKind}色 / 共${totalCount}颗]`, 15 * TITLE_SCALE, headerHeight / 2);
+
+            // 图片区域
+            ex.save();
+            ex.translate(COORD_BORDER, headerHeight + COORD_BORDER);
+            ex.scale(effectivePixelSize / ps, effectivePixelSize / ps);
+            ex.drawImage(displayImageCache, 0, 0);
+
+            if (showGrid) {
+                const ms = GRID_BASE_MAJOR, mis = GRID_BASE_MINOR, gridPs = ps;
+                ex.strokeStyle = 'rgba(180,170,160,0.1)'; ex.lineWidth = 0.1; ex.setLineDash([]);
+                for (let x = 0; x <= displayWidth; x += gridPs) { ex.beginPath(); ex.moveTo(x, 0); ex.lineTo(x, displayHeight); ex.stroke(); }
+                for (let y = 0; y <= displayHeight; y += gridPs) { ex.beginPath(); ex.moveTo(0, y); ex.lineTo(displayWidth, y); ex.stroke(); }
+                ex.strokeStyle = gridColor; ex.lineWidth = 0.1; ex.setLineDash([0.5, 0.5]);
+                for (let x = mis * gridPs; x < displayWidth; x += ms * gridPs) { ex.beginPath(); ex.moveTo(x, 0); ex.lineTo(x, displayHeight); ex.stroke(); }
+                for (let y = mis * gridPs; y < displayHeight; y += ms * gridPs) { ex.beginPath(); ex.moveTo(0, y); ex.lineTo(displayWidth, y); ex.stroke(); }
+                ex.strokeStyle = gridColor; ex.lineWidth = 0.1; ex.setLineDash([]);
+                for (let x = 0; x <= displayWidth; x += ms * gridPs) { ex.beginPath(); ex.moveTo(x, 0); ex.lineTo(x, displayHeight); ex.stroke(); }
+                for (let y = 0; y <= displayHeight; y += ms * gridPs) { ex.beginPath(); ex.moveTo(0, y); ex.lineTo(displayWidth, y); ex.stroke(); }
+            }
+
+            if (displayColorCodeMap) {
+                ex.font = '0.5px monospace';
+                ex.textAlign = 'center';
+                ex.textBaseline = 'middle';
+                for (let y = 0; y < displayHeight; y++) {
+                    for (let x = 0; x < displayWidth; x++) {
+                        const code = displayColorCodeMap[y * displayWidth + x];
+                        if (!code) continue;
+                        const ci = palette.find(c => c.code === code);
+                        ex.fillStyle = '#000';
+                        if (ci) { const br = (ci.r * 299 + ci.g * 587 + ci.b * 114) / 1000; ex.fillStyle = br < 128 ? '#fff' : '#000'; }
+                        ex.fillText(code, x + 0.5, y + 0.5);
+                    }
+                }
+            }
+            ex.restore();
+
+            // 坐标边框
+            // 顶部坐标
+            ex.font = `${0.5 * effectivePixelSize / ps}px monospace`;
+            ex.textAlign = 'center';
+            ex.textBaseline = 'middle';
+            for (let x = 0; x < displayWidth; x += ps) {
+                const sx = COORD_BORDER + x * effectivePixelSize + effectivePixelSize / 2;
+                const sy = headerHeight + COORD_BORDER / 2;
+                ex.fillStyle = '#aaa';
+                ex.fillRect(sx - effectivePixelSize/2, headerHeight, effectivePixelSize, COORD_BORDER);
+                ex.fillStyle = '#000';
+                ex.fillText(`${x + 1}`, sx, sy);
+            }
+// 底部坐标
+            for (let x = 0; x < displayWidth; x += ps) {
+                const sx = COORD_BORDER + x * effectivePixelSize + effectivePixelSize / 2;
+                const sy = headerHeight + imgExportHeight + COORD_BORDER + COORD_BORDER / 2;
+                ex.fillStyle = '#aaa';
+                ex.fillRect(sx - effectivePixelSize/2, headerHeight + imgExportHeight + COORD_BORDER, effectivePixelSize, COORD_BORDER);
+                ex.fillStyle = '#000';
+                ex.fillText(`${x + 1}`, sx, sy);
+            }
+// 左侧坐标
+            for (let y = 0; y < displayHeight; y += ps) {
+                const sx = COORD_BORDER / 2;
+                const sy = headerHeight + COORD_BORDER + y * effectivePixelSize + effectivePixelSize / 2;
+                ex.fillStyle = '#aaa';
+                ex.fillRect(0, sy - effectivePixelSize/2, COORD_BORDER, effectivePixelSize);
+                ex.fillStyle = '#000';
+                ex.fillText(`${y + 1}`, sx, sy);
+            }
+// 右侧坐标
+            for (let y = 0; y < displayHeight; y += ps) {
+                const sx = COORD_BORDER + imgExportWidth + COORD_BORDER / 2;
+                const sy = headerHeight + COORD_BORDER + y * effectivePixelSize + effectivePixelSize / 2;
+                ex.fillStyle = '#aaa';
+                ex.fillRect(COORD_BORDER + imgExportWidth, sy - effectivePixelSize/2, COORD_BORDER, effectivePixelSize);
+                ex.fillStyle = '#000';
+                ex.fillText(`${y + 1}`, sx, sy);
+            }
+
+
+            // 底部色号统计
+            if (displayColorCodeMap) {
+                const footerY = headerHeight + COORD_BORDER * 2 + imgExportHeight;
+                let tagX = 15 * STAT_SCALE, tagY = footerY + 5 * STAT_SCALE;
+
+                for (const [code, count] of sorted) {
+                    const ci = palette.find(c => c.code === code);
+                    const colorHex = ci ? `#${ci.r.toString(16).padStart(2,'0')}${ci.g.toString(16).padStart(2,'0')}${ci.b.toString(16).padStart(2,'0')}` : '#ccc';
+                    const countText = `${count}`;
+
+                    ex.font = `bold ${fontSize}px monospace`;
+                    const codeWidth = ex.measureText(code).width + 10 * STAT_SCALE;
+                    const countWidth = ex.measureText(countText).width + 10 * STAT_SCALE;
+                    const tagWidth = codeWidth + countWidth;
+
+                    if (tagX + tagWidth > exportWidth - 20 * STAT_SCALE) { tagX = 15 * STAT_SCALE; tagY += lineHeight; }
+
+                    ex.fillStyle = bgColor;
+                    ex.strokeStyle = '#ccc';
+                    ex.lineWidth = 1 * STAT_SCALE;
+                    ex.fillRect(tagX, tagY, tagWidth, tagHeight);
+                    ex.strokeRect(tagX, tagY, tagWidth, tagHeight);
+
+                    ex.fillStyle = colorHex;
+                    ex.fillRect(tagX, tagY, codeWidth, tagHeight);
+
+                    const br = (ci.r * 299 + ci.g * 587 + ci.b * 114) / 1000;
+                    ex.fillStyle = br < 128 ? '#fff' : '#000';
+                    ex.textBaseline = 'middle';
+                    ex.textAlign = 'center';
+                    ex.fillText(code, tagX + codeWidth / 2, tagY + tagHeight / 2);
+
+                    ex.fillStyle = '#333';
+                    ex.fillText(countText, tagX + codeWidth + countWidth / 2, tagY + tagHeight / 2);
+
+                    tagX += tagWidth + gap;
+                }
+            }
+
+            ec.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${artworkName}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        function handleMouseDown(e) {
+            if (!currentImage) return;
+            isDragging = true;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            dragStartOffsetX = offsetX;
+            dragStartOffsetY = offsetY;
+            wrapper.classList.add('grabbing');
+            e.preventDefault();
+        }
+
+        function handleMouseMove(e) {
+            if (!currentImage) return;
+            if (isDragging) {
+                offsetX = dragStartOffsetX + (e.clientX - dragStartX);
+                offsetY = dragStartOffsetY + (e.clientY - dragStartY);
+                redrawCanvas();
+            }
+            updateCoordinateDisplay(e);
+        }
+
+        function handleMouseUp() {
+            isDragging = false;
+            wrapper.classList.remove('grabbing');
+        }
+
+        function handleMouseLeave() {
+            isDragging = false;
+            wrapper.classList.remove('grabbing');
+            coordValueSpan.textContent = '— , —';
+        }
+
+        function handleWheel(e) {
+            if (!currentImage) return;
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left, my = e.clientY - rect.top, os = scale;
+            scale = e.deltaY < 0 ? Math.min(50, scale * 1.1) : Math.max(0.1, scale / 1.1);
+            offsetX = mx - (mx - offsetX) * (scale / os);
+            offsetY = my - (my - offsetY) * (scale / os);
+            redrawCanvas();
+        }
+
+        function updateCoordinateDisplay(e) {
+            if (!currentImage) {
+                coordValueSpan.textContent = '— , —';
+                return;
+            }
+            const rect = canvas.getBoundingClientRect();
+            let ix = (e.clientX - rect.left - offsetX) / scale, iy = (e.clientY - rect.top - offsetY) / scale;
+            const col = Math.floor(ix), row = Math.floor(iy);
+            if (col >= 0 && col < displayWidth && row >= 0 && row < displayHeight) {
+                const idx = row * displayWidth + col;
+                const code = displayColorCodeMap ? displayColorCodeMap[idx] : null;
+                coordValueSpan.textContent = code ? `${col},${row} #${code}` : `${col},${row}`;
+            } else {
+                coordValueSpan.textContent = '— , —';
+            }
+        }
+
+        function toggleGrid() {
+            showGrid = !showGrid;
+            toggleGridBtn.classList.toggle('active', showGrid);
+            redrawCanvas();
+            saveSettings();
+        }
+
+        function handleResize() {
+            if (!currentImage) {
+                initCanvas();
+                return;
+            }
+            const ocx = canvas.width / 2, ocy = canvas.height / 2;
+            initCanvas();
+            offsetX += canvas.width / 2 - ocx;
+            offsetY += canvas.height / 2 - ocy;
+            redrawCanvas();
+        }
+
+        function loadDefaultPixelArt() {
+            const c = document.createElement('canvas');
+            c.width = 50;
+            c.height = 50;
+            const d = c.getContext('2d');
+            d.fillStyle = '#fff';
+            d.fillRect(0, 0, 50, 50);
+            const colors = ['#ff4444', '#4444ff', '#44ff44', '#ffff44', '#ff44ff', '#ff8800', '#00ffff', '#ff4488', '#88ff44', '#4488ff'];
+            for (let row = 0; row < 5; row++) for (let col = 0; col < 5; col++) {
+                d.fillStyle = colors[(row * 5 + col) % 10];
+                d.fillRect(col * 10, row * 10, 10, 10);
+            }
+            d.fillStyle = '#000';
+            d.fillRect(5, 25, 2, 2);
+            d.fillRect(13, 25, 2, 2);
+            d.fillRect(5, 33, 10, 2);
+            d.fillRect(6, 34, 8, 2);
+            const img = new Image();
+            img.onload = () => {
+                currentImage = img;
+                imageWidth = 50;
+                imageHeight = 50;
+                pixelScale = 1;
+                updatePixelScaleDisplay();
+                processImageWithPalette();
+                initCanvas();
+                resetView();
+            };
+            img.src = c.toDataURL('image/png');
+        }
+
+        function updateStatsBar() {
+            if (!statsContentBar || !statsTotalBar) return;
+            if (!displayColorCodeMap || displayColorCodeMap.length === 0 || colorMode === 'original') {
+                statsTotalBar.textContent = '—';
+                statsContentBar.innerHTML = '';
+                return;
+            }
+            const colorCount = {};
+            let total = 0;
+            for (const code of displayColorCodeMap) {
+                if (code) {
+                    colorCount[code] = (colorCount[code] || 0) + 1;
+                    total++;
+                }
+            }
+            const palette = colorMode === '211' ? PALETTE_211 : PALETTE_96;
+            const sorted = Object.entries(colorCount).sort((a, b) => b[1] - a[1]);
+
+            statsTotalBar.textContent = `共 ${total} 珠 · ${sorted.length} 色`;
+
+            let html = '';
+            for (const [code, count] of sorted) {
+                const ci = palette.find(c => c.code === code);
+                const colorHex = ci ? `#${ci.r.toString(16).padStart(2, '0')}${ci.g.toString(16).padStart(2, '0')}${ci.b.toString(16).padStart(2, '0')}` : '#ccc';
+                html += `<span class="stats-tag" data-code="${code}" style="display:inline-flex;align-items:center;gap:2px;background:#f3ede7;padding:1px 5px;border-radius:8px;white-space:nowrap;cursor:pointer;">
+    <span style="display:inline-block;width:10px;height:10px;background:${colorHex};border:1px solid #ddd;border-radius:2px;"></span>
+    <span style="font-family:monospace;font-weight:600;">${code}</span>
+    <span style="color:#999;">${count}</span>
+</span>`;
+            }
+            statsContentBar.innerHTML = html;
+            // 重新绑定点击事件
+            document.querySelectorAll('.stats-tag').forEach(tag => {
+                tag.addEventListener('click', function (e) {
+                    const code = this.dataset.code;
+                    console.log('tag clicked, code:', code);
+                    if (highlightCode === code) {
+                        highlightCode = null;
+                    } else {
+                        highlightCode = code;
+                    }
+                    // 重新刷新统计栏样式
+                    updateStatsBar();
+                    redrawCanvas();
+                });
+            });
+
+// 高亮当前选中的标签
+            if (highlightCode) {
+                document.querySelectorAll('.stats-tag').forEach(t => {
+                    if (t.dataset.code === highlightCode) {
+                        t.style.background = '#ffd700';
+                    }
+                });
+            }
+        }
+
+        function drawHighlightMask(vx, vy, vw, vh) {
+            if (!displayColorCodeMap || displayColorCodeMap.length === 0) return;
+
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+
+            const endX = vx + vw;
+            const endY = vy + vh;
+
+            // 蒙层
+            for (let y = vy; y < endY; y++) {
+                for (let x = vx; x < endX; x++) {
+                    const code = displayColorCodeMap[y * displayWidth + x];
+                    if (code === highlightCode || !code) continue;
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    ctx.fillRect(x, y, 1, 1);
+                }
+            }
+
+            // 边框
+            if (highlightCode) {
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 1.5 / scale;
+                ctx.setLineDash([]);
+
+                for (let y = vy; y < endY; y++) {
+                    for (let x = vx; x < endX; x++) {
+                        if (displayColorCodeMap[y * displayWidth + x] !== highlightCode) continue;
+                        const top = y > 0 && displayColorCodeMap[(y - 1) * displayWidth + x] === highlightCode;
+                        const bottom = y < displayHeight - 1 && displayColorCodeMap[(y + 1) * displayWidth + x] === highlightCode;
+                        const left = x > 0 && displayColorCodeMap[y * displayWidth + (x - 1)] === highlightCode;
+                        const right = x < displayWidth - 1 && displayColorCodeMap[y * displayWidth + (x + 1)] === highlightCode;
+
+                        if (!top) {
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(x + 1, y);
+                            ctx.stroke();
+                        }
+                        if (!bottom) {
+                            ctx.beginPath();
+                            ctx.moveTo(x, y + 1);
+                            ctx.lineTo(x + 1, y + 1);
+                            ctx.stroke();
+                        }
+                        if (!left) {
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(x, y + 1);
+                            ctx.stroke();
+                        }
+                        if (!right) {
+                            ctx.beginPath();
+                            ctx.moveTo(x + 1, y);
+                            ctx.lineTo(x + 1, y + 1);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            ctx.restore();
+        }
+
+        canvas.addEventListener('mousedown', handleMouseDown);
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+        canvas.addEventListener('mouseleave', handleMouseLeave);
+        canvas.addEventListener('wheel', handleWheel, {passive: false});
+        fileInput.addEventListener('change', e => {
+            if (e.target.files[0]) loadImageFromFile(e.target.files[0]);
+            fileInput.value = '';
+        });
+        toggleGridBtn.addEventListener('click', toggleGrid);
+        toggleColorCodeBtn.addEventListener('click', ()=>toggleColorCode());
+        pixelScaleUpBtn.addEventListener('click', increasePixelScale);
+        pixelScaleDownBtn.addEventListener('click', decreasePixelScale);
+        mirrorBtn.addEventListener('click', toggleMirror);
+        exportBtn.addEventListener('click', exportImage);
+        bgColorInput.addEventListener('input', e => {
+            bgColor = e.target.value;
+            redrawCanvas();
+            saveSettings();
+        });
+        gridColorInput.addEventListener('input', e => {
+            gridColor = e.target.value;
+            redrawCanvas();
+            saveSettings();
+        });
+        document.querySelectorAll('.color-mode-option').forEach(b => b.addEventListener('click', () => setColorMode(b.dataset.mode)));
+        window.addEventListener('resize', handleResize);
+
+        let td = 0, ts = 1, tox = 0, toy = 0;
+        canvas.addEventListener('touchstart', e => {
+            if (!currentImage) return;
+            e.preventDefault();
+            if (e.touches.length === 1) {
+                isDragging = true;
+                dragStartX = e.touches[0].clientX;
+                dragStartY = e.touches[0].clientY;
+                dragStartOffsetX = offsetX;
+                dragStartOffsetY = offsetY;
+            } else if (e.touches.length === 2) {
+                isDragging = false;
+                const dx = e.touches[0].clientX - e.touches[1].clientX,
+                    dy = e.touches[0].clientY - e.touches[1].clientY;
+                td = Math.hypot(dx, dy);
+                ts = scale;
+                tox = offsetX;
+                toy = offsetY;
+            }
+        });
+        canvas.addEventListener('touchmove', e => {
+            if (!currentImage) return;
+            e.preventDefault();
+            if (e.touches.length === 1 && isDragging) {
+                offsetX = dragStartOffsetX + (e.touches[0].clientX - dragStartX);
+                offsetY = dragStartOffsetY + (e.touches[0].clientY - dragStartY);
+                redrawCanvas();
+            } else if (e.touches.length === 2) {
+                const dx = e.touches[0].clientX - e.touches[1].clientX,
+                    dy = e.touches[0].clientY - e.touches[1].clientY, d = Math.hypot(dx, dy),
+                    ns = Math.max(0.1, Math.min(50, ts * (d / td)));
+                const rect = canvas.getBoundingClientRect(),
+                    mx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left,
+                    my = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+                offsetX = mx - (mx - tox) * (ns / ts);
+                offsetY = my - (my - toy) * (ns / ts);
+                scale = ns;
+                redrawCanvas();
+            }
+        });
+        canvas.addEventListener('touchend', () => {
+            isDragging = false;
+            wrapper.classList.remove('grabbing');
+        });
+        document.querySelectorAll('.stats-tag').forEach(tag => {
+            tag.addEventListener('click', function(e) {
+                const code = this.dataset.code;
+                if (highlightCode === code) {
+                    highlightCode = null;
+                } else {
+                    highlightCode = code;
+                    // 自动打开色号显示
+                    if (!showColorCode) {
+                        showColorCode = true;
+                        toggleColorCodeBtn.classList.add('active');
+                        if (scale < 16) {
+                            scale = 16;
+                            offsetX = (canvas.width - displayWidth * scale) / 2;
+                            offsetY = (canvas.height - displayHeight * scale) / 2;
+                        }
+                    }
+                }
+                updateStatsBar();
+                redrawCanvas();
+            });
+        });
+        settingsBtn.addEventListener('click', () => {
+            settingsPanel.style.display = settingsPanel.style.display === 'none' ? 'flex' : 'none';
+        });
+
+// 点击其他地方关闭
+        document.addEventListener('click', (e) => {
+            if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) {
+                settingsPanel.style.display = 'none';
+            }
+        });
+        const hasSettings = loadSettings();
+        initCanvas();
+        loadDefaultPixelArt();
+    })();
+</script>
+</body>
+</html>
