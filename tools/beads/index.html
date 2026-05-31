@@ -507,7 +507,17 @@
         }
 
         function colorDistance(r1, g1, b1, r2, g2, b2) {
-            return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
+            const dr = r1 - r2;
+            const dg = g1 - g2;
+            const db = b1 - b2;
+
+            const rMean = (r1 + r2) / 2;
+
+            return Math.sqrt(
+                (2 + rMean / 256) * dr * dr +
+                4 * dg * dg +
+                (1 + (255 - rMean) / 512) * db * db  // 蓝色权重降低
+            );
         }
 
         function findClosestColor(r, g, b, palette) {
