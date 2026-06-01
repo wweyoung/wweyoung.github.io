@@ -1,6 +1,16 @@
 (() => {
     'use strict';
 
+    const {
+        cropState,
+        initCropper,
+        destroyCropper,
+        performCrop,
+        setCropModalOpen,
+        setCropImageSrc,
+        setCropLoaded
+    } = window.cropModule;
+
     const PALETTE_211 = [
         { code: 'A1', r: 0xFA, g: 0xF4, b: 0xC8 }, { code: 'A2', r: 0xFF, g: 0xFF, b: 0xD5 },
         { code: 'A3', r: 0xFE, g: 0xFF, b: 0x8B }, { code: 'A4', r: 0xFB, g: 0xED, b: 0x56 },
@@ -272,17 +282,19 @@
             const settingsBtnRef = ref(null);
 
             const originalFileName = ref('pixel-art');
+            const authorName = ref(localStorage.getItem('beads_author_name') || '');
 
             const showGrid = ref(true);
             const showColorCode = ref(false);
             const colorMode = ref('original');
             const pixelScale = ref(1);
 
-            const gridColor = ref('#b5a595');
+            const gridColor = ref('#ff0000');
             const bgColor = ref('#fefaf5');
             const settingsOpen = ref(false);
             const highlightCode = ref(null);
             const coordText = ref('— , —');
+            const canvasSizeText = ref('— × —');
             const statsTotal = ref('—');
 
             const sortedStats = ref([]);
@@ -568,7 +580,7 @@
                 }
 
                 if (scale.value >= 16) {
-                    const coordFontSize = 12 / scale.value;
+                    const coordFontSize = Math.max(0.5, 12 / scale.value);
                     ctx.font = `${coordFontSize}px Consolas, monospace`;
 
                     ctx.textAlign = 'center';
@@ -622,7 +634,8 @@
             }
 
             function drawColorCodes(vx, vy, vw, vh) {
-                if (!displayColorCodeMap || displayColorCodeMap.length === 0) return;
+                if (!displayColorCodeMap?.length) return;
+                if (scale.value < 16) return;
                 const fontSize = Math.max(7 / scale.value, 0.5);
                 ctx.save();
                 ctx.font = `${fontSize}px Consolas, monospace`;
@@ -683,6 +696,7 @@
                     currentImage = img;
                     imageWidth = img.naturalWidth;
                     imageHeight = img.naturalHeight;
+                    canvasSizeText.value = `${imageWidth} × ${imageHeight}`;
                     pixelScale.value = 1;
                     processImageWithPalette();
                     resetView();
@@ -697,7 +711,15 @@
                 findClosestColor = makeColorFinder();
                 originalFileName.value = file.name.replace(/\.[^/.]+$/, '');
                 const reader = new FileReader();
-                reader.onload = (e) => loadImageFromDataUrl(e.target.result);
+                reader.onload = (e) => {
+                    setCropImageSrc(e.target.result);
+                    setCropModalOpen(true);
+                    setCropLoaded(false);
+                    setTimeout(() => {
+                        destroyCropper();
+                        initCropper(cropState.cropImageRef, cropState.cropContainerRef, cropState.cropGridRef, null, null);
+                    }, 100);
+                };
                 reader.readAsDataURL(file);
             }
 
@@ -859,7 +881,7 @@
                     ex.strokeStyle = 'rgba(180,170,160,0.1)'; ex.lineWidth = 0.1; ex.setLineDash([]);
                     for (let x = 0; x <= displayWidth; x += gridPs) { ex.beginPath(); ex.moveTo(x, 0); ex.lineTo(x, displayHeight); ex.stroke(); }
                     for (let y = 0; y <= displayHeight; y += gridPs) { ex.beginPath(); ex.moveTo(0, y); ex.lineTo(displayWidth, y); ex.stroke(); }
-                    ex.strokeStyle = gridColor.value; ex.lineWidth = 0.1; ex.setLineDash([0.5, 0.5]);
+                    ex.strokeStyle = gridColor.value; ex.lineWidth = 0.1; ex.setLineDash([0.3, 0.3]);
                     for (let x = mis * gridPs; x < displayWidth; x += ms * gridPs) { ex.beginPath(); ex.moveTo(x, 0); ex.lineTo(x, displayHeight); ex.stroke(); }
                     for (let y = mis * gridPs; y < displayHeight; y += ms * gridPs) { ex.beginPath(); ex.moveTo(0, y); ex.lineTo(displayWidth, y); ex.stroke(); }
                     ex.strokeStyle = gridColor.value; ex.lineWidth = 0.1; ex.setLineDash([]);
@@ -885,9 +907,72 @@
                         }
                     }
                 }
+
+                if (authorName.value) {
+                    ex.save();
+                    ex.beginPath();
+                    ex.rect(0, 0, displayWidth, displayHeight);
+                    ex.clip();
+                    
+                    ex.strokeStyle = 'rgba(192, 192, 192, 0.3)';
+                    ex.lineWidth = 0.1;
+                    ex.setLineDash([0.3, 0.3]);
+                    const diagonalSpacing = 10 * ps;
+                    const diagW = Math.sqrt(displayWidth * displayWidth + displayHeight * displayHeight);
+                    
+                    ex.save();
+                    ex.translate(displayWidth / 2, displayHeight / 2);
+                    ex.rotate(Math.PI / 4);
+                    for (let i = -diagW / 2; i < diagW / 2; i += diagonalSpacing) {
+                        ex.beginPath();
+                        ex.moveTo(i, -diagW);
+                        ex.lineTo(i, diagW);
+                        ex.stroke();
+                    }
+                    ex.restore();
+
+                    ex.save();
+                    ex.translate(displayWidth / 2, displayHeight / 2);
+                    ex.rotate(-Math.PI / 4);
+                    for (let i = -diagW / 2; i < diagW / 2; i += diagonalSpacing) {
+                        ex.beginPath();
+                        ex.moveTo(i, -diagW);
+                        ex.lineTo(i, diagW);
+                        ex.stroke();
+                    }
+                    ex.restore();
+
+                    ex.font = `${0.8 * ps}px "Segoe UI", sans-serif`;
+                    ex.fillStyle = 'rgba(140, 140, 140, 0.6)';
+                    ex.textAlign = 'center';
+                    ex.textBaseline = 'middle';
+                    
+                    const text = authorName.value;
+                    
+                    ex.save();
+                    ex.translate(displayWidth / 2, displayHeight / 2);
+                    ex.rotate(Math.PI / 4);
+                    
+                    const textWidth = ex.measureText(text).width + 6 * ps;
+                    
+                    for (let i = -diagW / 2; i < diagW / 2; i += diagonalSpacing * 2) {
+                        for (let j = -diagW / 2; j < diagW / 2; j += textWidth) {
+                            ex.save();
+                            ex.translate(i, j);
+                            ex.rotate(-Math.PI / 4);
+                            ex.fillText(text, 0, 0);
+                            ex.restore();
+                        }
+                    }
+                    
+                    ex.restore();
+                    ex.restore();
+                }
+
                 ex.restore();
 
-                ex.font = `${0.5 * effectivePixelSize / ps}px Consolas, monospace`;
+                const coordFontSize = Math.max(8, 0.5 * effectivePixelSize / ps);
+                ex.font = `${coordFontSize}px Consolas, monospace`;
                 ex.textAlign = 'center';
                 ex.textBaseline = 'middle';
                 for (let x = 0; x < displayWidth; x += ps) {
@@ -1008,6 +1093,16 @@
                 coordText.value = '— , —';
             }
 
+            function handleTouchStart(e) {
+                if (!currentImage) return;
+                updateCoordinateDisplay(e);
+            }
+
+            function handleTouchMove(e) {
+                if (!currentImage) return;
+                updateCoordinateDisplay(e);
+            }
+
             function handleWheel(e) {
                 if (!currentImage) return;
                 e.preventDefault();
@@ -1030,8 +1125,10 @@
                 }
                 const canvas = canvasRef.value;
                 const rect = canvas.getBoundingClientRect();
-                const ix = (e.clientX - rect.left - offsetX.value) / scale.value;
-                const iy = (e.clientY - rect.top - offsetY.value) / scale.value;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const ix = (clientX - rect.left - offsetX.value) / scale.value;
+                const iy = (clientY - rect.top - offsetY.value) / scale.value;
                 const col = Math.floor(ix);
                 const row = Math.floor(iy);
                 if (col >= 0 && col < displayWidth && row >= 0 && row < displayHeight) {
@@ -1152,6 +1249,11 @@
                 saveSettings({ bgColor: bgColor.value, gridColor: gridColor.value, showGrid: showGrid.value });
             }
 
+            function onAuthorNameInput(e) {
+                authorName.value = e.target.value;
+                localStorage.setItem('beads_author_name', authorName.value);
+            }
+
             function onFileChange(e) {
                 const file = e.target.files && e.target.files[0];
                 if (file) loadImageFromFile(file);
@@ -1246,6 +1348,8 @@
                 window.addEventListener('mouseup', handleMouseUp);
                 window.addEventListener('resize', handleResize);
                 window.addEventListener('click', onWindowClick);
+                canvasRef.value.addEventListener('touchstart', handleTouchStart, { passive: true });
+                canvasRef.value.addEventListener('touchmove', handleTouchMove, { passive: true });
             });
 
             onBeforeUnmount(() => {
@@ -1253,6 +1357,10 @@
                 window.removeEventListener('mouseup', handleMouseUp);
                 window.removeEventListener('resize', handleResize);
                 window.removeEventListener('click', onWindowClick);
+                if (canvasRef.value) {
+                    canvasRef.value.removeEventListener('touchstart', handleTouchStart);
+                    canvasRef.value.removeEventListener('touchmove', handleTouchMove);
+                }
             });
 
             return {
@@ -1270,6 +1378,7 @@
                 bgColor,
                 settingsOpen,
                 coordText,
+                canvasSizeText,
                 statsTotal,
                 sortedStats,
                 highlightCode,
@@ -1284,6 +1393,30 @@
                 onFileChange,
                 onBgColorInput,
                 onGridColorInput,
+                onAuthorNameInput,
+                authorName,
+                cropModalOpen: cropState.cropModalOpen,
+                cropImageSrc: cropState.cropImageSrc,
+                cropImageRef: cropState.cropImageRef,
+                cropContainerRef: cropState.cropContainerRef,
+                cropGridRef: cropState.cropGridRef,
+                cropLoaded: cropState.cropLoaded,
+                cropRect: cropState.cropRect,
+                onCropConfirm: () => performCrop(cropState.cropImageRef, loadImageFromDataUrl),
+                onCropCancel: () => {
+                    destroyCropper();
+                    setCropModalOpen(false);
+                    setCropLoaded(false);
+                    setCropImageSrc('');
+                },
+                onCropImportOriginal: () => {
+                    const dataUrl = cropState.cropImageSrc.value;
+                    destroyCropper();
+                    setCropModalOpen(false);
+                    setCropLoaded(false);
+                    setCropImageSrc('');
+                    loadImageFromDataUrl(dataUrl);
+                },
                 onSettingsToggle,
                 onTagClick,
                 onCanvasMouseDown: handleMouseDown,

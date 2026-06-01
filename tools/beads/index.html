@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>KX拼豆像素图</title>
     <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.prod.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -14,7 +16,7 @@
 
         body {
             background: #f5f2eb;
-            font-family: 'Segoe UI', 'Fredoka', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Fredoka', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -39,15 +41,29 @@
 
         .top-bar {
             display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 0.3rem 0.6rem;
+            background: #fefaf5;
+            border-bottom: 1px solid #eddcd2;
+            flex-shrink: 0;
+        }
+
+        .top-bar-row {
+            display: flex;
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            padding: 0.5rem 0.8rem;
-            background: #fefaf5;
-            border-bottom: 1px solid #eddcd2;
             gap: 0.5rem;
-            flex-shrink: 0;
-            flex-wrap: wrap;
+        }
+
+        .top-bar-row:first-child {
+            padding-bottom: 0.2rem;
+        }
+
+        .top-bar-row:last-child {
+            padding-top: 0.2rem;
+            border-top: 1px solid #eddcd2;
         }
 
         .left-group, .right-group {
@@ -289,6 +305,82 @@
             color: #999;
         }
 
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .crop-modal {
+            background: white;
+            border-radius: 0.8rem;
+            padding: 1rem;
+            width: 90vw;
+            height: 85vh;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .crop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #5e4b3c;
+            flex-shrink: 0;
+        }
+
+        .crop-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .crop-btn {
+            padding: 0.3rem 0.8rem;
+            border: none;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .crop-btn.confirm {
+            background: #b45f4c;
+            color: white;
+        }
+
+        .crop-btn.cancel {
+            background: #e0d5ca;
+            color: #5e4b3c;
+        }
+
+        .crop-container {
+            position: relative;
+            flex: 1;
+            overflow: hidden;
+            background: #333;
+        }
+
+        .crop-image {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .crop-info {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+        }
+
         .settings-panel {
             position: absolute;
             bottom: 50px;
@@ -346,6 +438,15 @@
             .text-btn {
                 padding: 0.25rem 0.5rem;
             }
+
+            .top-bar h1 {
+                font-size: 0.9rem;
+            }
+
+            .color-mode-option {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -353,25 +454,21 @@
 <div id="app">
     <div class="container">
         <div class="top-bar">
-            <div class="left-group">
-                <h1>🧩 KX拼豆图<span></span></h1>
-                <div class="color-mode-select">
-                    <button
-                        v-for="opt in COLOR_MODES"
-                        :key="opt.mode"
-                        class="color-mode-option"
-                        :class="{ active: colorMode === opt.mode }"
-                        @click="onColorModeClick(opt.mode)"
-                    >{{ opt.label }}</button>
-                </div>
-            </div>
-
-            <div class="right-group">
-                <div class="coord-display">
-                    📍 坐标 <span class="inner">{{ coordText }}</span>
+            <div class="top-bar-row">
+                <div class="left-group">
+                    <h1>🧩 KX拼豆图</h1>
+                    <div class="color-mode-select">
+                        <button
+                            v-for="opt in COLOR_MODES"
+                            :key="opt.mode"
+                            class="color-mode-option"
+                            :class="{ active: colorMode === opt.mode }"
+                            @click="onColorModeClick(opt.mode)"
+                        >{{ opt.label }}</button>
+                    </div>
                 </div>
 
-                <div class="action-group">
+                <div class="right-group">
                     <label class="text-btn" title="导入图片">
                         📁 导入
                         <input
@@ -384,9 +481,20 @@
                     </label>
                     <button class="text-btn" title="导出图片" @click="onExport">💾 导出</button>
                 </div>
+            </div>
 
-                <div class="coord-display">
-                    📊 <span class="inner">{{ statsTotal }}</span>
+            <div class="top-bar-row">
+                <div class="left-group">
+                    <div class="coord-display">
+                        &#x1F4CD; 坐标 <span class="inner">{{ coordText }}</span>
+                        <span class="inner" style="margin-left: 0.5rem;">{{ canvasSizeText }}</span>
+                    </div>
+                </div>
+
+                <div class="right-group">
+                    <div class="coord-display">
+                        &#x1F4CA; <span class="inner">{{ statsTotal }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -446,10 +554,32 @@
                     <span class="label">网格</span>
                     <input type="color" :value="gridColor" title="网格颜色" @input="onGridColorInput">
                 </div>
+                <div class="settings-row">
+                    <span class="label">作者</span>
+                    <input type="text" v-model="authorName" placeholder="输入作者名" @input="onAuthorNameInput" style="font-size: 0.7rem; padding: 0.2rem 0.4rem; border: 1px solid #e7cfbc; border-radius: 0.3rem;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="cropModalOpen" class="modal-overlay" @click.self="onCropCancel">
+        <div class="crop-modal">
+            <div class="crop-header">
+                <span>选择裁剪区域</span>
+                <div class="crop-buttons">
+                    <button class="crop-btn confirm" @click="onCropConfirm">确认</button>
+                    <button class="crop-btn" @click="onCropImportOriginal">导入原图</button>
+                    <button class="crop-btn cancel" @click="onCropCancel">取消</button>
+                </div>
+            </div>
+            <div class="crop-container">
+                <img ref="cropImageRef" :src="cropImageSrc" class="crop-image">
             </div>
         </div>
     </div>
 </div>
+
+<script src="./crop.js"></script>
 <script src="./app.js"></script>
 </body>
 </html>
