@@ -199,8 +199,7 @@
         { mode: '96', label: '96色' }
     ];
 
-    const GRID_LINE_WIDTH_MAJOR = 0.1;
-    const GRID_LINE_WIDTH_MINOR = 0.1;
+
     const GRID_BASE_MAJOR = 10;
     const GRID_BASE_MINOR = 5;
 
@@ -539,10 +538,9 @@
 
                 const endX = vx + vw;
                 const endY = vy + vh;
-                const invS = scale.value;
 
                 ctx.strokeStyle = 'rgba(180,170,160,0.15)';
-                ctx.lineWidth = Math.max(0.2, 0.08 / invS);
+                ctx.lineWidth = Math.max(0.1, 0.05 / scale.value);
                 ctx.setLineDash([]);
                 const xStart1 = Math.floor(vx / ps) * ps;
                 for (let x = xStart1; x <= endX; x += ps) {
@@ -555,8 +553,8 @@
 
                 ctx.save();
                 ctx.strokeStyle = gridColor.value;
-                ctx.lineWidth = Math.max(0.3, 0.15 / invS);
-                ctx.setLineDash([0, Math.max(0.6, 0.6 / invS)]);
+                ctx.lineWidth = Math.max(0.15, 0.15 / scale.value);
+                ctx.setLineDash([0, Math.max(0.5, 0.5 / scale.value)]);
                 ctx.lineCap = 'round';
                 const xStart2 = Math.ceil(vx / (ms * ps)) * ms * ps + mis * ps;
                 for (let x = xStart2; x < endX; x += ms * ps) {
@@ -569,7 +567,7 @@
                 ctx.restore();
 
                 ctx.strokeStyle = gridColor.value;
-                ctx.lineWidth = Math.max(0.2, 0.1 / invS);
+                ctx.lineWidth = Math.max(0.1, 0.1 / scale.value);
                 ctx.setLineDash([]);
                 const xStart3 = Math.floor(vx / (ms * ps)) * ms * ps;
                 for (let x = xStart3; x <= endX; x += ms * ps) {
@@ -882,7 +880,7 @@
                     ex.strokeStyle = 'rgba(180,170,160,0.1)'; ex.lineWidth = 0.1; ex.setLineDash([]);
                     for (let x = 0; x <= displayWidth; x += gridPs) { ex.beginPath(); ex.moveTo(x, 0); ex.lineTo(x, displayHeight); ex.stroke(); }
                     for (let y = 0; y <= displayHeight; y += gridPs) { ex.beginPath(); ex.moveTo(0, y); ex.lineTo(displayWidth, y); ex.stroke(); }
-                    ex.save(); ex.strokeStyle = gridColor.value; ex.lineWidth = 0.2; ex.setLineDash([0, 0.5]); ex.lineCap = 'round';
+                    ex.save(); ex.strokeStyle = gridColor.value; ex.lineWidth = 0.15; ex.setLineDash([0, 0.5]); ex.lineCap = 'round';
                     for (let x = mis * gridPs; x < displayWidth; x += ms * gridPs) { ex.beginPath(); ex.moveTo(x, 0); ex.lineTo(x, displayHeight); ex.stroke(); }
                     for (let y = mis * gridPs; y < displayHeight; y += ms * gridPs) { ex.beginPath(); ex.moveTo(0, y); ex.lineTo(displayWidth, y); ex.stroke(); }
                     ex.restore();
