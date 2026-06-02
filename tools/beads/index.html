@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>KX拼豆像素图</title>
     <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.prod.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+    <link href="/static/script/cropperjs-2.1.1/cropper.min.css" rel="stylesheet">
     <link href="./style.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script src="/static/script/cropperjs-2.1.1/cropper.min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -126,8 +126,8 @@
             <div class="crop-header">
                 <span>选择裁剪区域</span>
                 <div class="crop-buttons">
-                    <button class="crop-btn confirm" @click="onCropConfirm">确认</button>
                     <button class="crop-btn" @click="onCropImportOriginal">导入原图</button>
+                    <button class="crop-btn confirm" @click="onCropConfirm">确认</button>
                     <button class="crop-btn cancel" @click="onCropCancel">取消</button>
                 </div>
             </div>
@@ -138,7 +138,9 @@
     </div>
 </div>
 
+<script src="./palette.js"></script>
 <script src="./crop.js"></script>
+<script src="./import.js"></script>
 <script src="./app.js"></script>
 </body>
 </html>
