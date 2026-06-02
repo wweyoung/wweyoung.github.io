@@ -542,7 +542,7 @@
                 const invS = scale.value;
 
                 ctx.strokeStyle = 'rgba(180,170,160,0.15)';
-                ctx.lineWidth = Math.max(0.3, 0.4 / invS);
+                ctx.lineWidth = Math.max(0.2, 0.08 / invS);
                 ctx.setLineDash([]);
                 const xStart1 = Math.floor(vx / ps) * ps;
                 for (let x = xStart1; x <= endX; x += ps) {
@@ -555,8 +555,8 @@
 
                 ctx.save();
                 ctx.strokeStyle = gridColor.value;
-                ctx.lineWidth = Math.max(0.5, 0.6 / invS);
-                ctx.setLineDash([0, Math.max(0.8, 0.8 / invS)]);
+                ctx.lineWidth = Math.max(0.3, 0.15 / invS);
+                ctx.setLineDash([0, Math.max(0.6, 0.6 / invS)]);
                 ctx.lineCap = 'round';
                 const xStart2 = Math.ceil(vx / (ms * ps)) * ms * ps + mis * ps;
                 for (let x = xStart2; x < endX; x += ms * ps) {
@@ -569,7 +569,7 @@
                 ctx.restore();
 
                 ctx.strokeStyle = gridColor.value;
-                ctx.lineWidth = Math.max(0.4, 0.4 / invS);
+                ctx.lineWidth = Math.max(0.2, 0.1 / invS);
                 ctx.setLineDash([]);
                 const xStart3 = Math.floor(vx / (ms * ps)) * ms * ps;
                 for (let x = xStart3; x <= endX; x += ms * ps) {
